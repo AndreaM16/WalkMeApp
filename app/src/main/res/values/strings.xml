@@ -1,18 +1,49 @@
 <resources>
     <string name="app_name">WalkMeApp</string>
 
+    <!-- Menu -->
     <string-array
         name="drawer_items">
-        <item>Settings</item>
-        <item>My trainings</item>
+            <item>Settings</item>
+            <item>My trainings</item>
+            <item>About</item>
+            <item>Log Out</item>
+            <item>Hello <!--Dynamic Name--></item>
     </string-array>
 
+    <!-- Main Page-->
     <string-array
         name="main_page_list_items">
-        <item>Start</item>
-        <item>Continue</item>
-        <item>Load</item>
-        <item>Presets</item>
+            <item>Start</item>
+            <item>Continue</item>
+            <item>Load</item>
+            <item>Presets</item>
+            <item>Welcome!</item>
+            <item>Chose an Option:</item>
     </string-array>
+
+    <!-- Load Trainings Page-->
+    <string-array
+        name="load_trainings_list_items">
+            <item>Load Trainings</item>
+            <item>Favorites</item>
+            <item><!--Dynamic Month and Dates--></item>
+    </string-array>
+
+    <!-- Trainings List -->
+    <string-array
+        name="trainings_list_list_items">
+        <!--To Do-->
+    </string-array>
+
+    <!-- Current Training Page-->
+    <string-array
+        name="current_train_list_items">
+            <item>Training <!--Day/Month--></item>
+            <item>Steps/Min:</item>
+            <item>Km/H:</item>
+            <item>Optimal Step:</item>
+    </string-array>
+
 
 </resources>

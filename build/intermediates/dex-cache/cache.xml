@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\exploded-aar\com.androidplot\androidplot-core\0.9.6\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="be48755cb80a353468cc4bae132d36bb42b00560">
+        <dex dex="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\pre-dexed\debug\com.androidplot-androidplot-core-0.9.6_25a9e16637daa9097a82992973c5850fa8d723c2.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andrea\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-applinks\1.4.0\8ad21bf21784dacce5f2043afb97218cc377e835\bolts-applinks-1.4.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8ad21bf21784dacce5f2043afb97218cc377e835">
+        <dex dex="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\pre-dexed\debug\bolts-applinks-1.4.0_d77e1360c99a66ece275f025174cbb7f85072394.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\pre-dexed\debug\internal_impl-23.1.1_3232f19f43e61ef545f24a68ab77e28755bf2c85.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\pre-dexed\debug\com.android.support-support-v4-23.1.1_ac63258551df56c9cc752b120acd337fbde9048e.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andrea\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\pre-dexed\debug\support-annotations-23.1.1_dbe9551bb36cc437219de34cecdfd32a5a5a114d.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andrea\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-core\2.7.0\5f2bfd0866bcacbcc7c25ce25f80b5aeed0f72f\jackson-core-2.7.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="05f2bfd0866bcacbcc7c25ce25f80b5aeed0f72f">
+        <dex dex="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\pre-dexed\debug\jackson-core-2.7.0_9ab75f7df6b18c1663f6885d28b47705556bea52.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-23.1.1_c0899ad16bc44e7df4320c14f7ea6eab7fee38d9.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andrea\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-tasks\1.4.0\d85884acf6810a3bbbecb587f239005cbc846dc4\bolts-tasks-1.4.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="d85884acf6810a3bbbecb587f239005cbc846dc4">
+        <dex dex="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\pre-dexed\debug\bolts-tasks-1.4.0_cf2dd80dcf472b3ca1dd18e15cab2800d51ffe43.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andrea\.gradle\caches\modules-2\files-2.1\com.j256.ormlite\ormlite-android\4.45\8ff8c21e8d0162333559f35cafd6a2238a33e5ba\ormlite-android-4.45.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8ff8c21e8d0162333559f35cafd6a2238a33e5ba">
+        <dex dex="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\pre-dexed\debug\ormlite-android-4.45_196f97527a05534be943d698093f1cdfa9f49d4f.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andrea\.gradle\caches\modules-2\files-2.1\com.j256.ormlite\ormlite-core\4.45\3db7b73aecea723803e10b068777cf09ed42d4be\ormlite-core-4.45.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="3db7b73aecea723803e10b068777cf09ed42d4be">
+        <dex dex="C:\Users\Andrea\Documents\GitHub\WalkMeApp\app\build\intermediates\pre-dexed\debug\ormlite-core-4.45_afa93108717a77d961438db6cc4ae6c7aadf956d.jar" />
+    </item>
+
+</items>
