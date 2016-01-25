@@ -1,0 +1,5 @@
+.gradle/
+.idea/
+WalkMeApp.iml
+app/app.iml
+local.properties
