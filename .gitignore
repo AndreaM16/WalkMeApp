@@ -3,3 +3,4 @@
 WalkMeApp.iml
 app/app.iml
 local.properties
+build/intermediates/dex-cache/cache.xml

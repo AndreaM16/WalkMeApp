@@ -92,13 +92,13 @@ public class MainActivity extends Activity {
         switch (activityName) {
 
             case "Start":
-                Toast.makeText(this, activityName + " non va, sburro",Toast.LENGTH_SHORT);
+                Toast.makeText(this, activityName + " non va, sburro",Toast.LENGTH_SHORT).show();
 
                 // Intent intent = new Intent(this, DisplayMessageActivity.class);
                 break;
 
             case "Continue":
-                Toast.makeText(this, activityName + " non va, sburro",Toast.LENGTH_SHORT);
+                Toast.makeText(this, activityName + " non va, sburro",Toast.LENGTH_SHORT).show();
 
                 //Intent intent = new Intent(this, DisplayMessageActivity.class);
                 break;
@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
                 break;
 
             case "Presets":
-                Toast.makeText(this, activityName + " non va, sburro",Toast.LENGTH_SHORT);
+                Toast.makeText(this, activityName + " non va, sburro",Toast.LENGTH_SHORT).show();
                 //Intent intent = new Intent(this, DisplayMessageActivity.class);
                 break;
 
