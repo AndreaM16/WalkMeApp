@@ -2,6 +2,7 @@ package com.project.so2.walkmeapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private String[] mDrawerElements;
@@ -23,6 +25,9 @@ public class MainActivity extends Activity {
     private ListView mDrawerList;
     private ImageView mMenuIcon;
     private LinearLayout mMainPageList;
+    private String[] mMainPageElements;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,8 @@ public class MainActivity extends Activity {
 
 
         mDrawerElements = getResources().getStringArray(R.array.drawer_items);
+        mMainPageElements = getResources().getStringArray(R.array.main_page_list_items);
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mMainPageList = (LinearLayout) findViewById(R.id.main_page_list);
@@ -58,18 +65,60 @@ public class MainActivity extends Activity {
 
         String[] mMenuStrings = getResources().getStringArray(R.array.main_page_list_items);
 
-        for(String i: mMenuStrings) {
+        for(final String i: mMenuStrings) {
 
-            View v; // Creating an instance for View Object
+            final View v; // Creating an instance for View Object
             LayoutInflater inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.menu_fragment_item, null);
             TextView textTemp = (TextView) v.findViewById(R.id.item_text);
             textTemp.setText(i);
+
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchNextActivity(i);
+                }
+            });
+
             mMainPageList.addView(v);
+
 
         }
 
     }
+
+    private void launchNextActivity(String activityName) {
+        Intent intent = null;
+        switch (activityName) {
+
+            case "Start":
+                Toast.makeText(this, activityName + " non va, sburro",Toast.LENGTH_SHORT);
+
+                // Intent intent = new Intent(this, DisplayMessageActivity.class);
+                break;
+
+            case "Continue":
+                Toast.makeText(this, activityName + " non va, sburro",Toast.LENGTH_SHORT);
+
+                //Intent intent = new Intent(this, DisplayMessageActivity.class);
+                break;
+
+            case "Load":
+                intent = new Intent(this, LoadTrainings.class);
+                break;
+
+            case "Presets":
+                Toast.makeText(this, activityName + " non va, sburro",Toast.LENGTH_SHORT);
+                //Intent intent = new Intent(this, DisplayMessageActivity.class);
+                break;
+
+        }
+        if (intent != null) {
+            startActivity(intent);
+        }
+
+    }
+
 
 
     private void drawerToggle () {
