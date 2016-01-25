@@ -3,8 +3,6 @@ package com.project.so2.walkmeapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
@@ -55,7 +53,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        mMenuIcon = (ImageView) findViewById(R.id.menu_icon);
+        mMenuIcon = (ImageView) findViewById(R.id.action_bar_icon);
         mMenuIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
