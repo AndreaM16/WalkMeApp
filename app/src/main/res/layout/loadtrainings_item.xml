@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="@dimen/generic_list_item_height"
+    android:layout_width="match_parent"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/generic_list_item_height"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/loadtrainings_item_logo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitStart"
+            android:src="@drawable/icon" />
+
+        <TextView
+            android:id="@+id/loadtrainings_item_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="MonthPH"
+            android:textAllCaps="true"
+            android:textSize="@dimen/generic_list_main_text" />
+
+        <TextView
+            android:id="@+id/loadtrainings_item_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/loadtrainings_item_month"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/loadtrainings_item_month"
+            android:paddingBottom="3dp"
+            android:text="2015PH"
+            android:textAllCaps="true"
+            android:textSize="@dimen/generic_list_subtext" />
+    </RelativeLayout>
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>
