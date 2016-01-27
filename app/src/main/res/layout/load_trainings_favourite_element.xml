@@ -25,9 +25,10 @@
             android:layout_height="60dp"
             android:layout_gravity="center_vertical"
             android:gravity="center"
-            android:text="placeholder"
+            android:text="Favourites"
             android:textColor="@color/grey"
             android:textSize="@dimen/generic_list_main_text" />
+
     </RelativeLayout>
 
     <View
