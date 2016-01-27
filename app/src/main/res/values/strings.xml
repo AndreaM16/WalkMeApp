@@ -12,8 +12,8 @@
     <string name="load_trainings_title">Load Trainings</string>
     <string name="no_trainings">You have no trainings!</string>
 
-
-
+    <!--  Preset Single Strings  -->
+    <string name="presets_title">Preset</string>
 
     <!-- Menu -->
     <string-array
