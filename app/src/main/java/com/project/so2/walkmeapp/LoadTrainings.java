@@ -34,6 +34,7 @@ public class LoadTrainings extends Activity{
             }
         });
         TextView actionBarText = (TextView) findViewById(R.id.action_bar_title);
+
         actionBarText.setText(getResources().getString(R.string.load_trainings_title));
 
     }
