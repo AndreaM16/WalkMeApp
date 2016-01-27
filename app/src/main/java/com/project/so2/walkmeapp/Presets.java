@@ -23,7 +23,7 @@ public class Presets extends Activity {
         //setContentView(R.layout.presets_layout);
 
         //Binding Strings to their View
-        //mPresetElements = getResources().getStringArray(R.array.Preset_list_items);
+        //mPresetElements = getResources().getStringArray(R.array.preset_list_items);
 
         ImageView actionBar = (ImageView) findViewById(R.id.action_bar_icon);
         actionBar.setImageResource(R.drawable.btn_back);
