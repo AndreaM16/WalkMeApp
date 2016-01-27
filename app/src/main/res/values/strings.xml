@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">WalkMeApp</string>
-    <string name="load_trainings_title">Load Trainings</string>>
+    <string name="load_trainings_title">Load Trainings</string>
+    <string name="no_trainings">You have no trainings!</string>>
     <!-- Menu -->
     <string-array
         name="drawer_items">
