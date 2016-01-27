@@ -45,6 +45,8 @@ public class MainActivity extends Activity {
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mDrawerElements));
+        
+
         // Set the list's click listener
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
