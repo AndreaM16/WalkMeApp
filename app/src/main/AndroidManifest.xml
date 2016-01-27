@@ -15,9 +15,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Classes -->
         <activity android:name=".LoadTrainings"/>
-    <activity android:name=".Training"/>
+        <activity android:name=".Training"/>
         <activity android:name=".SingleMonth"/>
+        <activity android:name=".Presets"/>
+
     </application>
 
 </manifest>

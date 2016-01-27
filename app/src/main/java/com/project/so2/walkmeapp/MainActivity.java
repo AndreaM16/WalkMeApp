@@ -106,13 +106,8 @@ public class MainActivity extends Activity {
                 break;
 
             case "Presets":
-                Toast.makeText(this, activityName + " non va, sburro",Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(this, DisplayMessageActivity.class);
+                intent = new Intent(this, Presets.class);
                 break;
-
-            /*case "Training":
-                intent = new Intent(this, Training.class);
-                break;*/
 
         }
         if (intent != null) {
