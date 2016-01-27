@@ -6,5 +6,7 @@
     <dimen name="generic_list_item_height">80dp</dimen>
     <dimen name="generic_list_main_text">26dp</dimen>
     <dimen name="generic_list_subtext">14dp</dimen>
+    <dimen name="generic_list_training_main_text">26dp</dimen>
+    <dimen name="generic_list_training_subtext">40dp</dimen>
 
 </resources>

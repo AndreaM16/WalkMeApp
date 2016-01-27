@@ -2,6 +2,7 @@
 
     <!--  Main Activity Single Strings  -->
     <string name="app_name">WalkMeApp</string>
+
     <string name="main_welcome">Welcome!</string>
     <string name="main_chose_an_option">Chose an Option:</string>
 
@@ -11,8 +12,13 @@
     <!--  Load Trainings Single Strings  -->
     <string name="load_trainings_title">Load Trainings</string>
     <string name="no_trainings">You have no trainings!</string>
+    <string name="main_training_title">Training</string>
 
-
+    <!--  Training Single Strings  -->
+    <string name="steps_min_label"> Passi/min</string>
+    <string name="km_hour_label"> Km/h</string>
+    <string name="steps_min_value"> 0</string>
+    <string name="km_hour_value"> 0</string>
 
 
     <!-- Menu -->

@@ -20,7 +20,7 @@ public class Training extends Activity{
         super.onCreate(savedInstanceState);
 
         //Binding Class to its View
-        //setContentView(R.layout.training_main);
+        setContentView(R.layout.training_main);
 
         //Binding Strings to their View
         //mMainTrainingElements = getResources().getStringArray(R.array.main_training_list_items);
@@ -35,7 +35,7 @@ public class Training extends Activity{
         });
         TextView actionBarText = (TextView) findViewById(R.id.action_bar_title);
 
-        //actionBarText.setText(getResources().getString(R.string.main_training_title));
+        actionBarText.setText(getResources().getString(R.string.main_training_title));
 
     }
 }

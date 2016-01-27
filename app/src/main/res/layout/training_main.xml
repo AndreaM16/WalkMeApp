@@ -43,9 +43,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="Passi/min"
+                    android:text="@string/steps_min_label"
                     android:textColor="@color/grey"
-                    android:textSize="@dimen/generic_list_main_text" />
+                    android:textSize="@dimen/generic_list_training_main_text" />
 
                 <TextView
 
@@ -54,9 +54,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/item_text1Left"
                     android:layout_centerHorizontal="true"
-                    android:text="130"
+                    android:text="@string/steps_min_value"
                     android:textColor="@color/grey"
-                    android:textSize="40dp" />
+                    android:textSize="@dimen/generic_list_training_subtext" />
 
             </RelativeLayout>
 
@@ -72,9 +72,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="Km/h"
+                    android:text="@string/km_hour_label"
                     android:textColor="@color/grey"
-                    android:textSize="@dimen/generic_list_main_text" />
+                    android:textSize="@dimen/generic_list_training_main_text" />
 
                 <TextView
                     android:id="@+id/item_text2Right"
@@ -82,9 +82,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/item_text1Right"
                     android:layout_centerHorizontal="true"
-                    android:text="40"
+                    android:text="@string/km_hour_value"
                     android:textColor="@color/grey"
-                    android:textSize="40dp" />
+                    android:textSize="@dimen/generic_list_training_subtext" />
 
 
             </RelativeLayout>
