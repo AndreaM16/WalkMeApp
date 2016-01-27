@@ -9,7 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/generic_list_item_height"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="40dp">
 
 
         <ImageView
@@ -26,7 +29,8 @@
             android:layout_toLeftOf="@id/item_text"
             android:text="28-DIC"
             android:textColor="@color/grey"
-            android:textSize="@dimen/generic_list_main_text" />
+            android:textSize="@dimen/generic_list_main_text"
+            android:layout_centerVertical="true" />
 
 
     </RelativeLayout>
