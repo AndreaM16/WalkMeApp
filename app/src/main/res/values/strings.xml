@@ -5,9 +5,14 @@
     <string name="main_welcome">Welcome!</string>
     <string name="main_chose_an_option">Chose an Option:</string>
 
+    <!--  Drawer Single Strings/Elements  -->
+    <string name="drawer_hello_message" >Hello + <!-- Dynamic Name --></string>
+
     <!--  Load Trainings Single Strings  -->
     <string name="load_trainings_title">Load Trainings</string>
     <string name="no_trainings">You have no trainings!</string>
+
+
 
 
     <!-- Menu -->
@@ -17,7 +22,6 @@
             <item>My trainings</item>
             <item>About</item>
             <item>Log Out</item>
-            <item>Hello <!--Dynamic Name--></item>
     </string-array>
 
     <!-- Main Page-->
