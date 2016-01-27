@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/action_bar_load_trainings"
+        layout="@layout/actionbar_main" />
+
+    <RelativeLayout
+        android:id="@+id/menu_item_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/action_bar_load_trainings"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/digital_clock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="18:34:02"
+            android:textSize="80dp" />
+
+        <LinearLayout
+            android:id="@+id/training_infos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/digital_clock"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/minute_steps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+
+                <TextView
+                    android:id="@+id/item_text1Left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Passi/min"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/generic_list_main_text" />
+
+                <TextView
+
+                    android:id="@+id/item_text2Left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/item_text1Left"
+                    android:layout_centerHorizontal="true"
+                    android:text="130"
+                    android:textColor="@color/grey"
+                    android:textSize="40dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/km_hour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+
+                    android:id="@+id/item_text1Right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Km/h"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/generic_list_main_text" />
+
+                <TextView
+                    android:id="@+id/item_text2Right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/item_text1Right"
+                    android:layout_centerHorizontal="true"
+                    android:text="40"
+                    android:textColor="@color/grey"
+                    android:textSize="40dp" />
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/training_infos"
+            android:scaleType="fitXY"
+            android:src="@drawable/icon" />
+
+
+    </RelativeLayout>
+</RelativeLayout>
+
