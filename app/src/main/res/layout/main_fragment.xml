@@ -15,11 +15,43 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_below="@id/main_page_upper_section"
-        android:id="@+id/main_page_list"
+        android:id="@+id/bottom_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_below="@id/main_page_upper_section">
+
+        <LinearLayout
+            android:id="@+id/main_page_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+
+        <View
+            android:id="@+id/container_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            android:layout_below="@id/main_page_list"/>
+
+        <!--  If Last Training !present -> visibility true
+              & Training Recap -> visibility gone -->
+        <ImageView
+            android:id="@+id/main_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/main_activity_img"
+            android:visibility="visible"/>
+
+        <!--  If Last Training present -> visibility true
+              & Main Image -> visibility gone -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+        </RelativeLayout>
 
     </LinearLayout>
 
