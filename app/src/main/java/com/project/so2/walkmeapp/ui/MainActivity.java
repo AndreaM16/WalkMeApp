@@ -3,6 +3,7 @@ package com.project.so2.walkmeapp.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
@@ -43,6 +44,10 @@ public class MainActivity extends Activity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mMainPageList = (LinearLayout) findViewById(R.id.main_page_list);
+        View mView = findViewById(R.id.sburro);
+        mView.setBackgroundResource(R.drawable.walking_stickman);
+        AnimationDrawable sbu = (AnimationDrawable) mView.getBackground();
+        sbu.start();
 
 
         // Set the adapter for the list view

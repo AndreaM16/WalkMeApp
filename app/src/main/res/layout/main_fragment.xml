@@ -37,13 +37,15 @@
 
         <!--  If Last Training !present -> visibility true
               & Training Recap -> visibility gone -->
-        <ImageView
+        <!--<ImageView
             android:id="@+id/main_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:src="@drawable/main_activity_img"
-            android:visibility="visible"/>
+            android:visibility="visible"/>-->
+        <View android:layout_height="50dp" android:layout_width="20dp" android:id="@+id/sburro" android:background="@drawable/walking_stickman"/>
+
 
         <!--  If Last Training present -> visibility true
               & Main Image -> visibility gone -->
@@ -51,6 +53,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone">
+
+
         </RelativeLayout>
 
     </LinearLayout>

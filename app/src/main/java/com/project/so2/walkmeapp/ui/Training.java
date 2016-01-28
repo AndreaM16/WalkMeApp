@@ -1,34 +1,30 @@
 package com.project.so2.walkmeapp.ui;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
-import android.text.Layout;
+import android.os.SystemClock;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
-import android.widget.ImageSwitcher;
+import android.widget.Chronometer;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.so2.walkmeapp.R;
+import com.project.so2.walkmeapp.core.PausableChronometer;
 import com.wnafee.vector.MorphButton;
-
-import java.io.Console;
+import com.wnafee.vector.compat.AnimatedVectorDrawable;
 
 /**
  * Created by Andrea on 24/01/2016.
@@ -44,14 +40,21 @@ public class Training extends Activity{
    private float initialValue;
    private ImageView actionBar;
    private TextView actionBarText;
-   private SensorEventListener mySensorEventListener;
-   private MorphButton playPauseButton;
-
-   private boolean isInitialValueSet = false;
-   private boolean isWalking = false;
+   private SensorEventListener sensorEventListener;
+   private MorphButton playButton;
    private RelativeLayout runContainer;
    private RelativeLayout stopContainer;
+   private int colorGreen;
+   private int colorGrey;
+   private PausableChronometer chronometer;
 
+
+   private boolean isInitialValueSet = false;
+   private boolean isPaused = true;
+   private boolean isStopped = true;
+
+   private final String CHRONO_FORMAT =  "H:MM:SS";
+   private long startTime = -1000;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -65,63 +68,110 @@ public class Training extends Activity{
 
       actionBar = (ImageView) findViewById(R.id.action_bar_icon);
       actionBarText = (TextView) findViewById(R.id.action_bar_title);
-      playPauseButton = (MorphButton) findViewById(R.id.playPauseBtn);
+      playButton = (MorphButton) findViewById(R.id.playPauseBtn);
       itemTest = (TextView) findViewById(R.id.item_text2Left);
       runContainer = (RelativeLayout) findViewById(R.id.training_run_container);
       stopContainer = (RelativeLayout) findViewById(R.id.training_stop_container);
+      chronometer = (PausableChronometer) findViewById(R.id.digital_clock);
 
-      playPauseButton.setOnClickListener(new View.OnClickListener() {
+      setupActionbar();
+     // setupChronometer();     //potentially useless
+      setupPedometerService();
+
+
+      colorGreen =Color.parseColor(getResources().getString(R.string.training_green));
+      colorGrey =Color.parseColor(getResources().getString(R.string.training_grey));
+
+      final AnimatedVectorDrawable startDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_play_to_pause);
+      AnimatedVectorDrawable endDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_pause_to_play);      //STRANGE FIX TO ANDROID 6 BUG
+
+      playButton.setStartDrawable(startDrawable);
+      playButton.setEndDrawable(endDrawable);
+
+
+      playButton.setOnClickListener(new View.OnClickListener() {           //TODO: find out why the play/pause animation occours even on long touch //bug is gone? wtf
          @Override
          public void onClick(View v) {
 
-            updateStatus();
-            if (isWalking == true) {
-               fadeTo(runContainer, Color.parseColor(getResources().getString(R.string.training_green)), Color.parseColor(getResources().getString(R.string.training_grey)));
-               fadeTo(stopContainer, Color.parseColor(getResources().getString(R.string.training_grey)), Color.parseColor(getResources().getString(R.string.training_green)));
+            if (isStopped != false) {
+               isStopped = false;
+            }
+
+
+            if (isPaused == true) {
+               // TIME OF START TRAINING
+               if (startTime == -1000) {
+                  startTime = System.currentTimeMillis();
+               }
+
+               chronometer.start();
+               fadeTo(runContainer, colorGrey, colorGreen);
+               fadeTo(stopContainer, colorGreen, colorGrey);
 
             } else {
-               fadeTo(runContainer, Color.parseColor(getResources().getString(R.string.training_grey)), Color.parseColor(getResources().getString(R.string.training_green)));
-               fadeTo(stopContainer, Color.parseColor(getResources().getString(R.string.training_green)), Color.parseColor(getResources().getString(R.string.training_grey)));
+
+               chronometer.stop();
+               fadeTo(runContainer, colorGreen, colorGrey);
+               fadeTo(stopContainer, colorGrey, colorGreen);
+
 
             }
+
+            updateIsPaused();
+
+
          }
       });
 
-
-
-
-      setupActionbar();
-
-      setupPedometer();
-
-
-
-
+      playButton.setOnLongClickListener(new View.OnLongClickListener() {
+         @Override
+         public boolean onLongClick(View v) {
+            isStopped = true;
+            if ( isPaused == false ) {
+               playButton.animate();   //TODO: try to trigger the play animation, there gotta be a way goddammit
+               fadeTo(runContainer, colorGreen, colorGrey);
+               fadeTo(stopContainer, colorGrey, colorGreen);
+               isPaused = true;
+            }
+            chronometer.reset();
+            Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
+            return true;
+         }
+      });
    }
+
+/*   private void setupChronometer() {
+      chronometer.setOnChronometerTickListener(new PausableChronometer.OnChronometerTickListener() {
+         public void onChronometerTick(Chronometer cArg) {
+            long t =  SystemClock.elapsedRealtime() - cArg.getBase();
+            cArg.setText(DateFormat.format("kk:mm:ss", t));
+         }
+      });
+   }*/
+
 
    private void fadeTo(RelativeLayout layout, int actualColor, int color) {
       ColorDrawable[] colour = {new ColorDrawable(actualColor), new ColorDrawable(color)};
 
       TransitionDrawable trans = new TransitionDrawable(colour);
-      layout.setBackgroundDrawable(trans);
+      layout.setBackground(trans);
       trans.startTransition(200);
    }
 
-   private void updateStatus() {
+   private void updateIsPaused() {
 
-      if (isWalking != true) {
-         isWalking = true;
+      if (isPaused != true) {
+         isPaused = true;
       } else {
-         isWalking = false;
+         isPaused = false;
       }
 
    }
 
 
-   public void setupPedometer() {
+   public void setupPedometerService() {
 
-
-      mySensorEventListener =new SensorEventListener() {
+      sensorEventListener = new SensorEventListener() {
 
          @Override
          public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -129,18 +179,20 @@ public class Training extends Activity{
 
          @Override
          public void onSensorChanged(SensorEvent event) {
-            // angle between the magnetic north direction
-            // 0=North, 90=East, 180=South, 270=West
+
             float[] steps = event.values;
 
-            if (isInitialValueSet != true) {
+            if (isInitialValueSet != true) {          //TODO: FIX THIS MESS
                isInitialValueSet = true;
                initialValue = steps[0];
             }
 
-            itemTest.setText(Integer.toString((int)(steps[0]-initialValue)));
-            Log.d(TAG, "Steps value = " + (steps[0]-initialValue));
-
+            if ((System.currentTimeMillis()-startTime) < (60*1000) ) {
+               itemTest.setText("--");
+               Log.d("SBU", "Non ancora!");
+            } else {
+               itemTest.setText(Integer.toString((int) ( ( (float)(steps[0] - initialValue) ) / ( ( (float)(System.currentTimeMillis()-startTime) ) /60 ) ) ) );
+            }
          }
       };
 
@@ -148,13 +200,8 @@ public class Training extends Activity{
       sensor = sensorService.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
       if (sensor != null) {
-         sensorService.registerListener(mySensorEventListener, sensor,
-               SensorManager.SENSOR_DELAY_FASTEST);
-         Log.i("Compass MainActivity", "Registerered for STEP Sensor");
-      } else {
-         Log.e("Compass MainActivity", "Registerered for STEP Sensor");
-         Toast.makeText(this, "STEP Sensor not found",
-               Toast.LENGTH_LONG).show();
+         sensorService.registerListener(sensorEventListener, sensor,
+                 SensorManager.SENSOR_DELAY_FASTEST);
       }
 
    }
