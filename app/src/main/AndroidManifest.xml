@@ -21,7 +21,7 @@
         <activity android:name=".ui.Training"/>
         <activity android:name=".ui.SingleMonth"/>
         <activity android:name=".ui.Settings"/>
-
+        <uses-feature android:name="android.hardware.sensor.stepcounter" />
     </application>
 
 </manifest>

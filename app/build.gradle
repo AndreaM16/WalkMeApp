@@ -25,7 +25,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.parse.bolts:bolts-tasks:1.4.0'
     compile 'com.parse.bolts:bolts-applinks:1.4.0'
-    compile 'com.j256.ormlite:ormlite-android:4.45'
     compile 'com.fasterxml.jackson.core:jackson-core:2.7.0'
     compile 'com.androidplot:androidplot-core:0.9.6'
     compile 'com.j256.ormlite:ormlite-android:4.48'
