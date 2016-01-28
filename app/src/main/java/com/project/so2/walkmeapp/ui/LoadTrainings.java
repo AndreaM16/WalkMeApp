@@ -1,4 +1,4 @@
-package com.project.so2.walkmeapp;
+package com.project.so2.walkmeapp.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.j256.ormlite.dao.Dao;
 import com.project.so2.walkmeapp.ORM.DBTrainings;
+import com.project.so2.walkmeapp.R;
 
 import org.w3c.dom.Text;
 

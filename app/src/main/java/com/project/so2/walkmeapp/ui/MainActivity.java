@@ -1,4 +1,4 @@
-package com.project.so2.walkmeapp;
+package com.project.so2.walkmeapp.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.project.so2.walkmeapp.R;
 
 public class MainActivity extends Activity {
     private String[] mDrawerElements;

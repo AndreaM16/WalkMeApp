@@ -1,4 +1,4 @@
-package com.project.so2.walkmeapp;
+package com.project.so2.walkmeapp.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
