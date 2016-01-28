@@ -95,37 +95,61 @@
             android:id="@+id/layout_main_image_training"
             android:layout_below="@id/training_infos"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal">
+            android:layout_height="90dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                android:layout_weight="1">
 
             <ImageView
                 android:id="@+id/image_training_run"
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitStart"
+                android:src="@drawable/runner_transparent"
+                android:paddingTop="10dp"
+                android:paddingLeft="30dp"
+                android:paddingBottom="10dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="fitXY"
-                android:src="@drawable/icon" />
-
+                android:background="@color/grey"
+                android:layout_weight="1">
             <ImageView
                 android:id="@+id/image_training_stop"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:scaleType="fitXY"
-                android:src="@drawable/icon" />
+                android:scaleType="fitEnd"
+                android:src="@drawable/stickman_trasparent"
+                android:paddingRight="30dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp" />
+
+                </RelativeLayout>
 
         </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="110dp"
             android:layout_below="@id/training_infos">
             <ImageView
                 android:id="@+id/image_training_playpause"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:scaleType="fitXY"
-                android:src="@drawable/play" />
+                android:scaleType="fitCenter"
+                android:src="@drawable/play_button"
+                android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
 

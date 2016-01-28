@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,77 +26,94 @@ import java.io.Console;
  */
 public class Training extends Activity{
 
-    private static final String TAG = "Training";
-    SensorManager sMgr;
-    Sensor steps;
-    private SensorManager sensorService;
-    private Sensor sensor;
-    private TextView itemTest;
+   private static final String TAG = "Training";
+   SensorManager sMgr;
+   Sensor steps;
+   private SensorManager sensorService;
+   private Sensor sensor;
+   private TextView itemTest;
+   private boolean isInitialValueSet = false;
+   private float initialValue;
+   private ImageView actionBar;
+   private TextView actionBarText;
+   private SensorEventListener mySensorEventListener;
+
+   @Override
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+
+      //Binding Class to its View
+      setContentView(R.layout.training_main);
+
+      //Binding Strings to their View
+      //mMainTrainingElements = getResources().getStringArray(R.array.main_training_list_items);
+
+      actionBar = (ImageView) findViewById(R.id.action_bar_icon);
+      actionBarText = (TextView) findViewById(R.id.action_bar_title);
+
+      setupActionbar();
+
+      setupPedometer();
+
+
+      itemTest = (TextView) findViewById(R.id.item_text2Left);
+
+      sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+      sensor = sensorService.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+      if (sensor != null) {
+         sensorService.registerListener(mySensorEventListener, sensor,
+               SensorManager.SENSOR_DELAY_FASTEST);
+         Log.i("Compass MainActivity", "Registerered for STEP Sensor");
+      } else {
+         Log.e("Compass MainActivity", "Registerered for STEP Sensor");
+         Toast.makeText(this, "STEP Sensor not found",
+               Toast.LENGTH_LONG).show();
+      }
+   }
 
 
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        //Binding Class to its View
-        setContentView(R.layout.training_main);
+   public void setupPedometer() {
+      mySensorEventListener =new SensorEventListener() {
 
-        //Binding Strings to their View
-        //mMainTrainingElements = getResources().getStringArray(R.array.main_training_list_items);
+         @Override
+         public void onAccuracyChanged(Sensor sensor, int accuracy) {
+         }
 
-        ImageView actionBar = (ImageView) findViewById(R.id.action_bar_icon);
-        actionBar.setImageResource(R.drawable.btn_back);
-        actionBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+         @Override
+         public void onSensorChanged(SensorEvent event) {
+            // angle between the magnetic north direction
+            // 0=North, 90=East, 180=South, 270=West
+            float[] steps = event.values;
+
+            if (isInitialValueSet != true) {
+               isInitialValueSet = true;
+               initialValue = steps[0];
             }
-        });
-        TextView actionBarText = (TextView) findViewById(R.id.action_bar_title);
 
-        actionBarText.setText(getResources().getString(R.string.main_training_title));
-        itemTest = (TextView) findViewById(R.id.item_text2Left);
+            itemTest.setText(Integer.toString((int)(steps[0]-initialValue)));
+            Log.d(TAG, "Steps value = " + (steps[0]-initialValue));
 
-        /*sMgr = (SensorManager) this.getSystemService(SENSOR_SERVICE);
-        steps = sMgr.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+         }
+      };
 
-        s*/
+   }
 
 
 
-        sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorService.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        if (sensor != null) {
-            sensorService.registerListener(mySensorEventListener, sensor,
-                    SensorManager.SENSOR_DELAY_FASTEST);
-            Log.i("Compass MainActivity", "Registerered for STEP Sensor");
-        } else {
-            Log.e("Compass MainActivity", "Registerered for STEP Sensor");
-            Toast.makeText(this, "STEP Sensor not found",
-                    Toast.LENGTH_LONG).show();
-        }
-    }
+   private void setupActionbar() {
+      actionBar.setImageResource(R.drawable.btn_back);
+      actionBar.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            finish();
+         }
+      });
 
-    SensorEventListener mySensorEventListener =new SensorEventListener() {
+      actionBarText.setText(getResources().getString(R.string.main_training_title));
+   }
 
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            }
-
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                // angle between the magnetic north direction
-                // 0=North, 90=East, 180=South, 270=West
-                float[] steps = event.values;
-
-                for (float i : steps) {
-                    itemTest.setText(Float.toString(i));
-                    Log.d(TAG, "Steps value = " + i);
-                }
-            }
-        };
-
-
-    }
+}
 
