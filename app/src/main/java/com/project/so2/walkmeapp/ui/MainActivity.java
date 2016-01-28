@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -68,6 +69,8 @@ public class MainActivity extends Activity {
 
         String[] mMenuStrings = getResources().getStringArray(R.array.main_page_list_items);
 
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         for(final String i: mMenuStrings) {
 
             final View v; // Creating an instance for View Object
@@ -84,7 +87,6 @@ public class MainActivity extends Activity {
             });
 
             mMainPageList.addView(v);
-
 
         }
 

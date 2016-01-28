@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.so2.walkmeapp.R;
-import com.project.so2.walkmeapp.pedometer.Pedometer;
 
 import java.io.Console;
 
@@ -63,8 +62,39 @@ public class Training extends Activity{
         s*/
 
 
-        Pedometer.
+
+        sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorService.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        if (sensor != null) {
+            sensorService.registerListener(mySensorEventListener, sensor,
+                    SensorManager.SENSOR_DELAY_FASTEST);
+            Log.i("Compass MainActivity", "Registerered for STEP Sensor");
+        } else {
+            Log.e("Compass MainActivity", "Registerered for STEP Sensor");
+            Toast.makeText(this, "STEP Sensor not found",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
-}
+    SensorEventListener mySensorEventListener =new SensorEventListener() {
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            }
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                // angle between the magnetic north direction
+                // 0=North, 90=East, 180=South, 270=West
+                float[] steps = event.values;
+
+                for (float i : steps) {
+                    itemTest.setText(Float.toString(i));
+                    Log.d(TAG, "Steps value = " + i);
+                }
+            }
+        };
+
+
+    }
 
