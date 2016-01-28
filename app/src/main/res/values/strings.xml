@@ -6,6 +6,10 @@
     <string name="main_welcome">Welcome!</string>
     <string name="main_chose_an_option">Chose an Option:</string>
 
+    <string name="training_green">#28ada5</string>
+    <string name="training_grey">#5f5f5f</string>
+
+
     <!--  Drawer Single Strings/Elements  -->
     <string name="drawer_hello_message" >Hello + <!-- Dynamic Name --></string>
 

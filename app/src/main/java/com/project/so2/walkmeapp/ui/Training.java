@@ -1,23 +1,32 @@
 package com.project.so2.walkmeapp.ui;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.so2.walkmeapp.R;
+import com.wnafee.vector.MorphButton;
 
 import java.io.Console;
 
@@ -32,11 +41,17 @@ public class Training extends Activity{
    private SensorManager sensorService;
    private Sensor sensor;
    private TextView itemTest;
-   private boolean isInitialValueSet = false;
    private float initialValue;
    private ImageView actionBar;
    private TextView actionBarText;
    private SensorEventListener mySensorEventListener;
+   private MorphButton playPauseButton;
+
+   private boolean isInitialValueSet = false;
+   private boolean isWalking = false;
+   private RelativeLayout runContainer;
+   private RelativeLayout stopContainer;
+
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -50,32 +65,62 @@ public class Training extends Activity{
 
       actionBar = (ImageView) findViewById(R.id.action_bar_icon);
       actionBarText = (TextView) findViewById(R.id.action_bar_title);
+      playPauseButton = (MorphButton) findViewById(R.id.playPauseBtn);
+      itemTest = (TextView) findViewById(R.id.item_text2Left);
+      runContainer = (RelativeLayout) findViewById(R.id.training_run_container);
+      stopContainer = (RelativeLayout) findViewById(R.id.training_stop_container);
+
+      playPauseButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+
+            updateStatus();
+            if (isWalking == true) {
+               fadeTo(runContainer, Color.parseColor(getResources().getString(R.string.training_green)), Color.parseColor(getResources().getString(R.string.training_grey)));
+               fadeTo(stopContainer, Color.parseColor(getResources().getString(R.string.training_grey)), Color.parseColor(getResources().getString(R.string.training_green)));
+
+            } else {
+               fadeTo(runContainer, Color.parseColor(getResources().getString(R.string.training_grey)), Color.parseColor(getResources().getString(R.string.training_green)));
+               fadeTo(stopContainer, Color.parseColor(getResources().getString(R.string.training_green)), Color.parseColor(getResources().getString(R.string.training_grey)));
+
+            }
+         }
+      });
+
+
+
 
       setupActionbar();
 
       setupPedometer();
 
 
-      itemTest = (TextView) findViewById(R.id.item_text2Left);
 
-      sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-      sensor = sensorService.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
-      if (sensor != null) {
-         sensorService.registerListener(mySensorEventListener, sensor,
-               SensorManager.SENSOR_DELAY_FASTEST);
-         Log.i("Compass MainActivity", "Registerered for STEP Sensor");
+   }
+
+   private void fadeTo(RelativeLayout layout, int actualColor, int color) {
+      ColorDrawable[] colour = {new ColorDrawable(actualColor), new ColorDrawable(color)};
+
+      TransitionDrawable trans = new TransitionDrawable(colour);
+      layout.setBackgroundDrawable(trans);
+      trans.startTransition(200);
+   }
+
+   private void updateStatus() {
+
+      if (isWalking != true) {
+         isWalking = true;
       } else {
-         Log.e("Compass MainActivity", "Registerered for STEP Sensor");
-         Toast.makeText(this, "STEP Sensor not found",
-               Toast.LENGTH_LONG).show();
+         isWalking = false;
       }
+
    }
 
 
-
-
    public void setupPedometer() {
+
+
       mySensorEventListener =new SensorEventListener() {
 
          @Override
@@ -98,6 +143,19 @@ public class Training extends Activity{
 
          }
       };
+
+      sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+      sensor = sensorService.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+      if (sensor != null) {
+         sensorService.registerListener(mySensorEventListener, sensor,
+               SensorManager.SENSOR_DELAY_FASTEST);
+         Log.i("Compass MainActivity", "Registerered for STEP Sensor");
+      } else {
+         Log.e("Compass MainActivity", "Registerered for STEP Sensor");
+         Toast.makeText(this, "STEP Sensor not found",
+               Toast.LENGTH_LONG).show();
+      }
 
    }
 
