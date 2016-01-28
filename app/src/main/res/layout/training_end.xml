@@ -39,7 +39,6 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/layout_main_image_training"
             android:src="@drawable/icon" />
 
     </RelativeLayout>
