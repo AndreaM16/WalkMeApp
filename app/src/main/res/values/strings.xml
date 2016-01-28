@@ -14,16 +14,14 @@
     <string name="no_trainings">You have no trainings!</string>
     <string name="main_training_title">Training</string>
 
-
     <!--  Training Single Strings  -->
     <string name="steps_min_label"> Passi/min</string>
     <string name="km_hour_label"> Km/h</string>
     <string name="steps_min_value"> 0</string>
     <string name="km_hour_value"> 0</string>
 
-
-    <!--  Preset Single Strings  -->
-    <string name="presets_title">Preset</string>
+    <!--  Settings Single Strings  -->
+    <string name="settings_title">Presets</string>
 
     <!-- Menu -->
     <string-array

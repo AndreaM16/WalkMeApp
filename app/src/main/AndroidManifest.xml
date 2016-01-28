@@ -20,7 +20,7 @@
         <activity android:name=".ui.LoadTrainings"/>
         <activity android:name=".ui.Training"/>
         <activity android:name=".ui.SingleMonth"/>
-        <activity android:name=".ui.Presets"/>
+        <activity android:name=".ui.Settings"/>
 
     </application>
 
