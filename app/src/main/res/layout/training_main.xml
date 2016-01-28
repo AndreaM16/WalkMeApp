@@ -91,11 +91,48 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/layout_main_image_training"
+            android:layout_below="@id/training_infos"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_training_run"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon" />
+
+            <ImageView
+                android:id="@+id/image_training_stop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon" />
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/training_infos">
+            <ImageView
+                android:id="@+id/image_training_playpause"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/play" />
+
+        </RelativeLayout>
+
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_below="@id/training_infos"
-            android:scaleType="fitXY"
+            android:layout_below="@id/layout_main_image_training"
             android:src="@drawable/icon" />
 
 
