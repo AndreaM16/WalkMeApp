@@ -41,7 +41,6 @@
         name="main_page_list_items">
             <item>Start</item>
             <item>Load</item>
-            <item>Presets</item>
     </string-array>
 
     <!-- Load Trainings Page-->
