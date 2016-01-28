@@ -107,10 +107,6 @@ public class MainActivity extends Activity {
                 intent = new Intent(this, LoadTrainings.class);
                 break;
 
-            case "Presets":
-                intent = new Intent(this, Presets.class);
-                break;
-
         }
         if (intent != null) {
             startActivity(intent);
