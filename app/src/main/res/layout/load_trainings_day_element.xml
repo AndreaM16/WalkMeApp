@@ -12,15 +12,39 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:paddingLeft="30dp"
-        android:paddingRight="40dp">
+        android:paddingRight="15dp"
+        >
 
 
-        <ImageView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="fitEnd"
+            android:orientation="horizontal">
+        <ImageView
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/perfomance_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@drawable/icon" />
 
+        <ImageView
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/share_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/icon" />
+
+        <ImageView
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/delete_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/icon" />
+        </LinearLayout>
         <TextView
             android:id="@+id/item_text"
             android:layout_width="wrap_content"
