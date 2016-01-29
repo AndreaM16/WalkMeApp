@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
         android:id="@+id/action_bar_load_trainings"
@@ -14,7 +15,7 @@
         android:layout_below="@id/action_bar_load_trainings"
         android:orientation="vertical">
 
-        <TextView
+        <!--<TextView
             android:id="@+id/digital_clock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +23,17 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:text="18:34:02"
-            android:textSize="80dp" />
+            android:textSize="80dp" />-->
+
+        <com.project.so2.walkmeapp.core.PausableChronometer
+            android:id="@+id/digital_clock"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:textSize="80dp"
+            android:textColor="@color/grey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:id="@+id/training_infos"
@@ -95,40 +106,84 @@
             android:id="@+id/layout_main_image_training"
             android:layout_below="@id/training_infos"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal">
+            android:layout_height="90dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
 
-            <ImageView
-                android:id="@+id/image_training_run"
+            <RelativeLayout
+                android:id="@+id/training_run_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="fitXY"
-                android:src="@drawable/icon" />
+                android:background="@color/training_grey"
+                android:layout_weight="1">
 
-            <ImageView
-                android:id="@+id/image_training_stop"
+                <ImageView
+                    android:id="@+id/image_training_run"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/runner_transparent"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="30dp"
+                    android:paddingBottom="10dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/training_stop_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="fitXY"
-                android:src="@drawable/icon" />
+                android:background="@color/training_green"
+                android:layout_weight="1">
+                <ImageView
+                    android:id="@+id/image_training_stop"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/stickman_trasparent"
+                    android:paddingRight="30dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp" />
+
+            </RelativeLayout>
 
         </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/training_infos">
-            <ImageView
-                android:id="@+id/image_training_playpause"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:scaleType="fitXY"
-                android:src="@drawable/play" />
+            <RelativeLayout
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:background="@drawable/play_button"
+                android:layout_centerHorizontal="true">
 
+                <com.wnafee.vector.MorphButton
+                    android:id="@+id/playPauseBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:vc_backgroundTint="@color/transparent"
+                    app:vc_foregroundTint="@color/white"
+                    app:buttonTint="@color/white"
+                    app:vc_startDrawable="@drawable/ic_pause_to_play"
+                    app:vc_endDrawable="@drawable/ic_play_to_pause"
+                    android:layout_centerInParent="true"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <!-- <ImageView
+                     android:id="@+id/image_training_playpause"
+                     android:layout_width="wrap_content"
+                     android:layout_height="match_parent"
+                     android:layout_weight="1"
+                     android:scaleType="fitCenter"
+                     android:src="@drawable/play_button"
+                     android:layout_centerHorizontal="true" />-->
+
+            </RelativeLayout>
         </RelativeLayout>
-
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
