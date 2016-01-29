@@ -11,7 +11,7 @@ public class DBTrainings {
     @DatabaseField(id = true)
     public int id;
     @DatabaseField
-    public Date trainingDate;
+    public String trainingDate;
     @DatabaseField
     public int trainingSteps;
     @DatabaseField
@@ -36,7 +36,7 @@ public class DBTrainings {
     public DBTrainings() {
         // ORMLite needs a no-arg constructor
     }
-    public DBTrainings(int id, Date trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLenghtInCm) {
+    public DBTrainings(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLenghtInCm) {
 
 
         this.id = id;

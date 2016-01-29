@@ -10,6 +10,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -21,10 +22,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.project.so2.walkmeapp.POJO.TrainingPOJO;
 import com.project.so2.walkmeapp.R;
+import com.project.so2.walkmeapp.core.JacksonUtils;
 import com.project.so2.walkmeapp.core.PausableChronometer;
 import com.wnafee.vector.MorphButton;
 import com.wnafee.vector.compat.AnimatedVectorDrawable;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import org.codehaus.jackson.map.ObjectMapper;
+import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created by Andrea on 24/01/2016.
@@ -47,6 +57,7 @@ public class Training extends Activity{
    private int colorGreen;
    private int colorGrey;
    private PausableChronometer chronometer;
+   private ObjectMapper mapper;
 
 
    private boolean isInitialValueSet = false;
@@ -55,6 +66,9 @@ public class Training extends Activity{
 
    private final String CHRONO_FORMAT =  "H:MM:SS";
    private long startTime = -1000;
+   private TrainingPOJO trainingData;
+   private Context context;
+
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -77,6 +91,17 @@ public class Training extends Activity{
       setupActionbar();
      // setupChronometer();     //potentially useless
       setupPedometerService();
+      Calendar c = Calendar.getInstance();
+      SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      String formattedDate = df.format(c.getTime());
+      trainingData=new TrainingPOJO(1,formattedDate,10,30,2,20,2,24,10,2,4);
+      File file = new File(Environment.DIRECTORY_DOWNLOADS, "training");
+      mapper =JacksonUtils.mapper;
+      try {
+         mapper.writeValue(file,trainingData);
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
 
 
       colorGreen =Color.parseColor(getResources().getString(R.string.training_green));
