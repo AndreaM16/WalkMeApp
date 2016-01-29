@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,10 +17,10 @@
         </activity>
 
         <!-- Classes -->
-        <activity android:name=".ui.LoadTrainings"/>
-        <activity android:name=".ui.Training"/>
-        <activity android:name=".ui.SingleMonth"/>
-        <activity android:name=".ui.Settings"/>
+        <activity android:name=".ui.LoadTrainings" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.Training" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.SingleMonth" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.Settings" android:screenOrientation="portrait"/>
         <uses-feature android:name="android.hardware.sensor.stepcounter" />
     </application>
 
