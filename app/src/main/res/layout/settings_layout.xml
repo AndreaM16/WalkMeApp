@@ -17,9 +17,9 @@
             android:layout_height="wrap_content"
             android:text="@string/settings_step_length"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="33dp"
-            android:layout_marginBottom="32dp"
-            android:textSize="40sp"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="30sp"/>
 
         <View
             android:id="@+id/settings_line_1"
@@ -35,10 +35,10 @@
             android:layout_height="wrap_content"
             android:text="@string/settings_sex"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="33dp"
-            android:textSize="40sp"
+            android:layout_marginTop="20dp"
+            android:textSize="30sp"
             android:layout_below="@id/settings_step_length"
-            android:layout_marginBottom="32dp"/>
+            android:layout_marginBottom="20dp"/>
 
         <View
             android:id="@+id/settings_line_2"
@@ -54,10 +54,10 @@
             android:layout_height="wrap_content"
             android:text="@string/settings_height"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="33dp"
-            android:textSize="40sp"
+            android:layout_marginTop="20dp"
+            android:textSize="30sp"
             android:layout_below="@id/settings_sex"
-            android:layout_marginBottom="32dp"/>
+            android:layout_marginBottom="20dp"/>
 
         <View
             android:id="@+id/settings_line_3"
@@ -73,10 +73,48 @@
             android:layout_height="wrap_content"
             android:text="@string/settings_weight"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="33dp"
-            android:textSize="40sp"
+            android:layout_marginTop="20dp"
+            android:textSize="30sp"
             android:layout_below="@id/settings_height"
-            android:layout_marginBottom="32dp"/>
+            android:layout_marginBottom="20dp"/>
+
+        <View
+            android:id="@+id/settings_line_4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            android:layout_below="@id/settings_weight"/>
+
+        <!-- Last X Meters -->
+        <TextView
+            android:id="@+id/settings_last_x_meters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_last_x_meters"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:textSize="30sp"
+            android:layout_below="@id/settings_weight"
+            android:layout_marginBottom="20dp"/>
+
+        <View
+            android:id="@+id/settings_line_5"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            android:layout_below="@id/settings_last_x_meters"/>
+
+        <!-- Average Steps -->
+        <TextView
+            android:id="@+id/settings_average_step"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_average_step"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:textSize="30sp"
+            android:layout_below="@id/settings_last_x_meters"
+            android:layout_marginBottom="20dp"/>
 
 
 

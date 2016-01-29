@@ -21,6 +21,7 @@
         <activity android:name=".ui.Training" android:screenOrientation="portrait"/>
         <activity android:name=".ui.SingleMonth" android:screenOrientation="portrait"/>
         <activity android:name=".ui.Settings" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.About" android:screenOrientation="portrait"/>
         <uses-feature android:name="android.hardware.sensor.stepcounter" />
     </application>
 

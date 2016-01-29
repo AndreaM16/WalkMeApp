@@ -76,9 +76,16 @@ public class MainActivity extends Activity {
             intent = new Intent(this, History.class);
             break;
 
-
          case "Start":
             intent = new Intent(this, Training.class);
+            break;
+
+         case "Settings":
+            intent = new Intent(this, Settings.class);
+            break;
+
+         case "About":
+            intent = new Intent(this, About.class);
             break;
 
 

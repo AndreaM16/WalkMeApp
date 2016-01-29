@@ -20,7 +20,7 @@ public class Settings extends Activity {
         super.onCreate(savedInstanceState);
 
         //Binding Class to its View
-        //setContentView(R.layout.settings_layout);
+        setContentView(R.layout.settings_layout);
 
         //Binding Strings to their View
         //mSettingsElements = getResources().getStringArray(R.array.settings_list_items);
