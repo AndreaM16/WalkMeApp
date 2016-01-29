@@ -17,7 +17,7 @@
         </activity>
 
         <!-- Classes -->
-        <activity android:name=".ui.LoadTrainings" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.History" android:screenOrientation="portrait"/>
         <activity android:name=".ui.Training" android:screenOrientation="portrait"/>
         <activity android:name=".ui.SingleMonth" android:screenOrientation="portrait"/>
         <activity android:name=".ui.Settings" android:screenOrientation="portrait"/>
