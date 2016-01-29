@@ -27,7 +27,7 @@ public class History extends Activity{
         setContentView(R.layout.history_trainings);
 
         //Binding Strings to their View
-        mLoadTrainingsElements = getResources().getStringArray(R.array.load_trainings_list_items);
+        mLoadTrainingsElements = getResources().getStringArray(R.array.history_list_items);
 
         ImageView actionBar = (ImageView) findViewById(R.id.action_bar_icon);
         actionBar.setImageResource(R.drawable.btn_back);
@@ -39,16 +39,8 @@ public class History extends Activity{
         });
         TextView actionBarText = (TextView) findViewById(R.id.action_bar_title);
 
-        actionBarText.setText(getResources().getString(R.string.load_trainings_title));
+        actionBarText.setText(getResources().getString(R.string.history_title));
 
-/*        Date sburro = new Date();
-
-        sburro.getTime();
-
-        TextView dataSbu = (TextView) findViewById(R.id.datasburro);
-        Log.d(TAG, "timestamp " + sburro.toString());
-
-        dataSbu.setText(sburro.toString() );*/
 
     }
 }

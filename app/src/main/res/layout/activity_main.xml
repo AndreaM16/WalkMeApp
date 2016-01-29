@@ -71,10 +71,21 @@
         <!--  If Last Training present -> visibility true
               & Main Image -> visibility gone -->
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+           >
+            <View
+                android:id="@+id/bottom_container_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey"
+                android:layout_alignParentTop="true"/>
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bckgrnd"
+                android:scaleType="centerCrop"/>
 
         </RelativeLayout>
 
