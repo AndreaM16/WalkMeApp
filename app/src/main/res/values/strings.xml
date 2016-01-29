@@ -3,55 +3,41 @@
     <!--  Main Activity Single Strings  -->
     <string name="app_name">WalkMeApp</string>
 
-    <string name="main_welcome">Welcome!</string>
-    <string name="main_chose_an_option">Chose an Option:</string>
-
+    <!-- Useful for Start/Stop Training Animation-->
     <string name="training_green">#28ada5</string>
     <string name="training_grey">#5f5f5f</string>
 
-
-    <!--  Drawer Single Strings/Elements  -->
-    <string name="drawer_hello_message" >Hello + <!-- Dynamic Name --></string>
-
     <!--  Load Trainings Single Strings  -->
-    <string name="load_trainings_title">Load Trainings</string>
-    <string name="no_trainings">You have no trainings!</string>
+    <string name="history_title">History</string>
+    <string name="history_no_trainings">You have no trainings!</string>
     <string name="main_training_title">Training</string>
 
     <!--  Training Single Strings  -->
-    <string name="steps_min_label"> Passi/min</string>
+    <string name="steps_min_label"> Steps/min</string>
     <string name="km_hour_label"> Km/h</string>
     <string name="steps_min_value"> 0</string>
     <string name="km_hour_value"> 0</string>
 
     <!--  Settings Single Strings  -->
-    <string name="settings_title">Presets</string>
+    <string name="settings_title">Settings</string>
     <string name="settings_step_length">Step Length</string>
     <string name="settings_sex">Sex</string>
     <string name="settings_height">Height</string>
     <string name="settings_weight">Weight</string>
 
-    <!-- Menu -->
-    <string-array
-        name="drawer_items">
-            <item>Settings</item>
-            <item>My trainings</item>
-            <item>About</item>
-            <item>Log Out</item>
-    </string-array>
-
     <!-- Main Page-->
     <string-array
         name="main_page_list_items">
             <item>Start</item>
-            <item>Load</item>
+            <item>History</item>
+            <item>Settings</item>
+            <item>About</item>
     </string-array>
 
-    <!-- Load Trainings Page-->
+    <!-- History Trainings Page-->
     <string-array
-        name="load_trainings_list_items">
-            <item>Load Trainings</item>
-            <item>Favorites</item>
+        name="history_list_items">
+            <item>History</item>
             <item><!--Dynamic Month and Dates--></item>
     </string-array>
 

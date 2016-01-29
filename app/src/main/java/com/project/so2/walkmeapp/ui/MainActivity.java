@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 
          mMainPageList.addView(v);
 
-      }
+}
 
    }
 
@@ -72,19 +72,15 @@ public class MainActivity extends Activity {
       Intent intent = null;
       switch (activityName) {
 
+         case "History":
+            intent = new Intent(this, History.class);
+            break;
+
+
          case "Start":
             intent = new Intent(this, Training.class);
             break;
 
-         case "Continue":
-            Toast.makeText(this, activityName + " non va, sburro",Toast.LENGTH_SHORT).show();
-
-            //Intent intent = new Intent(this, DisplayMessageActivity.class);
-            break;
-
-         case "Load":
-            intent = new Intent(this, LoadTrainings.class);
-            break;
 
       }
       if (intent != null) {

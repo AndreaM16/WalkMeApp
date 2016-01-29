@@ -11,14 +11,14 @@
         android:padding="10dp">
 
         <ImageView
-            android:id="@+id/loadtrainings_item_logo"
+            android:id="@+id/history_item_logo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitStart"
             android:src="@drawable/icon" />
 
         <TextView
-            android:id="@+id/loadtrainings_item_month"
+            android:id="@+id/history_item_month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -28,12 +28,12 @@
             android:textSize="@dimen/generic_list_main_text" />
 
         <TextView
-            android:id="@+id/loadtrainings_item_year"
+            android:id="@+id/history_item_year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/loadtrainings_item_month"
+            android:layout_alignBottom="@+id/history_item_month"
             android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/loadtrainings_item_month"
+            android:layout_toRightOf="@+id/history_item_month"
             android:paddingBottom="3dp"
             android:text="2015PH"
             android:textAllCaps="true"

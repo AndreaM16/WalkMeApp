@@ -7,21 +7,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/load_trainings_container"
+        android:id="@+id/history_container"
         android:layout_below="@id/action_bar_load_trainings">
 
-        <include layout="@layout/load_trainings_favourite_element"
-            android:id="@+id/load_trainings_favorite_item"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/generic_list_item_height"
-            android:visibility="gone"
-            />
-
         <TextView
-            android:id="@+id/load_trainings_generic_element"
+            android:id="@+id/history_generic_element"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_trainings"
+            android:text="@string/history_no_trainings"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:visibility="visible"
@@ -30,13 +23,10 @@
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/load_trainings_favorite_item"
             android:id="@+id/load_trainings_list_view"
             android:visibility="gone">
         </ListView>
 
     </RelativeLayout>
-
-
 
 </RelativeLayout>

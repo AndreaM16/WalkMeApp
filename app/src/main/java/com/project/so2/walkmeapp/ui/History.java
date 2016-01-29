@@ -2,27 +2,20 @@ package com.project.so2.walkmeapp.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.j256.ormlite.dao.Dao;
 import com.project.so2.walkmeapp.ORM.DBTrainings;
 import com.project.so2.walkmeapp.R;
 
-import org.w3c.dom.Text;
-
-import java.util.Date;
-
 /**
  * Created by Andrea on 24/01/2016.
  */
-public class LoadTrainings extends Activity{
+public class History extends Activity{
 
-    private static final String TAG = "LoadTrainings";
+    private static final String TAG = "History";
     private Dao<DBTrainings, String> dbTrainingDao;
     private String[] mLoadTrainingsElements;
 
@@ -31,7 +24,7 @@ public class LoadTrainings extends Activity{
         super.onCreate(savedInstanceState);
 
         //Binding Class to its View
-        setContentView(R.layout.load_trainings);
+        setContentView(R.layout.history_trainings);
 
         //Binding Strings to their View
         mLoadTrainingsElements = getResources().getStringArray(R.array.load_trainings_list_items);
