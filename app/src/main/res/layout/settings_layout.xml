@@ -10,113 +10,143 @@
         android:id="@+id/settings_container"
         android:layout_below="@id/action_bar_settings">
 
-        <!--  Step Length  -->
-        <TextView
-            android:id="@+id/settings_step_length"
+
+        <ImageView
+            android:id="@+id/settings_top_background"
+            android:layout_width="match_parent"
+            android:layout_height="124dp"
+            android:src="@drawable/bckgrnd"
+            android:scaleType="centerCrop"/>
+
+        <View
+            android:id="@+id/settings_line_0"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            android:layout_below="@id/settings_top_background"/>
+
+
+        <RelativeLayout
+            android:id="@+id/settings_container_1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_step_length"
-            android:layout_centerHorizontal="true"
+            android:layout_height="45dp"
+            android:layout_below="@id/settings_line_0"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:textSize="30sp"/>
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitEnd"
+                android:src="@drawable/settings_step_length"
+                android:layout_marginRight="15dp"/>
+
+            <!--  Step Length  -->
+            <TextView
+                android:id="@+id/settings_step_length"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_step_length"
+
+                android:layout_marginLeft="15dp"
+                android:textSize="30sp"
+                android:textColor="@color/grey"/>
+
+        </RelativeLayout>
 
         <View
             android:id="@+id/settings_line_1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/grey"
-            android:layout_below="@id/settings_step_length"/>
+            android:layout_below="@id/settings_container_1"/>
 
-        <!-- Sex -->
-        <TextView
-            android:id="@+id/settings_sex"
+
+        <RelativeLayout
+            android:id="@+id/settings_container_2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_sex"
-            android:layout_centerHorizontal="true"
+            android:layout_height="45dp"
+            android:layout_below="@id/settings_line_1"
             android:layout_marginTop="20dp"
-            android:textSize="30sp"
-            android:layout_below="@id/settings_step_length"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitEnd"
+                android:src="@drawable/settings_step_average"
+                android:layout_marginRight="15dp"/>
+
+            <!--  Step Length  -->
+            <TextView
+                android:id="@+id/settings_last_x_meters"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_average_step"
+                android:layout_marginLeft="15dp"
+                android:textSize="30sp"
+                android:textColor="@color/grey"/>
+
+        </RelativeLayout>
 
         <View
             android:id="@+id/settings_line_2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/grey"
-            android:layout_below="@id/settings_sex"/>
+            android:layout_below="@id/settings_container_2"/>
 
-        <!-- Height -->
-        <TextView
-            android:id="@+id/settings_height"
+
+        <RelativeLayout
+            android:id="@+id/settings_container_3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_height"
-            android:layout_centerHorizontal="true"
+            android:layout_height="45dp"
+            android:layout_below="@id/settings_line_2"
             android:layout_marginTop="20dp"
-            android:textSize="30sp"
-            android:layout_below="@id/settings_sex"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitEnd"
+                android:src="@drawable/settings_last_x_meters"
+                android:layout_marginRight="15dp"/>
+
+            <!--  Step Length  -->
+            <TextView
+                android:id="@+id/settings_average_step"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_last_x_meters"
+                android:layout_marginLeft="15dp"
+                android:textSize="30sp"
+                android:textColor="@color/grey"/>
+
+        </RelativeLayout>
 
         <View
             android:id="@+id/settings_line_3"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/grey"
-            android:layout_below="@id/settings_height"/>
+            android:layout_below="@id/settings_container_3"/>
 
-        <!-- Weight -->
-        <TextView
-            android:id="@+id/settings_weight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_weight"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:textSize="30sp"
-            android:layout_below="@id/settings_height"
-            android:layout_marginBottom="20dp"/>
-
-        <View
-            android:id="@+id/settings_line_4"
+        <ImageView
+            android:id="@+id/settings_bottom_background"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey"
-            android:layout_below="@id/settings_weight"/>
-
-        <!-- Last X Meters -->
-        <TextView
-            android:id="@+id/settings_last_x_meters"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_last_x_meters"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:textSize="30sp"
-            android:layout_below="@id/settings_weight"
-            android:layout_marginBottom="20dp"/>
-
-        <View
-            android:id="@+id/settings_line_5"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey"
-            android:layout_below="@id/settings_last_x_meters"/>
-
-        <!-- Average Steps -->
-        <TextView
-            android:id="@+id/settings_average_step"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_average_step"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:textSize="30sp"
-            android:layout_below="@id/settings_last_x_meters"
-            android:layout_marginBottom="20dp"/>
-
-
+            android:layout_height="match_parent"
+            android:src="@drawable/bckgrnd"
+            android:scaleType="centerCrop"
+            android:layout_below="@id/settings_line_3"/>
 
     </RelativeLayout>
 

@@ -21,9 +21,6 @@
     <!--  Settings Single Strings  -->
     <string name="settings_title">Settings</string>
     <string name="settings_step_length">Step Length</string>
-    <string name="settings_sex">Sex</string>
-    <string name="settings_height">Height</string>
-    <string name="settings_weight">Weight</string>
     <string name="settings_last_x_meters">Last X Meters</string>ù
     <string name="settings_average_step">Average Step</string>
 
