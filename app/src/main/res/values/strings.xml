@@ -24,6 +24,10 @@
     <string name="settings_last_x_meters">Last X Meters</string>ù
     <string name="settings_average_step">Average Step</string>
 
+    <!--  About Single Strings  -->
+    <string name="about_title">About</string>
+    <string name="about_text_box">WalkMeApp - 2016</string>
+
     <!-- Main Page-->
     <string-array
         name="main_page_list_items">
