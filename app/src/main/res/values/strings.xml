@@ -26,7 +26,14 @@
 
     <!--  About Single Strings  -->
     <string name="about_title">About</string>
-    <string name="about_text_box">WalkMeApp - 2016</string>
+    <string name="about_text_box">Step Counter based fitness Application built with passion for Operating Systems 2 Exam.\n\n
+                                  Built by: \n\n
+                                          &#032; &#032; &#032; &#8226; Marco Loriga\n
+                                          &#032; &#032; &#032; &#8226; Andrea Medda\n
+                                          &#032; &#032; &#032; &#8226; Alessio Pili\n
+                                          &#032; &#032; &#032; &#8226; Cristin Sanna\n
+    </string>
+
 
     <!-- Main Page-->
     <string-array

@@ -2,6 +2,8 @@ package com.project.so2.walkmeapp.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,6 +39,12 @@ public class About extends Activity {
         //Action Bar Title
         TextView actionBarText = (TextView) findViewById(R.id.action_bar_title);
         actionBarText.setText(getResources().getString(R.string.about_title));
+
+        //External Link
+        TextView link = (TextView) findViewById(R.id.about_external_link);
+        String linkText = "<a href=\"https://github.com/AndreaM16/WalkMeApp\">View Project on GitHub</a>";
+        link.setText(Html.fromHtml(linkText));
+        link.setMovementMethod(LinkMovementMethod.getInstance());
 
     }
 }
