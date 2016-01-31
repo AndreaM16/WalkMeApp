@@ -198,6 +198,7 @@ public class Training extends Activity {
             kilometersPerHour.setText("0");
             actualSteps = 0;
             actualTime = 0;
+            isInitialValueSet = false;
             Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
             saveTrainingInDB(id, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, stepLenghtInCm);
             return true;
@@ -319,7 +320,7 @@ public class Training extends Activity {
                stepsPerMin.setText(Integer.toString(avg));
 
 
-               int kmh = (int)((actualSteps*(STEP_IN_CENTIMETERS_TEST/100))  /   ((actualTime/1000)*(3.6)));
+               int kmh = (int)((((actualSteps - initialValue)*(STEP_IN_CENTIMETERS_TEST/100))  /   (actualTime/1000.0)) *(3.6));
                kilometersPerHour.setText(Integer.toString(kmh));
 
             }
