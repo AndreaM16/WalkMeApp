@@ -44,21 +44,20 @@
                 android:id="@+id/settings_step_length_img"
                 android:layout_width="45dp"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/settings_step_length"
-                android:visibility="visible"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"/>
-
+                android:visibility="visible"/>
 
 
             <!--  Step Length  -->
             <TextView
-                android:layout_toRightOf="@id/settings_step_length_img"
                 android:id="@+id/settings_step_length"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/settings_step_length_img"
                 android:text="@string/settings_step_length"
 
                 android:textColor="@color/grey"
@@ -66,17 +65,17 @@
 
             <EditText
                 android:id="@+id/settings_step_length_edit"
-                android:maxLines="1"
-                android:inputType="number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
+                android:gravity="right"
                 android:hint="100 centimeters"
+                android:inputType="number"
+                android:maxLines="1"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/generic_list_subtext"
-                android:gravity="right"
                 />
 
         </RelativeLayout>
@@ -99,41 +98,40 @@
             android:orientation="vertical">
 
 
-
             <ImageView
                 android:id="@+id/settings_last_x_meters_img"
                 android:layout_width="45dp"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/settings_step_average"
-                android:visibility="visible"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"/>
+                android:visibility="visible"/>
 
             <!--  Step Length  -->
             <TextView
-                android:layout_toRightOf="@id/settings_last_x_meters_img"
                 android:id="@+id/settings_last_x_meters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/settings_last_x_meters_img"
+                android:text="@string/settings_last_x_meters"
                 android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_main_text"
-                android:text="@string/settings_last_x_meters"/>
+                android:textSize="@dimen/generic_list_main_text"/>
 
             <EditText
                 android:id="@+id/settings_last_x_meters_edit"
-                android:maxLines="1"
-                android:inputType="number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_subtext"
+                android:gravity="right"
                 android:hint="10 meters"
-                android:gravity="right"/>
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/generic_list_subtext"/>
 
 
         </RelativeLayout>
@@ -156,46 +154,44 @@
             android:orientation="vertical">
 
 
-
-
             <ImageView
                 android:id="@+id/settings_average_step_img"
                 android:layout_width="45dp"
                 android:layout_height="match_parent"
-                android:scaleType="fitCenter"
-                android:src="@drawable/settings_last_x_meters"
-                android:visibility="visible"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@+id/settings_average_step"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_alignTop="@+id/settings_average_step"
-                android:layout_alignParentStart="true"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/settings_last_x_meters"
+                android:visibility="visible"/>
 
 
             <!--  Step Length  -->
 
             <TextView
-                android:layout_toRightOf="@id/settings_average_step_img"
                 android:id="@+id/settings_average_step"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/settings_average_step_img"
                 android:text="@string/settings_average_step"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/generic_list_main_text"/>
 
             <EditText
                 android:id="@+id/settings_average_step_edit"
-                android:maxLines="1"
-                android:inputType="number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
+                android:gravity="right"
                 android:hint="120 steps/min"
+                android:inputType="number"
+                android:maxLines="1"
                 android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_subtext"
-                android:gravity="right"/>
+                android:textSize="@dimen/generic_list_subtext"/>
 
         </RelativeLayout>
 

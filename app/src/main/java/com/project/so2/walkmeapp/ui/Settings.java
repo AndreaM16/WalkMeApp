@@ -81,11 +81,20 @@ public class Settings extends Activity {
       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
       SharedPreferences.Editor editor = settings.edit();
 
-      editor.putInt("stepLength", Integer.parseInt(stepLengthET.getText().toString()));
-      editor.putInt("avgStepInM", Integer.parseInt(avgStepET.getText().toString()));
-      editor.putInt("lastXMeters", Integer.parseInt(lastMetersET.getText().toString()));
+      if ( stepLengthET.getText() != null && !(stepLengthET.getText().toString().equals(""))) {
+         editor.putInt("stepLength", Integer.parseInt(stepLengthET.getText().toString()));
+      }
+
+      if ( avgStepET.getText() != null && !(avgStepET.getText().toString().equals(""))) {
+         editor.putInt("avgStepInM", Integer.parseInt(avgStepET.getText().toString()));
+      }
+
+      if ( lastMetersET.getText() != null && !(lastMetersET.getText().toString().equals(""))) {
+         editor.putInt("lastXMeters", Integer.parseInt(lastMetersET.getText().toString()));
+      }
 
       editor.commit();
+      
    }
 }
 
