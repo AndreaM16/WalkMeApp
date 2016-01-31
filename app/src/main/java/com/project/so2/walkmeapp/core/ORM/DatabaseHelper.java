@@ -1,4 +1,4 @@
-package com.project.so2.walkmeapp.ORM;
+package com.project.so2.walkmeapp.core.ORM;
 
         import java.sql.SQLException;
 

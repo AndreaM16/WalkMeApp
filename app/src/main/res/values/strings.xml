@@ -1,69 +1,70 @@
 <resources>
 
-    <!--  Main Activity Single Strings  -->
+    <!--  Main Activity   -->
     <string name="app_name">WalkMeApp</string>
+
+    <!--  Load Trainings  -->
+    <string name="history_title">History</string>
+    <string name="history_no_trainings">You have no trainings!</string>
+    <string name="main_training_title">Training</string>
 
     <!-- Useful for Start/Stop Training Animation-->
     <string name="training_green">#28ada5</string>
     <string name="training_grey">#5f5f5f</string>
 
-    <!--  Load Trainings Single Strings  -->
-    <string name="history_title">History</string>
-    <string name="history_no_trainings">You have no trainings!</string>
-    <string name="main_training_title">Training</string>
-
-    <!--  Training Single Strings  -->
+    <!--  Training  -->
     <string name="steps_min_label"> Steps/min</string>
     <string name="km_hour_label"> Km/h</string>
     <string name="steps_min_value"> 0</string>
     <string name="km_hour_value"> 0</string>
 
-    <!--  Settings Single Strings  -->
+    <!--  Settings  -->
     <string name="settings_title">Settings</string>
     <string name="settings_step_length">Step Length</string>
     <string name="settings_last_x_meters">Last X Meters</string>ù
     <string name="settings_average_step">Average Step</string>
 
-    <!--  About Single Strings  -->
+    <!--  About  -->
     <string name="about_title">About</string>
-    <string name="about_text_box">Step Counter based fitness Application built with passion for Operating Systems 2 Exam.\n\n
-                                  Built by: \n\n
-                                          &#032; &#032; &#032; &#8226; Marco Loriga\n
-                                          &#032; &#032; &#032; &#8226; Andrea Medda\n
-                                          &#032; &#032; &#032; &#8226; Alessio Pili\n
-                                          &#032; &#032; &#032; &#8226; Cristin Sanna\n
-    </string>
+    <string name="about_text_body">is a fitness app focused on Step monitoring. \n \n It is being developed with   </string>
+    <string name="about_text_body_cont">   by these beauties: </string>
 
+
+    <!-- Arrays for lists -->
 
     <!-- Main Page-->
-    <string-array
-        name="main_page_list_items">
-            <item>Start</item>
-            <item>History</item>
-            <item>Settings</item>
-            <item>About</item>
+    <string-array name="main_page_list_items">
+        <item>Start</item>
+        <item>History</item>
+        <item>Settings</item>
+        <item>About</item>
     </string-array>
 
     <!-- History Trainings Page-->
-    <string-array
-        name="history_list_items">
-            <item>History</item>
-            <item><!--Dynamic Month and Dates--></item>
+    <string-array name="history_list_items">
+        <item>History</item>
+        <item><!--Dynamic Month and Dates--></item>
+    </string-array>
+
+    <!-- About Page-->
+    <string-array name="about_grid_items">
+        <item>Andrea</item>
+        <item>Alessio</item>
+        <item>Cristin</item>
+        <item>Marco</item>
     </string-array>
 
     <!-- Trainings List -->
-    <string-array
-        name="trainings_list_list_items">
+    <string-array name="trainings_list_list_items">
         <!--To Do-->
     </string-array>
 
     <!-- Current Training Page-->
-    <string-array
-        name="current_train_list_items">
-            <item>Training <!--Day/Month--></item>
-            <item>Steps/Min:</item>
-            <item>Km/H:</item>
-            <item>Optimal Step:</item>
+    <string-array name="current_train_list_items">
+        <item>Training <!--Day/Month--></item>
+        <item>Steps/Min:</item>
+        <item>Km/H:</item>
+        <item>Optimal Step:</item>
     </string-array>
 
 

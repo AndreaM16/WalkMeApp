@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.j256.ormlite.dao.Dao;
-import com.project.so2.walkmeapp.ORM.DBTrainings;
+import com.project.so2.walkmeapp.core.ORM.DBTrainings;
 import com.project.so2.walkmeapp.R;
 
 /**

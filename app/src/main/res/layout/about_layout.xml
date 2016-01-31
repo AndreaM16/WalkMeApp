@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/about_top_container"
         android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_height="match_parent"
         android:layout_below="@id/action_bar_settings">
 
 
@@ -20,49 +20,54 @@
             android:scaleType="centerCrop"/>
 
 
-        <TextView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="60dp"
-            android:gravity="center"
-            android:layout_centerVertical="true"/>
-    </RelativeLayout>
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/about_text_box"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:text="@string/about_text_box"
-        android:layout_below="@id/about_top_container"
-        android:textSize="24dp"
-        android:inputType="textMultiLine">
+           <!-- <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="60dp"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="30dp" />-->
 
-    </TextView>
+            <include layout="@layout/logo"
+                android:layout_centerVertical="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                ></include>
 
-    <RelativeLayout
-        android:id="@+id/about_bottom_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/about_text_box">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:id="@+id/about_body"
+                android:text="is being developed with 0x2764"
+                android:textColor="@color/white"
+                android:textSize="25dp"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
 
-        <ImageView
-            android:id="@+id/about_bottom_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/bckgrnd"
-            android:scaleType="centerCrop"/>
+            <LinearLayout
+                android:id="@+id/about_grid"
+                android:orientation="horizontal"
+                android:paddingTop="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/about_external_link"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorLink="@color/white"
-            android:textSize="30dp"
-            android:gravity="center"
-            android:layout_centerVertical="true"/>
+            </LinearLayout>
+
+
+
+        </LinearLayout>
 
     </RelativeLayout>
 

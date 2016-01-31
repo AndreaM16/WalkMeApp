@@ -13,7 +13,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/bckgrnd"
             android:scaleType="centerCrop"/>
-        <TextView
+        <!--<TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
@@ -21,13 +21,17 @@
             android:textColor="@color/white"
             android:textSize="60dp"
             android:gravity="center"
-            android:layout_centerVertical="true"/>
-        <View
-            android:id="@+id/container_divider"
+            android:layout_centerVertical="true"/>-->       <!-- STANDARD LOGO -->
+
+        <include layout="@layout/logo"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey"
-            android:layout_alignParentBottom="true"/>
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            ></include>
+
+
     </RelativeLayout>
     <ImageView
         android:layout_width="80dp"
@@ -51,6 +55,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <View
+            android:id="@+id/container_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            android:layout_alignParentBottom="true"/>
         </LinearLayout>
 
 
@@ -64,8 +74,8 @@
             android:scaleType="fitXY"
             android:src="@drawable/main_activity_img"
             android:visibility="visible"/>-->
-        <View android:layout_height="50dp" android:layout_width="20dp" android:id="@+id/walking_man" android:background="@drawable/walking_stickman"
-              android:visibility="gone"/>
+        <!--<View android:layout_height="50dp" android:layout_width="20dp" android:id="@+id/walking_man" android:background="@drawable/walking_stickman"
+              android:visibility="gone"/>-->
 
 
         <!--  If Last Training present -> visibility true
@@ -74,12 +84,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
            >
-            <View
+          <!--  <View
                 android:id="@+id/bottom_container_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/grey"
-                android:layout_alignParentTop="true"/>
+                android:layout_alignParentTop="true"/>-->
 
             <ImageView
                 android:layout_width="match_parent"

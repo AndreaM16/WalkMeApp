@@ -1,10 +1,6 @@
-package com.project.so2.walkmeapp.POJO;
-
-import com.j256.ormlite.field.DatabaseField;
+package com.project.so2.walkmeapp.core.POJO;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by Ale on 28/01/2016.
@@ -15,20 +11,20 @@ public class TrainingPOJO implements Serializable {
     public int id;
     public String trainingDate;
     public int trainingSteps;
-    public int trainingDuration; //TODO: check if there is a better type
+    public int trainingDuration;
     public int trainingDistance;
     public int lastMetersSettings;
     public float avgTotSpeed;
     public float avgXSpeed;
     public float avgTotSteps;
     public int avgXSteps;
-    public int stepLenghtInCm; //in cm
+    public int stepLenghtInCm;
 
     public TrainingPOJO(
             int id,
             String trainingDate,
             int trainingSteps,
-            int trainingDuration, //TODO: check if there is a better type
+            int trainingDuration,
             int trainingDistance,
             int lastMetersSettings,
             float avgTotSpeed,

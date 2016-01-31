@@ -33,12 +33,12 @@ public class MainActivity extends Activity {
       mUserView = (ImageView) findViewById(R.id.user_icon_view);
       View mView = findViewById(R.id.walking_man);
       mView.setBackgroundResource(R.drawable.walking_stickman);
-
+      AnimationDrawable sbu = (AnimationDrawable) mView.getBackground();
+      sbu.start();
 
       mUserView.bringToFront();
 
-      AnimationDrawable sbu = (AnimationDrawable) mView.getBackground();
-      sbu.start();
+
 
       getWindow().getDecorView().setSystemUiVisibility(
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE

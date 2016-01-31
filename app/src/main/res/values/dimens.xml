@@ -3,6 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- Some standard Dimens to work easily when creating objects -->
     <dimen name="generic_list_item_height">80dp</dimen>
     <dimen name="generic_list_main_text">26dp</dimen>
     <dimen name="generic_list_subtext">14dp</dimen>

@@ -1,4 +1,4 @@
-package com.project.so2.walkmeapp.ORM;
+package com.project.so2.walkmeapp.core.ORM;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
