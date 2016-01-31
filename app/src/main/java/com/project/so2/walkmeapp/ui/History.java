@@ -58,6 +58,6 @@ public class History extends Activity{
         "avgXSpeed" : avgXSpeed,
         "avgTotSteps" : avgTotSteps,
         "avgXSteps" : avgXSteps,
-        "stepLenghtInCm" : stepLenghtInCm
+        "stepLengthInCm" : stepLengthInCm
 }
  */

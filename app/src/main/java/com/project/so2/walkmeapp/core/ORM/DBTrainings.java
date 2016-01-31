@@ -27,14 +27,14 @@ public class DBTrainings {
     @DatabaseField
     public int avgXSteps;
     @DatabaseField
-    public int stepLenghtInCm; //in cm
+    public int stepLengthInCm; //in cm
 
 
 
     public DBTrainings() {
         // ORMLite needs a no-arg constructor
     }
-    public DBTrainings(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLenghtInCm) {
+    public DBTrainings(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLengthInCm) {
 
 
         this.id = id;
@@ -47,7 +47,7 @@ public class DBTrainings {
         this.avgXSpeed=avgXSpeed;
         this.avgTotSteps=avgTotSteps;
         this.avgXSteps=avgXSteps;
-        this.stepLenghtInCm = stepLenghtInCm; //in cm
+        this.stepLengthInCm = stepLengthInCm; //in cm
 
     }
 

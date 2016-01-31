@@ -57,7 +57,7 @@ public class Training extends Activity {
    private float avgXSpeed;
    private float avgTotSteps;
    private int avgXSteps;
-   private int prefsStepLenghtInCm;
+   private int prefsstepLengthInCm;
 
    private int prefsAvgStepInM;
    private int prefsLastMetersInM;
@@ -200,7 +200,7 @@ public class Training extends Activity {
             actualTime = 0;
             isInitialValueSet = false;
             Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
-            saveTrainingInDB(id, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsStepLenghtInCm);
+            saveTrainingInDB(id, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
             return true;
          }
       });
@@ -213,8 +213,8 @@ public class Training extends Activity {
       settings = getSharedPreferences(PREFS_NAME, 0);
 
 
-      if (settings.contains("stepLenght")) {
-         prefsStepLenghtInCm = settings.getInt("stepLenght", 100);
+      if (settings.contains("stepLength")) {
+         prefsstepLengthInCm = settings.getInt("stepLength", 100);
       }
       if (settings.contains("lastXMeters")) {
          prefsLastMetersInM = settings.getInt("lastXMeters", 10);
@@ -223,7 +223,7 @@ public class Training extends Activity {
          prefsAvgStepInM = settings.getInt("avgStepInM", 1);
       }
 
-      Log.d(TAG, "Values from prefs ->  " + "StepLenght: " + prefsStepLenghtInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepInM  + "m");
+      Log.d(TAG, "Values from prefs ->  " + "stepLength: " + prefsstepLengthInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepInM  + "m");
    }
 
 
@@ -248,10 +248,10 @@ public class Training extends Activity {
       this.avgXSpeed = 4;
       this.avgTotSteps = 600;
       this.avgXSteps = 30;
-      //this.prefsStepLenghtInCm = 70; set from real prefs, 100 is default value
+      //this.prefsstepLengthInCm = 70; set from real prefs, 100 is default value
    }
 
-   private void saveTrainingInDB(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLenghtInCm) {
+   private void saveTrainingInDB(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLengthInCm) {
 
       DBTrainings dbTrainingInstance = new DBTrainings();
 
@@ -267,7 +267,7 @@ public class Training extends Activity {
          this.avgXSpeed = avgXSpeed;
          this.avgTotSteps = avgTotSteps;
          this.avgXSteps = avgXSteps;
-         this.prefsStepLenghtInCm = stepLenghtInCm; //in cm
+         this.prefsstepLengthInCm = stepLengthInCm; //in cm
 
          dbTrainingInstance.id = this.id;
          dbTrainingInstance.trainingDate = this.trainingDate;
@@ -279,7 +279,7 @@ public class Training extends Activity {
          dbTrainingInstance.avgXSpeed = this.avgXSpeed;
          dbTrainingInstance.avgTotSteps = this.avgTotSteps;
          dbTrainingInstance.avgXSteps = this.avgXSteps;
-         dbTrainingInstance.stepLenghtInCm = this.prefsStepLenghtInCm;
+         dbTrainingInstance.stepLengthInCm = this.prefsstepLengthInCm;
 
 
          dbDao.create(dbTrainingInstance);

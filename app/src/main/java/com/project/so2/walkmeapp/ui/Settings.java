@@ -15,10 +15,10 @@ import com.project.so2.walkmeapp.R;
  */
 public class Settings extends Activity {
    private static final String PREFS_NAME = "SETTINGS_PREFS";
-   private int stepLenghtInCm;
+   private int stepLengthInCm;
    private int avgStepInM;
    private int lastMetersInM;
-   private EditText stepLenghtET;
+   private EditText stepLengthET;
    private EditText avgStepET;
    private EditText lastMetersET;
    private SharedPreferences settings;
@@ -36,7 +36,7 @@ public class Settings extends Activity {
       //mSettingsElements = getResources().getStringArray(R.array.settings_list_items);
 
       ImageView actionBar = (ImageView) findViewById(R.id.action_bar_icon);
-      stepLenghtET = (EditText) findViewById(R.id.settings_step_length_edit);
+      stepLengthET = (EditText) findViewById(R.id.settings_step_length_edit);
       avgStepET = (EditText) findViewById(R.id.settings_average_step_edit);
       lastMetersET = (EditText) findViewById(R.id.settings_last_x_meters_edit);
 
@@ -56,7 +56,7 @@ public class Settings extends Activity {
       // Restore preferences
       settings = getSharedPreferences(PREFS_NAME, 0);
 
-      stepLenghtInCm = checkAndSet("stepLenght", stepLenghtET);
+      stepLengthInCm = checkAndSet("stepLength", stepLengthET);
       avgStepInM = checkAndSet("avgStepInM", avgStepET);
       lastMetersInM = checkAndSet("lastXMeters", lastMetersET);
 
@@ -81,7 +81,7 @@ public class Settings extends Activity {
       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
       SharedPreferences.Editor editor = settings.edit();
 
-      editor.putInt("stepLenght", Integer.parseInt(stepLenghtET.getText().toString()));
+      editor.putInt("stepLength", Integer.parseInt(stepLengthET.getText().toString()));
       editor.putInt("avgStepInM", Integer.parseInt(avgStepET.getText().toString()));
       editor.putInt("lastXMeters", Integer.parseInt(lastMetersET.getText().toString()));
 

@@ -18,7 +18,7 @@ public class TrainingPOJO implements Serializable {
     public float avgXSpeed;
     public float avgTotSteps;
     public int avgXSteps;
-    public int stepLenghtInCm;
+    public int stepLengthInCm;
 
     public TrainingPOJO(
             int id,
@@ -31,7 +31,7 @@ public class TrainingPOJO implements Serializable {
             float avgXSpeed,
             float avgTotSteps,
             int avgXSteps,
-            int stepLenghtInCm) {
+            int stepLengthInCm) {
 
         this.id = id;
         this.trainingDate = trainingDate;
@@ -43,7 +43,7 @@ public class TrainingPOJO implements Serializable {
         this.avgXSpeed = avgXSpeed;
         this.avgTotSteps = avgTotSteps;
         this.avgXSteps = avgXSteps;
-        this.stepLenghtInCm = stepLenghtInCm;
+        this.stepLengthInCm = stepLengthInCm;
     }
 
 
