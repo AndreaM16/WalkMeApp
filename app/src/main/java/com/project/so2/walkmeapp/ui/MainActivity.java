@@ -19,6 +19,7 @@ public class MainActivity extends Activity {
    private LinearLayout mMainPageList;
    private String[] mMainPageElements;
    private ImageView mUserView;
+   private View mView;
 
 
    @Override
@@ -26,35 +27,41 @@ public class MainActivity extends Activity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
-
+      //Get the needed Views & StringArray
       mMainPageElements = getResources().getStringArray(R.array.main_page_list_items);
-
       mMainPageList = (LinearLayout) findViewById(R.id.main_page_list);
       mUserView = (ImageView) findViewById(R.id.user_icon_view);
-      View mView = findViewById(R.id.walking_man);
-      mView.setBackgroundResource(R.drawable.walking_stickman);
-      AnimationDrawable sbu = (AnimationDrawable) mView.getBackground();
-      sbu.start();
 
+      //Animate the Stickman
+      mView = findViewById(R.id.walking_man);
+      mView.setBackgroundResource(R.drawable.walking_stickman);
+      AnimationDrawable wMan = (AnimationDrawable) mView.getBackground();
+      wMan.start();
+
+      //Brings to front the User Avatar. TODO: BUG TO FIX - it's possible to tap through it
       mUserView.bringToFront();
 
-
-
+      //Makes the System StatusBar transparent
       getWindow().getDecorView().setSystemUiVisibility(
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                  | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+              View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                      | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
       getWindow().setStatusBarColor(Color.TRANSPARENT);
 
+      //Create the menu entries
       String[] mMenuStrings = getResources().getStringArray(R.array.main_page_list_items);
 
-      for(final String i: mMenuStrings) {
+      for (final String i : mMenuStrings) {
 
-         final View v; // Creating an instance for View Object
-         LayoutInflater inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+         //Get a new View and the Inflater Service
+         View v;
+         LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
          v = inflater.inflate(R.layout.menu_fragment_item, null);
+
+         //Customize the View
          TextView textTemp = (TextView) v.findViewById(R.id.item_text);
          textTemp.setText(i);
 
+         //Attach a listener to the View (useful for intent launching)
          v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,12 +69,13 @@ public class MainActivity extends Activity {
             }
          });
 
+         //Add created View to the Layout
          mMainPageList.addView(v);
-
-}
+      }
 
    }
 
+   //"Choose" an intent based on input and launches corresponding activity.
    private void launchNextActivity(String activityName) {
       Intent intent = null;
       switch (activityName) {
@@ -87,13 +95,11 @@ public class MainActivity extends Activity {
          case "About":
             intent = new Intent(this, About.class);
             break;
-
-
       }
+
       if (intent != null) {
          startActivity(intent);
       }
-
    }
 
 }

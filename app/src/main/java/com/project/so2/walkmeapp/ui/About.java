@@ -5,57 +5,69 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.project.so2.walkmeapp.R;
 
-/**
- * Created by Andrea on 30/01/2016.
- */
 public class About extends Activity {
 
-   //private String[] mSettingsElements;
    private static int HEART_UNICODE = 0x2764;
    private String[] devNamesArray;
+   private ImageView actionBar;
+   private TextView about_body;
+   private View mView;
+   private LinearLayout devLinLayout;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
-      //Binding Class to its View
       setContentView(R.layout.about_layout);
 
-      //Binding Strings to their View
+      //Get the needed Views
+      actionBar = (ImageView) findViewById(R.id.action_bar_icon);
+      about_body = (TextView) findViewById(R.id.about_body);
+      mView = findViewById(R.id.walking_man);
+      devLinLayout = (LinearLayout) findViewById(R.id.about_grid);
 
+      //ActionBar customization
+      actionBar.setImageResource(R.drawable.btn_back);
+      TextView actionBarText = (TextView) findViewById(R.id.action_bar_title);
+      actionBarText.setText(getResources().getString(R.string.about_title));
+      actionBar.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            finish();
+         }
+      });
 
-      devNamesArray = getResources().getStringArray(R.array.about_grid_items);
+      //Prepare Body text (with emoji! yay!)
+      String about_text = (getString(R.string.about_text_body) + new String(Character.toChars(HEART_UNICODE)) + getString(R.string.about_text_body_cont));
+      about_body.setText(about_text);
 
-      ImageView actionBar = (ImageView) findViewById(R.id.action_bar_icon);
-      TextView about_body = (TextView) findViewById(R.id.about_body);
-      View mView = findViewById(R.id.walking_man);
-      LinearLayout devLinLayout = (LinearLayout) findViewById(R.id.about_grid);
-
-      //setup
+      //Animate the Stickman
       mView.setBackgroundResource(R.drawable.walking_stickman);
       AnimationDrawable wMan = (AnimationDrawable) mView.getBackground();
       wMan.start();
 
-      for (String i: devNamesArray) {
+      //Create the dev badges
+      devNamesArray = getResources().getStringArray(R.array.about_grid_items);
 
-         final View v; // Creating an instance for View Object
-         LayoutInflater inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      for (String i : devNamesArray) {
+
+         //Get a new View and the Inflater Service
+         View v;
+         LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
          v = inflater.inflate(R.layout.about_user_template, null);
+
+         //Customize the View
          TextView textTemp = (TextView) v.findViewById(R.id.about_user_name);
          ImageView imgTemp = (ImageView) v.findViewById(R.id.about_user_img);
          textTemp.setText(i);
+
          Drawable temp = null;
 
          switch (i) {
@@ -75,44 +87,15 @@ public class About extends Activity {
                temp = getDrawable(R.drawable.cri);
                break;
 
-
          }
-         if ( temp != null ) {
+         if (temp != null) {
             imgTemp.setBackground(temp);
          }
 
+         //Add created View to the LinearLayout
          devLinLayout.addView(v);
       }
 
-
-
-
-      actionBar.setImageResource(R.drawable.btn_back);
-      actionBar.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-            finish();
-         }
-      });
-
-      //Action Bar Title
-      TextView actionBarText = (TextView) findViewById(R.id.action_bar_title);
-      actionBarText.setText(getResources().getString(R.string.about_title));
-
-      String about_text = (getString(R.string.about_text_body) + getEmijoByUnicode(HEART_UNICODE) + getString(R.string.about_text_body_cont));
-      about_body.setText(about_text);
-
-
-        /*//External Link
-        TextView link = (TextView) findViewById(R.id.about_external_link);
-        String linkText = "<a href=\"https://github.com/AndreaM16/WalkMeApp\">View Project on GitHub</a>";
-        link.setText(Html.fromHtml(linkText));
-        link.setMovementMethod(LinkMovementMethod.getInstance());*/
-
-   }
-
-   public String getEmijoByUnicode(int unicode) {
-      return new String(Character.toChars(unicode));
    }
 
 }

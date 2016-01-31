@@ -22,25 +22,20 @@ public class Settings extends Activity {
    private EditText avgStepET;
    private EditText lastMetersET;
    private SharedPreferences settings;
-
-   //private String[] mSettingsElements;
+   private ImageView actionBar;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
-      //Binding Class to its View
       setContentView(R.layout.settings_layout);
 
-      //Binding Strings to their View
-      //mSettingsElements = getResources().getStringArray(R.array.settings_list_items);
-
-      ImageView actionBar = (ImageView) findViewById(R.id.action_bar_icon);
+      //Get the needed Views
+      actionBar = (ImageView) findViewById(R.id.action_bar_icon);
       stepLengthET = (EditText) findViewById(R.id.settings_step_length_edit);
       avgStepET = (EditText) findViewById(R.id.settings_average_step_edit);
       lastMetersET = (EditText) findViewById(R.id.settings_last_x_meters_edit);
 
-
+      //ActionBar customization
       actionBar.setImageResource(R.drawable.btn_back);
       actionBar.setOnClickListener(new View.OnClickListener() {
          @Override
@@ -48,14 +43,11 @@ public class Settings extends Activity {
             finish();
          }
       });
-
-      //Action Bar Title
       TextView actionBarText = (TextView) findViewById(R.id.action_bar_title);
       actionBarText.setText(getResources().getString(R.string.settings_title));
 
-      // Restore preferences
+      // Get Preferences and restore them
       settings = getSharedPreferences(PREFS_NAME, 0);
-
       stepLengthInCm = checkAndSet("stepLength", stepLengthET);
       avgStepInM = checkAndSet("avgStepInM", avgStepET);
       lastMetersInM = checkAndSet("lastXMeters", lastMetersET);
@@ -63,7 +55,11 @@ public class Settings extends Activity {
 
    }
 
+
+   //This handy function checks if the chosen pref from the Preferences exists.
+   //If exists, returns the value and sets it to the specified View, else returns 0.
    private int checkAndSet(String prefsKey, EditText correspondingET) {
+
       if (settings.contains(prefsKey)) {
          int auxInt = settings.getInt(prefsKey, 0);
          correspondingET.setText(Integer.toString(auxInt));
@@ -71,6 +67,7 @@ public class Settings extends Activity {
       } else {
          return 0;
       }
+
    }
 
 
@@ -78,23 +75,23 @@ public class Settings extends Activity {
    protected void onPause() {
       super.onPause();
 
-      SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+      //Get the Preferences editor
       SharedPreferences.Editor editor = settings.edit();
 
-      if ( stepLengthET.getText() != null && !(stepLengthET.getText().toString().equals(""))) {
+      //If possible, get the value from the EditText and put into SharedPrefs
+      if (stepLengthET.getText() != null && !(stepLengthET.getText().toString().equals(""))) {
          editor.putInt("stepLength", Integer.parseInt(stepLengthET.getText().toString()));
       }
 
-      if ( avgStepET.getText() != null && !(avgStepET.getText().toString().equals(""))) {
+      if (avgStepET.getText() != null && !(avgStepET.getText().toString().equals(""))) {
          editor.putInt("avgStepInM", Integer.parseInt(avgStepET.getText().toString()));
       }
 
-      if ( lastMetersET.getText() != null && !(lastMetersET.getText().toString().equals(""))) {
+      if (lastMetersET.getText() != null && !(lastMetersET.getText().toString().equals(""))) {
          editor.putInt("lastXMeters", Integer.parseInt(lastMetersET.getText().toString()));
       }
 
       editor.commit();
-      
    }
 }
 

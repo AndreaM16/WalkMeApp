@@ -102,13 +102,9 @@ public class Training extends Activity {
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
-      //Binding Class to its View
       setContentView(R.layout.training_main);
 
-      //Binding Strings to their View
-      //mMainTrainingElements = getResources().getStringArray(R.array.main_training_list_items);
-
+      //Get the needed Views & some Colors
       actionBar = (ImageView) findViewById(R.id.action_bar_icon);
       actionBarText = (TextView) findViewById(R.id.action_bar_title);
       playButton = (MorphButton) findViewById(R.id.playPauseBtn);
@@ -117,13 +113,108 @@ public class Training extends Activity {
       runContainer = (RelativeLayout) findViewById(R.id.training_run_container);
       stopContainer = (RelativeLayout) findViewById(R.id.training_stop_container);
       chronometer = (PausableChronometer) findViewById(R.id.digital_clock);
+      colorGreen = Color.parseColor(getResources().getString(R.string.training_green));
+      colorGrey = Color.parseColor(getResources().getString(R.string.training_grey));
 
+      //Some specialized setups, to keep the code as clean as possible
       setupActionbar();
       setupPedometerService();
       setupDB();
-      testCreateTraining();
       setValuesFromShared();
 
+      //Test for ORM functionality
+      testCreateTraining();
+
+      //Test for Jackson functionality
+      testJSON();
+
+      //Deprecated fix for Play/Pause animation.
+      //It appears that MarshMallow has a bug where the animation can't be reloaded from cache, so it needs this explicit declaration.
+      AnimatedVectorDrawable startDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_play_to_pause);
+      AnimatedVectorDrawable endDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_pause_to_play);
+      playButton.setStartDrawable(startDrawable);
+      playButton.setEndDrawable(endDrawable);
+
+      //Core functionality of stopwatch/step counter in the listener
+      playButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+
+            if (isStopped != false) {
+               isStopped = false;
+            }
+
+            //if the Train Session is paused, start it, else stop it
+            if (isPaused == true) {
+
+               //Save the start time of training
+               //startTime is set to this number to ensure that it can be set only once per training
+               if (startTime == -1000) {
+                  startTime = System.currentTimeMillis();
+               }
+
+               chronometer.start();
+
+               //Color fade animations
+               fadeTo(runContainer, colorGrey, colorGreen);
+               fadeTo(stopContainer, colorGreen, colorGrey);
+
+            } else {
+
+               chronometer.stop();
+
+               //Color fade animations
+               fadeTo(runContainer, colorGreen, colorGrey);
+               fadeTo(stopContainer, colorGrey, colorGreen);
+
+
+            }
+            //as the name says, this updates the "isPaused" status
+            updateIsPaused();
+
+         }
+      });
+
+
+      //Stops the training on long click (still beta behaviour)
+      playButton.setOnLongClickListener(new View.OnLongClickListener() {
+         @Override
+         public boolean onLongClick(View v) {
+            isStopped = true;
+
+            if (isPaused == false) {
+
+               //TODO: BUG to fix - try to trigger the play animation programmatically
+               playButton.animate();
+
+               //Color fade animations
+               fadeTo(runContainer, colorGreen, colorGrey);
+               fadeTo(stopContainer, colorGrey, colorGreen);
+
+               //set the isPaused according to status
+               isPaused = true;
+            }
+
+            //Training reset
+            chronometer.reset();
+            stepsPerMin.setText("0");
+            kilometersPerHour.setText("0");
+            actualSteps = 0;
+            actualTime = 0;
+            isInitialValueSet = false;
+
+            //BETA - graphical notification of training reset
+            Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
+
+            //TEST - save example training in DB
+            saveTrainingInDB(id, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
+            return true;
+         }
+      });
+   }
+
+   //This TEST function is needed to test the functionality of the Jackson library
+   private void testJSON() {
       Calendar c = Calendar.getInstance();
       SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       String formattedDate = df.format(c.getTime());
@@ -136,83 +227,14 @@ public class Training extends Activity {
       } catch (IOException e) {
          e.printStackTrace();
       }
-
-
-      colorGreen = Color.parseColor(getResources().getString(R.string.training_green));
-      colorGrey = Color.parseColor(getResources().getString(R.string.training_grey));
-
-      final AnimatedVectorDrawable startDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_play_to_pause);
-      AnimatedVectorDrawable endDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_pause_to_play);      //STRANGE FIX TO ANDROID 6 BUG
-
-      playButton.setStartDrawable(startDrawable);
-      playButton.setEndDrawable(endDrawable);
-
-
-      playButton.setOnClickListener(new View.OnClickListener() {           //TODO: find out why the play/pause animation occours even on long touch //bug is gone? wtf
-         @Override
-         public void onClick(View v) {
-
-            if (isStopped != false) {
-               isStopped = false;
-            }
-
-
-            if (isPaused == true) {
-               // TIME OF START TRAINING
-               if (startTime == -1000) {
-                  startTime = System.currentTimeMillis();
-               }
-
-               chronometer.start();
-               fadeTo(runContainer, colorGrey, colorGreen);
-               fadeTo(stopContainer, colorGreen, colorGrey);
-
-            } else {
-
-               chronometer.stop();
-               fadeTo(runContainer, colorGreen, colorGrey);
-               fadeTo(stopContainer, colorGrey, colorGreen);
-
-
-            }
-
-            updateIsPaused();
-
-         }
-      });
-
-      playButton.setOnLongClickListener(new View.OnLongClickListener() {
-         @Override
-         public boolean onLongClick(View v) {
-            isStopped = true;
-
-            if (isPaused == false) {
-               playButton.animate();   //TODO: try to trigger the play animation, there gotta be a way goddammit
-               fadeTo(runContainer, colorGreen, colorGrey);
-               fadeTo(stopContainer, colorGrey, colorGreen);
-               isPaused = true;
-            }
-
-            chronometer.reset();
-            stepsPerMin.setText("0");
-            kilometersPerHour.setText("0");
-            actualSteps = 0;
-            actualTime = 0;
-            isInitialValueSet = false;
-            Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
-            saveTrainingInDB(id, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
-            return true;
-         }
-      });
    }
 
-
-
+   //Sets the user preferences from SgaredPrefs
    private void setValuesFromShared() {
 
       settings = getSharedPreferences(PREFS_NAME, 0);
 
-
+      //Check if pref exists, if so gets it
       if (settings.contains("stepLength")) {
          prefsstepLengthInCm = settings.getInt("stepLength", 100);
       }
@@ -223,11 +245,10 @@ public class Training extends Activity {
          prefsAvgStepInM = settings.getInt("avgStepInM", 1);
       }
 
-      Log.d(TAG, "Values from prefs ->  " + "stepLength: " + prefsstepLengthInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepInM  + "m");
+      Log.d(TAG, "Values from prefs ->  " + "stepLength: " + prefsstepLengthInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepInM + "m");
    }
 
-
-
+   //needed setup for ORMLite
    private void setupDB() {
       try {
          this.dbDao = getHelper().getTrainingsDao();
@@ -236,12 +257,13 @@ public class Training extends Activity {
       }
    }
 
+   //test values for Training
    private void testCreateTraining() {
 
       this.id = 2;
       this.trainingDate = "2015-12-11 18:00:23";
       this.trainingSteps = 100;
-      this.trainingDuration = 500; //TODO: check if there is a better type
+      this.trainingDuration = 500;
       this.trainingDistance = 1000;
       //this.lastMetersSettings = 30; set from real prefs, 10 is default value
       this.avgTotSpeed = 10;
@@ -251,6 +273,7 @@ public class Training extends Activity {
       //this.prefsstepLengthInCm = 70; set from real prefs, 100 is default value
    }
 
+   //test the ORMLite saving capabilities
    private void saveTrainingInDB(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLengthInCm) {
 
       DBTrainings dbTrainingInstance = new DBTrainings();
@@ -283,28 +306,12 @@ public class Training extends Activity {
 
 
          dbDao.create(dbTrainingInstance);
-      } catch (
-              Exception e
-              )
-
-      {
+      } catch (Exception e) {
          e.printStackTrace();
       }
-
-
    }
 
-
-/*   private void setupChronometer() {
-      chronometer.setOnChronometerTickListener(new PausableChronometer.OnChronometerTickListener() {
-         public void onChronometerTick(Chronometer cArg) {
-            long t =  SystemClock.elapsedRealtime() - cArg.getBase();
-            cArg.setText(DateFormat.format("kk:mm:ss", t));
-         }
-      });
-   }*/
-
-
+   //needed to create a transition effect between active and inactive colors in training status
    private void fadeTo(RelativeLayout layout, int actualColor, int color) {
       ColorDrawable[] colour = {new ColorDrawable(actualColor), new ColorDrawable(color)};
 
@@ -313,6 +320,7 @@ public class Training extends Activity {
       trans.startTransition(200);
    }
 
+   //updates the isPaused status on call
    private void updateIsPaused() {
 
       if (isPaused != true) {
@@ -323,64 +331,50 @@ public class Training extends Activity {
 
    }
 
-
+   //setups all the Step Counting part of the class
    public void setupPedometerService() {
 
+      //creates a new SensorEventListener for the TYPE_STEP_COUNTER
       sensorEventListener = new SensorEventListener() {
 
+         //needed by Android
          @Override
          public void onAccuracyChanged(Sensor sensor, int accuracy) {
          }
 
+         //when the sensor status changed, the listener gets called
          @Override
          public void onSensorChanged(SensorEvent event) {
 
             float[] steps = event.values;
 
-            if (isInitialValueSet != true) {          //TODO: FIX THIS MESS
+            //this zeroes the step counter to count correctly only the steps walked during the training.
+            if (isInitialValueSet != true) {
                isInitialValueSet = true;
                initialValue = steps[0];
             }
 
+
             if (isPaused != true && isStopped != true) {
                actualSteps = steps[0];
                actualTime = (System.currentTimeMillis() - startTime);
-               int avg = (int) ((actualSteps - initialValue) / (actualTime / MINUTE_IN_MILLIS));
 
+               //calculates the steps/minute ratio with a double precision, then truncates to int for readability and sets to the view
+               int avg = (int) ((actualSteps - initialValue) / (actualTime / MINUTE_IN_MILLIS));
                stepsPerMin.setText(Integer.toString(avg));
 
-
+               //calculates the km/h ratio with a double precision, then truncates to int for readability and sets to the view
                int kmh = (int) ((((actualSteps - initialValue) * (STEP_IN_CENTIMETERS_TEST / 100)) / (actualTime / 1000.0)) * (3.6));
                kilometersPerHour.setText(Integer.toString(kmh));
-
             }
-
-           /* if ((System.currentTimeMillis() - startTime) < (60 * 1000)) {
-               if (secsCheckSet == false ) {
-                  oldTime = System.currentTimeMillis() - startTime;
-                  oldSteps = steps[0];
-                  desideredTime = (System.currentTimeMillis() - startTime) + (TIME_SAMPLE * 1000);
-
-                  secsCheckSet = true;
-               }
-               if ((System.currentTimeMillis() - startTime) >= desideredTime) {
-                  secsCheckSet = false;
-
-                  float diffSteps = steps[0] - oldSteps;
-                  double value = diffSteps/(TIME_SAMPLE/60);
-                  stepsPerMin.setText(Double.toString(value));
-
-               }
-            } else {*/
-
-
-            //     }
          }
       };
 
+      //gets the correct sensor service (TYPE_STEP_COUNTER)
       sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
       sensor = sensorService.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
+      //sets the precision of the sensor
       if (sensor != null) {
          sensorService.registerListener(sensorEventListener, sensor,
                  SensorManager.SENSOR_DELAY_FASTEST);
@@ -388,6 +382,7 @@ public class Training extends Activity {
 
    }
 
+   //gets the Helper
    private DatabaseHelper getHelper() {
       if (databaseHelper == null) {
          databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
@@ -395,7 +390,7 @@ public class Training extends Activity {
       return databaseHelper;
    }
 
-
+   //setups the ActionBar
    private void setupActionbar() {
       actionBar.setImageResource(R.drawable.btn_back);
       actionBar.setOnClickListener(new View.OnClickListener() {

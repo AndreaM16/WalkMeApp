@@ -8,17 +8,15 @@ import android.os.Bundle;
  */
 public class CurrentTraining extends Activity {
 
-    public class LoadTrainings extends Activity{
+   public class LoadTrainings extends Activity {
+
+      //PLACEHOLDER CLASS
+
+      @Override
+      public void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
 
 
-
-        @Override
-        //Bundle -> Allows passing values between Activities
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-
-
-
-        }
-    }
+      }
+   }
 }
