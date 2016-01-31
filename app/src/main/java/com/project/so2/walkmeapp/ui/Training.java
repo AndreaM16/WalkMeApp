@@ -2,6 +2,7 @@ package com.project.so2.walkmeapp.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -12,6 +13,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Environment;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -44,6 +46,7 @@ import java.io.IOException;
 public class Training extends Activity {
 
 
+   private static final String PREFS_NAME = "SETTINGS_PREFS";
    private int id;
    private String trainingDate;
    private int trainingSteps;
@@ -54,7 +57,13 @@ public class Training extends Activity {
    private float avgXSpeed;
    private float avgTotSteps;
    private int avgXSteps;
-   private int stepLenghtInCm;
+   private int prefsStepLenghtInCm;
+
+   private int prefsAvgStepInM;
+   private int prefsLastMetersInM;
+
+   private SharedPreferences settings;
+
 
    private static final String TAG = "Training";
    SensorManager sMgr;
@@ -83,12 +92,6 @@ public class Training extends Activity {
 
    private long startTime = -1000;
    private TrainingPOJO trainingData;
-   private Context context;
-   private boolean secsCheckSet = false;
-   private long oldTime;
-   private double desideredTime;
-   private float oldSteps;
-   private double TIME_SAMPLE = 3.0;
    private float actualSteps;
    private long actualTime;
 
@@ -116,20 +119,16 @@ public class Training extends Activity {
       chronometer = (PausableChronometer) findViewById(R.id.digital_clock);
 
       setupActionbar();
-      // setupChronometer();     //potentially useless
       setupPedometerService();
-
-      try {
-         this.dbDao = getHelper().getTrainingsDao();
-      } catch (SQLException e) {
-         e.printStackTrace();
-      }
-
+      setupDB();
       testCreateTraining();
+      setValuesFromShared();
+
       Calendar c = Calendar.getInstance();
       SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       String formattedDate = df.format(c.getTime());
       trainingData = new TrainingPOJO(1, formattedDate, 10, 30, 2, 20, 2, 24, 10, 2, 4);
+
       File file = new File(Environment.DIRECTORY_DOWNLOADS, "training");
       mapper = JacksonUtils.mapper;
       try {
@@ -179,7 +178,6 @@ public class Training extends Activity {
 
             updateIsPaused();
 
-
          }
       });
 
@@ -187,12 +185,14 @@ public class Training extends Activity {
          @Override
          public boolean onLongClick(View v) {
             isStopped = true;
+
             if (isPaused == false) {
                playButton.animate();   //TODO: try to trigger the play animation, there gotta be a way goddammit
                fadeTo(runContainer, colorGreen, colorGrey);
                fadeTo(stopContainer, colorGrey, colorGreen);
                isPaused = true;
             }
+
             chronometer.reset();
             stepsPerMin.setText("0");
             kilometersPerHour.setText("0");
@@ -200,10 +200,40 @@ public class Training extends Activity {
             actualTime = 0;
             isInitialValueSet = false;
             Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
-            saveTrainingInDB(id, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, stepLenghtInCm);
+            saveTrainingInDB(id, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsStepLenghtInCm);
             return true;
          }
       });
+   }
+
+
+
+   private void setValuesFromShared() {
+
+      settings = getSharedPreferences(PREFS_NAME, 0);
+
+
+      if (settings.contains("stepLenght")) {
+         prefsStepLenghtInCm = settings.getInt("stepLenght", 100);
+      }
+      if (settings.contains("lastXMeters")) {
+         prefsLastMetersInM = settings.getInt("lastXMeters", 10);
+      }
+      if (settings.contains("avgStepInM")) {
+         prefsAvgStepInM = settings.getInt("avgStepInM", 1);
+      }
+
+      Log.d(TAG, "Values from prefs ->  " + "StepLenght: " + prefsStepLenghtInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepInM  + "m");
+   }
+
+
+
+   private void setupDB() {
+      try {
+         this.dbDao = getHelper().getTrainingsDao();
+      } catch (SQLException e) {
+         e.printStackTrace();
+      }
    }
 
    private void testCreateTraining() {
@@ -213,12 +243,12 @@ public class Training extends Activity {
       this.trainingSteps = 100;
       this.trainingDuration = 500; //TODO: check if there is a better type
       this.trainingDistance = 1000;
-      this.lastMetersSettings = 30;
+      //this.lastMetersSettings = 30; set from real prefs, 10 is default value
       this.avgTotSpeed = 10;
       this.avgXSpeed = 4;
       this.avgTotSteps = 600;
       this.avgXSteps = 30;
-      this.stepLenghtInCm = 70; //in cm
+      //this.prefsStepLenghtInCm = 70; set from real prefs, 100 is default value
    }
 
    private void saveTrainingInDB(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLenghtInCm) {
@@ -237,7 +267,7 @@ public class Training extends Activity {
          this.avgXSpeed = avgXSpeed;
          this.avgTotSteps = avgTotSteps;
          this.avgXSteps = avgXSteps;
-         this.stepLenghtInCm = stepLenghtInCm; //in cm
+         this.prefsStepLenghtInCm = stepLenghtInCm; //in cm
 
          dbTrainingInstance.id = this.id;
          dbTrainingInstance.trainingDate = this.trainingDate;
@@ -249,7 +279,7 @@ public class Training extends Activity {
          dbTrainingInstance.avgXSpeed = this.avgXSpeed;
          dbTrainingInstance.avgTotSteps = this.avgTotSteps;
          dbTrainingInstance.avgXSteps = this.avgXSteps;
-         dbTrainingInstance.stepLenghtInCm = this.stepLenghtInCm;
+         dbTrainingInstance.stepLenghtInCm = this.prefsStepLenghtInCm;
 
 
          dbDao.create(dbTrainingInstance);
@@ -312,7 +342,7 @@ public class Training extends Activity {
                initialValue = steps[0];
             }
 
-            if (isPaused != true && isStopped != true ) {
+            if (isPaused != true && isStopped != true) {
                actualSteps = steps[0];
                actualTime = (System.currentTimeMillis() - startTime);
                int avg = (int) ((actualSteps - initialValue) / (actualTime / MINUTE_IN_MILLIS));
@@ -320,7 +350,7 @@ public class Training extends Activity {
                stepsPerMin.setText(Integer.toString(avg));
 
 
-               int kmh = (int)((((actualSteps - initialValue)*(STEP_IN_CENTIMETERS_TEST/100))  /   (actualTime/1000.0)) *(3.6));
+               int kmh = (int) ((((actualSteps - initialValue) * (STEP_IN_CENTIMETERS_TEST / 100)) / (actualTime / 1000.0)) * (3.6));
                kilometersPerHour.setText(Integer.toString(kmh));
 
             }
@@ -344,7 +374,7 @@ public class Training extends Activity {
             } else {*/
 
 
-       //     }
+            //     }
          }
       };
 

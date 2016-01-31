@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <include layout="@layout/actionbar_main" android:id="@+id/action_bar_settings"/>
+    <include
+        android:id="@+id/action_bar_settings"
+        layout="@layout/actionbar_main"/>
 
     <RelativeLayout
+        android:id="@+id/settings_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/settings_container"
         android:layout_below="@id/action_bar_settings">
 
 
@@ -15,45 +18,64 @@
             android:id="@+id/settings_top_background"
             android:layout_width="match_parent"
             android:layout_height="124dp"
-            android:src="@drawable/bckgrnd"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/bckgrnd"/>
 
         <View
             android:id="@+id/settings_line_0"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey"
-            android:layout_below="@id/settings_top_background"/>
+            android:layout_below="@id/settings_top_background"
+            android:background="@color/grey"/>
 
 
         <RelativeLayout
             android:id="@+id/settings_container_1"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:layout_below="@id/settings_line_0"
-            android:layout_marginTop="20dp"
+            android:layout_alignParentRight="false"
+            android:layout_below="@+id/settings_top_background"
             android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
 
 
             <ImageView
-                android:layout_width="match_parent"
+                android:id="@+id/settings_step_length_img"
+                android:layout_width="45dp"
                 android:layout_height="match_parent"
-                android:scaleType="fitEnd"
+                android:scaleType="fitCenter"
                 android:src="@drawable/settings_step_length"
+                android:visibility="visible"
+                android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"/>
+
+
 
             <!--  Step Length  -->
             <TextView
+                android:layout_toRightOf="@id/settings_step_length_img"
                 android:id="@+id/settings_step_length"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:text="@string/settings_step_length"
 
-                android:layout_marginLeft="15dp"
-                android:textSize="30sp"
-                android:textColor="@color/grey"/>
+                android:textColor="@color/grey"
+                android:textSize="@dimen/generic_list_main_text"/>
+
+            <EditText
+                android:id="@+id/settings_step_length_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:hint="100 centimeters"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/generic_list_subtext"
+                android:gravity="right"
+                />
 
         </RelativeLayout>
 
@@ -61,8 +83,8 @@
             android:id="@+id/settings_line_1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey"
-            android:layout_below="@id/settings_container_1"/>
+            android:layout_below="@id/settings_container_1"
+            android:background="@color/grey"/>
 
 
         <RelativeLayout
@@ -70,28 +92,45 @@
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_below="@id/settings_line_1"
-            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
 
 
+
             <ImageView
-                android:layout_width="match_parent"
+                android:id="@+id/settings_last_x_meters_img"
+                android:layout_width="45dp"
                 android:layout_height="match_parent"
-                android:scaleType="fitEnd"
+                android:scaleType="fitCenter"
                 android:src="@drawable/settings_step_average"
+                android:visibility="visible"
+                android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"/>
 
             <!--  Step Length  -->
             <TextView
+                android:layout_toRightOf="@id/settings_last_x_meters_img"
                 android:id="@+id/settings_last_x_meters"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_average_step"
-                android:layout_marginLeft="15dp"
-                android:textSize="30sp"
-                android:textColor="@color/grey"/>
+                android:layout_centerVertical="true"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/generic_list_main_text"
+                android:text="@string/settings_last_x_meters"/>
+
+            <EditText
+                android:id="@+id/settings_last_x_meters_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/generic_list_subtext"
+                android:hint="10 meters"
+                android:gravity="right"/>
+
 
         </RelativeLayout>
 
@@ -99,8 +138,8 @@
             android:id="@+id/settings_line_2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey"
-            android:layout_below="@id/settings_container_2"/>
+            android:layout_below="@id/settings_container_2"
+            android:background="@color/grey"/>
 
 
         <RelativeLayout
@@ -108,28 +147,47 @@
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_below="@id/settings_line_2"
-            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
 
 
+
+
             <ImageView
-                android:layout_width="match_parent"
+                android:id="@+id/settings_average_step_img"
+                android:layout_width="45dp"
                 android:layout_height="match_parent"
-                android:scaleType="fitEnd"
+                android:scaleType="fitCenter"
                 android:src="@drawable/settings_last_x_meters"
-                android:layout_marginRight="15dp"/>
+                android:visibility="visible"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_alignTop="@+id/settings_average_step"
+                android:layout_alignParentStart="true"/>
 
             <!--  Step Length  -->
             <TextView
+                android:layout_toRightOf="@id/settings_average_step_img"
                 android:id="@+id/settings_average_step"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_last_x_meters"
-                android:layout_marginLeft="15dp"
-                android:textSize="30sp"
-                android:textColor="@color/grey"/>
+                android:layout_centerVertical="true"
+                android:text="@string/settings_average_step"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/generic_list_main_text"/>
+
+            <EditText
+                android:id="@+id/settings_average_step_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:hint="120 steps/min"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/generic_list_subtext"
+                android:gravity="right"/>
 
         </RelativeLayout>
 
@@ -137,16 +195,16 @@
             android:id="@+id/settings_line_3"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey"
-            android:layout_below="@id/settings_container_3"/>
+            android:layout_below="@id/settings_container_3"
+            android:background="@color/grey"/>
 
         <ImageView
             android:id="@+id/settings_bottom_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/bckgrnd"
+            android:layout_below="@id/settings_line_3"
             android:scaleType="centerCrop"
-            android:layout_below="@id/settings_line_3"/>
+            android:src="@drawable/bckgrnd"/>
 
     </RelativeLayout>
 
