@@ -39,6 +39,7 @@ import java.util.Calendar;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by Andrea on 24/01/2016.
@@ -85,11 +86,11 @@ public class Training extends Activity {
    private ObjectMapper mapper;
    private DatabaseHelper databaseHelper;
    private Dao<DBTrainings, String> dbDao;
-
+   private List<DBTrainings> results;
    private boolean isInitialValueSet = false;
    private boolean isPaused = true;
    private boolean isStopped = true;
-
+   final private DBTrainings dbTrainingInstance = new DBTrainings();
    private long startTime = -1000;
    private TrainingPOJO trainingData;
    private float actualSteps;
@@ -123,19 +124,18 @@ public class Training extends Activity {
       setupDB();
       testCreateTraining();
       setValuesFromShared();
-
       Calendar c = Calendar.getInstance();
       SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       String formattedDate = df.format(c.getTime());
       trainingData = new TrainingPOJO(1, formattedDate, 10, 30, 2, 20, 2, 24, 10, 2, 4);
 
-      File file = new File(Environment.DIRECTORY_DOWNLOADS, "training");
+     /* File file = new File(Environment.DIRECTORY_DOWNLOADS, "training");
       mapper = JacksonUtils.mapper;
       try {
          mapper.writeValue(file, trainingData);
       } catch (IOException e) {
          e.printStackTrace();
-      }
+      }*/
 
 
       colorGreen = Color.parseColor(getResources().getString(R.string.training_green));
@@ -185,6 +185,7 @@ public class Training extends Activity {
          @Override
          public boolean onLongClick(View v) {
             isStopped = true;
+            testCreateTraining();
 
             if (isPaused == false) {
                playButton.animate();   //TODO: try to trigger the play animation, there gotta be a way goddammit
@@ -201,6 +202,7 @@ public class Training extends Activity {
             isInitialValueSet = false;
             Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
             saveTrainingInDB(id, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
+            getTrainings();
             return true;
          }
       });
@@ -236,9 +238,23 @@ public class Training extends Activity {
       }
    }
 
+   private void getTrainings(){
+
+      try {
+         results = dbDao.queryForAll();
+         Log.d(TAG,"risultati"+results.get(0).toString());
+      } catch (SQLException e) {
+         e.printStackTrace();
+      }
+   }
+
    private void testCreateTraining() {
 
-      this.id = 2;
+
+      if (dbTrainingInstance.id==0){
+         this.id=1;
+      } else
+      this.id =this.id+1;
       this.trainingDate = "2015-12-11 18:00:23";
       this.trainingSteps = 100;
       this.trainingDuration = 500; //TODO: check if there is a better type
@@ -253,7 +269,7 @@ public class Training extends Activity {
 
    private void saveTrainingInDB(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLengthInCm) {
 
-      DBTrainings dbTrainingInstance = new DBTrainings();
+
 
 
       try {
@@ -355,7 +371,7 @@ public class Training extends Activity {
 
             }
 
-           /* if ((System.currentTimeMillis() - startTime) < (60 * 1000)) {
+/* if ((System.currentTimeMillis() - startTime) < (60 * 1000)) {
                if (secsCheckSet == false ) {
                   oldTime = System.currentTimeMillis() - startTime;
                   oldSteps = steps[0];
@@ -409,4 +425,3 @@ public class Training extends Activity {
    }
 
 }
-

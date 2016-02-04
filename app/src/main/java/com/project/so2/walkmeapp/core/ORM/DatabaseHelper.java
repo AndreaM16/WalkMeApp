@@ -23,10 +23,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      ************************************************/
 
     private static final String DATABASE_NAME = "database.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 8;
 
     private Dao<DBTrainings, String> dbTrainingsDao;
-    private Dao<DBUsers, String> dbUsersDao;
 
 
     public DatabaseHelper(Context context) {
@@ -43,7 +42,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
             // Create tables. This onCreate() method will be invoked only once of the application life time i.e. the first time when the application starts.
             TableUtils.createTableIfNotExists(connectionSource, DBTrainings.class);
-            TableUtils.createTableIfNotExists(connectionSource, DBUsers.class);
+            //TableUtils.createTableIfNotExists(connectionSource, DBUsers.class);
 
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
@@ -59,7 +58,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             // existing database etc.
 
             TableUtils.dropTable(connectionSource, DBTrainings.class, true);
-            TableUtils.dropTable(connectionSource, DBUsers.class, true);
+            //TableUtils.dropTable(connectionSource, DBUsers.class, true);
 
             onCreate(sqliteDatabase, connectionSource);
 
@@ -79,12 +78,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return dbTrainingsDao;
     }
 
-    public Dao<DBUsers, String> getUsersDao() throws SQLException {
+    /*public Dao<DBUsers, String> getUsersDao() throws SQLException {
         if (dbUsersDao == null) {
             dbUsersDao = getDao(DBUsers.class);
         }
         return dbUsersDao;
     }
+    */
 
 
 }

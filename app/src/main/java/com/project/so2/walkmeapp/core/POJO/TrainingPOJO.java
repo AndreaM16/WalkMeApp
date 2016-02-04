@@ -1,5 +1,7 @@
 package com.project.so2.walkmeapp.core.POJO;
 
+import com.j256.ormlite.field.DatabaseField;
+
 import java.io.Serializable;
 
 /**
@@ -7,17 +9,27 @@ import java.io.Serializable;
  */
 public class TrainingPOJO implements Serializable {
 
-
+@DatabaseField(columnName = "id")
     public int id;
+    @DatabaseField(columnName = "trainingDate")
     public String trainingDate;
+    @DatabaseField(columnName = "trainingSteps")
     public int trainingSteps;
+    @DatabaseField(columnName = "trainingDuration")
     public int trainingDuration;
+    @DatabaseField(columnName = "trainingDistance")
     public int trainingDistance;
+    @DatabaseField(columnName = "lastMetersSettings")
     public int lastMetersSettings;
+    @DatabaseField(columnName = "avgTotSpeed")
     public float avgTotSpeed;
+    @DatabaseField(columnName = "avgXSpeed")
     public float avgXSpeed;
+    @DatabaseField(columnName = "avgTotSteps")
     public float avgTotSteps;
+    @DatabaseField(columnName = "avgXSteps")
     public int avgXSteps;
+    @DatabaseField(columnName = "stepLengthInCm")
     public int stepLengthInCm;
 
     public TrainingPOJO(
