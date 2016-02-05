@@ -90,7 +90,8 @@ public class Training extends Activity {
    private boolean isInitialValueSet = false;
    private boolean isPaused = true;
    private boolean isStopped = true;
-   final private DBTrainings dbTrainingInstance = new DBTrainings();
+   private DBTrainings dbTrainingInstance = new DBTrainings();
+   private List<DBTrainings> lista;
    private long startTime = -1000;
    private TrainingPOJO trainingData;
    private float actualSteps;
@@ -98,6 +99,7 @@ public class Training extends Activity {
 
    private static final double MINUTE_IN_MILLIS = 60000.0;
    private static final int STEP_IN_CENTIMETERS_TEST = 100;
+   private int indice=0;
 
 
    @Override
@@ -127,10 +129,10 @@ public class Training extends Activity {
       Calendar c = Calendar.getInstance();
       SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       String formattedDate = df.format(c.getTime());
-      trainingData = new TrainingPOJO(1, formattedDate, 10, 30, 2, 20, 2, 24, 10, 2, 4);
-
-     /* File file = new File(Environment.DIRECTORY_DOWNLOADS, "training");
+      //trainingData = new TrainingPOJO(1, formattedDate, 10, 30, 2, 20, 2, 24, 10, 2, 4);
       mapper = JacksonUtils.mapper;
+     /* File file = new File(Environment.DIRECTORY_DOWNLOADS, "training");
+
       try {
          mapper.writeValue(file, trainingData);
       } catch (IOException e) {
@@ -201,7 +203,19 @@ public class Training extends Activity {
             actualTime = 0;
             isInitialValueSet = false;
             Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
-            saveTrainingInDB(id, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
+            try {
+               lista=dbDao.queryForAll();
+            } catch (SQLException e) {
+               e.printStackTrace();
+
+            }
+             if (lista!=null) {
+                  if (lista.size()>0){
+
+                indice=lista.size();
+             }}
+            //saveTrainingInDB(indice, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
+            saveTrainingInDB();
             getTrainings();
             return true;
          }
@@ -242,7 +256,13 @@ public class Training extends Activity {
 
       try {
          results = dbDao.queryForAll();
-         Log.d(TAG,"risultati"+results.get(0).toString());
+         String res= null;
+         try {
+            res = mapper.writeValueAsString(results);
+         } catch (IOException e) {
+            e.printStackTrace();
+         }
+         Log.d(TAG,"risultati"+res + "\n");
       } catch (SQLException e) {
          e.printStackTrace();
       }
@@ -251,10 +271,7 @@ public class Training extends Activity {
    private void testCreateTraining() {
 
 
-      if (dbTrainingInstance.id==0){
-         this.id=1;
-      } else
-      this.id =this.id+1;
+      this.id =indice;
       this.trainingDate = "2015-12-11 18:00:23";
       this.trainingSteps = 100;
       this.trainingDuration = 500; //TODO: check if there is a better type
@@ -267,13 +284,12 @@ public class Training extends Activity {
       //this.prefsstepLengthInCm = 70; set from real prefs, 100 is default value
    }
 
-   private void saveTrainingInDB(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLengthInCm) {
-
-
+   //private void saveTrainingInDB(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLengthInCm) {
+   private void saveTrainingInDB( ) {
 
 
       try {
-         this.id = id;
+        /* this.id = id+ 1;
          this.trainingDate = trainingDate;
          this.trainingSteps = trainingSteps;
          this.trainingDuration = trainingDuration; //TODO: check if there is a better type
@@ -284,8 +300,8 @@ public class Training extends Activity {
          this.avgTotSteps = avgTotSteps;
          this.avgXSteps = avgXSteps;
          this.prefsstepLengthInCm = stepLengthInCm; //in cm
-
-         dbTrainingInstance.id = this.id;
+*/
+         dbTrainingInstance.id = this.indice + 1;
          dbTrainingInstance.trainingDate = this.trainingDate;
          dbTrainingInstance.trainingSteps = this.trainingSteps;
          dbTrainingInstance.trainingDuration = this.trainingDuration;
