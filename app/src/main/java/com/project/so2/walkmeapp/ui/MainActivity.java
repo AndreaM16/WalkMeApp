@@ -27,6 +27,7 @@ public class MainActivity extends Activity {
       setContentView(R.layout.activity_main);
 
 
+
       mMainPageElements = getResources().getStringArray(R.array.main_page_list_items);
 
       mMainPageList = (LinearLayout) findViewById(R.id.main_page_list);

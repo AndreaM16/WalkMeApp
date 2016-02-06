@@ -2,6 +2,8 @@ package com.project.so2.walkmeapp.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -10,9 +12,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,9 +46,8 @@ import com.project.so2.walkmeapp.core.PausableChronometer;
 import com.wnafee.vector.MorphButton;
 import com.wnafee.vector.compat.AnimatedVectorDrawable;
 
-
-
-
+import static android.support.v4.content.FileProvider.getUriForFile;
+import static java.security.AccessController.getContext;
 
 
 /**
@@ -100,11 +103,13 @@ public class Training extends Activity {
    private float avgXSpeed;
    private float avgTotSteps;
    private int avgXSteps;
+   private String formattedDate;
+   private int index;
 
 
    private static final double MINUTE_IN_MILLIS = 60000.0;
    private static final int STEP_IN_CENTIMETERS_TEST = 100;
-
+   private ContextWrapper context=this;
 
 
    @Override
@@ -129,11 +134,11 @@ public class Training extends Activity {
 
       setupActionbar();
       setupPedometerService();
-      int index= db.setupDB();
+      index= db.setupDB();
       setValuesFromShared();
       Calendar c = Calendar.getInstance();
       SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      String formattedDate = df.format(c.getTime());
+      formattedDate = df.format(c.getTime());
       //trainingData = new TrainingPOJO(1, formattedDate, 10, 30, 2, 20, 2, 24, 10, 2, 4);
       //ObjectMapper mapper = JacksonUtils.mapper;
      /* File file = new File(Environment.DIRECTORY_DOWNLOADS, "training");
@@ -158,6 +163,9 @@ public class Training extends Activity {
       playButton.setOnClickListener(new View.OnClickListener() {           //TODO: find out why the play/pause animation occours even on long touch //bug is gone? wtf
          @Override
          public void onClick(View v) {
+
+
+
 
             if (isStopped != false) {
                isStopped = false;
@@ -191,6 +199,9 @@ public class Training extends Activity {
       playButton.setOnLongClickListener(new View.OnLongClickListener() {
          @Override
          public boolean onLongClick(View v) {
+
+
+
             isStopped = true;
             //testCreateTraining();
 
@@ -209,14 +220,57 @@ public class Training extends Activity {
             actualTime = 0;
             isInitialValueSet = false;
             Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
+            trainingDate=formattedDate;
 
-            //saveTrainingInDB(indice, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
-            db.saveTrainingInDB();
+            db.saveTrainingInDB(index,trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
+            //db.saveTrainingInDB();
             String res=db.getTrainings();
+
+
+
+
+
+
+
+            
+           // how to save the file and share it by mail
+            File path=new File(context.getFilesDir(),"training");
+            File training = new File(path,"training.txt");
+            try {
+               ObjectMapper mapper=JacksonUtils.mapper;
+               mapper.writeValue(training, res);
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+            Uri contentUri = FileProvider.getUriForFile(context, "com.project.so2.walkmeapp", training);
+
+
+
+
+
+// set the type to 'email'
+            emailIntent.setType("vnd.android.cursor.dir/email");
+            //String to[] = {"asd@gmail.com"};
+
+            //emailIntent .putExtra(Intent.EXTRA_EMAIL, to);
+// the attachment
+            emailIntent.putExtra(Intent.EXTRA_STREAM,contentUri);
+// the mail subject
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+
+            startActivity(Intent.createChooser(emailIntent , "Send email..."));
+            //emailIntent.setData(contentUri);
+
             return true;
          }
       });
    }
+
+
 
 
    /*public void testCreateTraining( DBTrainings dbTrainingInstance) {

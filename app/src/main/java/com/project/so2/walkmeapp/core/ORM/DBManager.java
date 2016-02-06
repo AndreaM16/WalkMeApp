@@ -36,6 +36,7 @@ public class DBManager extends ContextWrapper {
     private float avgXSpeed;
     private float avgTotSteps;
     private int avgXSteps;
+    private int stepLengthInCm;
 
     private ObjectMapper mapper;
     private DatabaseHelper databaseHelper;
@@ -44,7 +45,8 @@ public class DBManager extends ContextWrapper {
     private List<DBTrainings> lista;
     private Context context;
 
-    public DBManager(ContextWrapper context){
+    public DBManager(ContextWrapper context ){
+
         super(context);
         mapper=JacksonUtils.mapper;
 
@@ -72,7 +74,7 @@ public class DBManager extends ContextWrapper {
             e.printStackTrace();
         }
         String res = null;
-       if(results.size()!=0){
+        if(results.size()!=0){
 
             try {
                 res = mapper.writeValueAsString(results);
@@ -114,23 +116,39 @@ public class DBManager extends ContextWrapper {
     }
 
     //private void saveTrainingInDB(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLengthInCm) {
-    public void saveTrainingInDB() {
+    public void saveTrainingInDB(int id,
+                                 String trainingDate,
+                                 int trainingSteps,
+                                 int trainingDuration,
+                                 int trainingDistance,
+                                 int lastMetersSettings,
+                                 float avgTotSpeed,
+                                 float avgXSpeed,
+                                 float avgTotSteps,
+                                 int avgXSteps,
+                                 int stepLengthInCm) {
 
 
         try {
-        /* this.id = id+ 1;
-         this.trainingDate = trainingDate;
-         this.trainingSteps = trainingSteps;
-         this.trainingDuration = trainingDuration; //TODO: check if there is a better type
-         this.trainingDistance = trainingDistance;
-         this.lastMetersSettings = lastMetersSettings;
-         this.avgTotSpeed = avgTotSpeed;
-         this.avgXSpeed = avgXSpeed;
-         this.avgTotSteps = avgTotSteps;
-         this.avgXSteps = avgXSteps;
-         this.prefsstepLengthInCm = stepLengthInCm; //in cm
-*/          results=dbDao.queryForAll();
-            dbTrainingInstance.id = (results.get(results.size()-1).id) +1;
+            this.id=id;
+            this.trainingDate = trainingDate;
+            this.trainingSteps = trainingSteps;
+            this.trainingDuration = trainingDuration; //TODO: check if there is a better type
+            this.trainingDistance = trainingDistance;
+            this.lastMetersSettings = lastMetersSettings;
+            this.avgTotSpeed = avgTotSpeed;
+            this.avgXSpeed = avgXSpeed;
+            this.avgTotSteps = avgTotSteps;
+            this.avgXSteps = avgXSteps;
+            this.stepLengthInCm = stepLengthInCm; //in cm
+            results=dbDao.queryForAll();
+            if (results.size()==0){
+                dbTrainingInstance.id=this.id;
+            } else{
+                dbTrainingInstance.id = (results.get(results.size()-1).id) +1;
+
+            }
+
             dbTrainingInstance.trainingDate = this.trainingDate;
             dbTrainingInstance.trainingSteps = this.trainingSteps;
             dbTrainingInstance.trainingDuration = this.trainingDuration;
