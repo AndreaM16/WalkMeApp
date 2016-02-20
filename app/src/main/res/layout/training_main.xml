@@ -152,6 +152,7 @@
 
         </LinearLayout>
         <RelativeLayout
+            android:id="@+id/icons_play_pause"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/training_infos">
@@ -183,10 +184,53 @@
                      android:layout_centerHorizontal="true" />-->
 
             </RelativeLayout>
+
+
         </RelativeLayout>
 
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/RelativeLayout01"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+            <TextView
+                android:id="@+id/tvTitoloApp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="Esempio uso GPS" >
+            </TextView>
+            <TextView
+                android:id="@+id/tvLatitudineLabel"
+                android:layout_width="85dip"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvTitoloApp"
+                android:text="Latitudine" >
+            </TextView>
+            <TextView
+                android:id="@+id/tvLatitudine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tvLatitudineLabel"
+                android:layout_toRightOf="@+id/tvLatitudineLabel"
+                android:text="No data" >
+            </TextView>
+            <TextView
+                android:id="@+id/tvLongitudineLabel"
+                android:layout_width="85dip"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvLatitudineLabel"
+                android:text="Longitudine" >
+            </TextView>
+            <TextView
+                android:id="@+id/tvLongitudine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tvLongitudineLabel"
+                android:layout_toRightOf="@+id/tvLongitudineLabel"
+                android:text="No data" >
+            </TextView>
+        </RelativeLayout>
 
-
-    </RelativeLayout>
-</RelativeLayout>
+      </RelativeLayout>
+  </RelativeLayout>
 

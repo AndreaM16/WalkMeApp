@@ -1,9 +1,13 @@
 package com.project.so2.walkmeapp.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -12,11 +16,19 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.LocalBroadcastManager;
+import android.telecom.ConnectionService;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,17 +47,21 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.project.so2.walkmeapp.core.JacksonUtils;
 import java.io.IOException;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import java.io.File;
 
 import com.project.so2.walkmeapp.R;
 import com.project.so2.walkmeapp.core.PausableChronometer;
+import com.project.so2.walkmeapp.core.SERVICE.GPS;
 import com.wnafee.vector.MorphButton;
 import com.wnafee.vector.compat.AnimatedVectorDrawable;
 
+import static android.app.PendingIntent.getActivity;
 import static android.support.v4.content.FileProvider.getUriForFile;
 import static java.security.AccessController.getContext;
 
@@ -53,8 +69,7 @@ import static java.security.AccessController.getContext;
 /**
  * Created by Andrea on 24/01/2016.
  */
-public class Training extends Activity {
-
+public class Training extends Activity{
 
    private static final String PREFS_NAME = "SETTINGS_PREFS";
 
@@ -105,20 +120,74 @@ public class Training extends Activity {
    private int avgXSteps;
    private String formattedDate;
    private int index;
+   private TextView lat;
+   private TextView longit;
 
 
    private static final double MINUTE_IN_MILLIS = 60000.0;
    private static final int STEP_IN_CENTIMETERS_TEST = 100;
-   private ContextWrapper context=this;
+   private ContextWrapper context = this;
+   private static final int THREAD_FINISH_MESSAGE = 1;
+   private boolean mIsBound;
+   private GPS mService;
 
+   final Handler handleThreadMsg = new Handler(Looper.getMainLooper()) {
+      @Override
+      public void handleMessage(Message msg) {
+         super.handleMessage(msg);
+         switch (msg.what) {
+            case THREAD_FINISH_MESSAGE:
+//Il worker thread ha terminato e lo notifico con un
+//Toast eseguito nell’UI Thread
+               Toast.makeText(getApplicationContext(),
+                       "worker thread finished",
+                       Toast.LENGTH_SHORT).show();
+               break;
+            default:
+               break;
+         }
+      }
+   };
+   private Intent serviceIntent;
+
+
+   @Override
+   public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+      return super.bindService(service, conn, flags);
+   }
+
+   @Override
+   protected void onStart() {
+      super.onStart();
+
+      Toast.makeText(this, "Mi connetto al servizio",
+              Toast.LENGTH_SHORT).show();
+      //Ci connettiamo al service
+      connectLocalService();
+
+   }
+   @Override
+   protected void onStop() {
+      super.onStop();
+      Toast.makeText(this, "Deregistro callback e mi disconnetto dal servizio", Toast.LENGTH_SHORT).show();
+              disconnectLocalService();
+   }
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      db=new DBManager(this);
-
+      db = new DBManager(this);
       //Binding Class to its View
       setContentView(R.layout.training_main);
+      serviceIntent = new Intent(this, GPS.class);
+//Inizializziamo le due TextView
+      lat = (TextView) this.findViewById(R.id.tvLatitudine);
+      longit = (TextView) this.findViewById(R.id.tvLongitudine);
+
+
+
+
+
 
       //Binding Strings to their View
       //mMainTrainingElements = getResources().getStringArray(R.array.main_training_list_items);
@@ -131,10 +200,12 @@ public class Training extends Activity {
       runContainer = (RelativeLayout) findViewById(R.id.training_run_container);
       stopContainer = (RelativeLayout) findViewById(R.id.training_stop_container);
       chronometer = (PausableChronometer) findViewById(R.id.digital_clock);
+      //LocalBroadcastManager.getInstance(this).registerReceiver(
+      //mMessageReceiver, new IntentFilter("GPSLocationUpdates"));
 
       setupActionbar();
-      setupPedometerService();
-      index= db.setupDB();
+     // setupPedometerService();
+      index = db.setupDB();
       setValuesFromShared();
       Calendar c = Calendar.getInstance();
       SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -160,11 +231,11 @@ public class Training extends Activity {
       playButton.setEndDrawable(endDrawable);
 
 
-      playButton.setOnClickListener(new View.OnClickListener() {           //TODO: find out why the play/pause animation occours even on long touch //bug is gone? wtf
+
+
+         playButton.setOnClickListener(new View.OnClickListener() {           //TODO: find out why the play/pause animation occours even on long touch //bug is gone? wtf
          @Override
          public void onClick(View v) {
-
-
 
 
             if (isStopped != false) {
@@ -190,6 +261,7 @@ public class Training extends Activity {
 
 
             }
+            //new GPS(Training.this).execute(coord, coord, coord);
 
             updateIsPaused();
 
@@ -199,7 +271,6 @@ public class Training extends Activity {
       playButton.setOnLongClickListener(new View.OnLongClickListener() {
          @Override
          public boolean onLongClick(View v) {
-
 
 
             isStopped = true;
@@ -220,24 +291,19 @@ public class Training extends Activity {
             actualTime = 0;
             isInitialValueSet = false;
             Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
-            trainingDate=formattedDate;
+            trainingDate = formattedDate;
 
-            db.saveTrainingInDB(index,trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
+            db.saveTrainingInDB(index, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
             //db.saveTrainingInDB();
-            String res=db.getTrainings();
+            String res = db.getTrainings();
 
 
 
-
-
-
-
-            
-           // how to save the file and share it by mail
-            File path=new File(context.getFilesDir(),"training");
-            File training = new File(path,"training.txt");
+            // how to save the file and share it by mail
+            File path = new File(context.getFilesDir(), "training");
+            File training = new File(path, "training.txt");
             try {
-               ObjectMapper mapper=JacksonUtils.mapper;
+               ObjectMapper mapper = JacksonUtils.mapper;
                mapper.writeValue(training, res);
             } catch (IOException e) {
                e.printStackTrace();
@@ -249,28 +315,84 @@ public class Training extends Activity {
             Uri contentUri = FileProvider.getUriForFile(context, "com.project.so2.walkmeapp", training);
 
 
-
-
-
 // set the type to 'email'
             emailIntent.setType("vnd.android.cursor.dir/email");
             //String to[] = {"asd@gmail.com"};
 
             //emailIntent .putExtra(Intent.EXTRA_EMAIL, to);
 // the attachment
-            emailIntent.putExtra(Intent.EXTRA_STREAM,contentUri);
+            emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
 // the mail subject
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
 
-            startActivity(Intent.createChooser(emailIntent , "Send email..."));
+            startActivity(Intent.createChooser(emailIntent, "Send email..."));
             //emailIntent.setData(contentUri);
+            unbindService(mConnection);
 
             return true;
          }
       });
    }
 
+   private ServiceConnection mConnection = new ServiceConnection() {
+      @Override
+      public void onServiceConnected(ComponentName className, IBinder
+              service) {
+// This is called when the connection with the service has been
+// established, giving us the service object we can use to
+// interact with the service.
+         GPS.LocalBinder binder = (GPS.LocalBinder) service;
+         mService = binder.getService();
+         mIsBound = true;
+         GPS.OnNewGPSPointsListener clientListener = new
+                 GPS.OnNewGPSPointsListener() {
+                    @Override
+                    public void onNewGPSPoint() {
+                       getGPSData();
+                    }
+                 };
+//Registriamo il listener per ricevere gli aggiornamenti
+         mService.addOnNewGPSPointsListener(clientListener);
+      }
 
+      @Override
+      public void onServiceDisconnected(ComponentName name) {
+         Log.i("ConnectionService", "Disconnected");
+         mService = null;
+         mIsBound=false;
+      }
+
+   };
+   private void connectLocalService() {
+      bindService(this.serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
+   }
+
+   private void disconnectLocalService() {
+      if(mIsBound) {
+//Deregistro il listener
+         mService.removeOnNewGPSPointsListener();
+// Detach our existing connection.
+         unbindService(mConnection);
+         mIsBound = false;
+      }
+   }
+   private void getGPSData() {
+      double latitude = 0.0;
+      double longitude = 0.0;
+// Recupero le coordinate GPS usando i metodi pubblici del service
+      latitude = mService.getLatitude();
+      longitude = mService.getLongitude();
+
+// Visualizza i nuovi dati
+      lat.setText( format(latitude));
+      longit.setText(format(longitude));
+
+   }
+
+   public static String format(double value) {
+      DecimalFormat decimalFormat = new DecimalFormat("0.0000000");
+      return decimalFormat.format(value);
+   }
 
 
    /*public void testCreateTraining( DBTrainings dbTrainingInstance) {
@@ -289,6 +411,7 @@ public class Training extends Activity {
       //this.prefsstepLengthInCm = 70; set from real prefs, 100 is default value
    }*/
 
+
    private void setValuesFromShared() {
 
       settings = getSharedPreferences(PREFS_NAME, 0);
@@ -304,8 +427,9 @@ public class Training extends Activity {
          prefsAvgStepInM = settings.getInt("avgStepInM", 1);
       }
 
-      Log.d(TAG, "Values from prefs ->  " + "stepLength: " + prefsstepLengthInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepInM  + "m");
+      Log.d(TAG, "Values from prefs ->  " + "stepLength: " + prefsstepLengthInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepInM + "m");
    }
+
 
 
 
@@ -341,7 +465,7 @@ public class Training extends Activity {
    }
 
 
-   public void setupPedometerService() {
+   /*public void setupPedometerService() {
 
       sensorEventListener = new SensorEventListener() {
 
@@ -392,7 +516,7 @@ public class Training extends Activity {
 
 
             //     }
-         }
+   /*      }
       };
 
       sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -405,8 +529,7 @@ public class Training extends Activity {
 
    }
 
-
-
+*/
    private void setupActionbar() {
       actionBar.setImageResource(R.drawable.btn_back);
       actionBar.setOnClickListener(new View.OnClickListener() {
@@ -418,5 +541,4 @@ public class Training extends Activity {
 
       actionBarText.setText(getResources().getString(R.string.main_training_title));
    }
-
 }
