@@ -135,15 +135,15 @@ public class Training extends Activity{
       @Override
       public void handleMessage(Message msg) {
          super.handleMessage(msg);
-         switch (msg.what) {
-            case THREAD_FINISH_MESSAGE:
+         switch( msg.what ) {
+            case THREAD_FINISH_MESSAGE :
 //Il worker thread ha terminato e lo notifico con un
 //Toast eseguito nell’UI Thread
-               Toast.makeText(getApplicationContext(),
+               Toast.makeText( getApplicationContext(),
                        "worker thread finished",
                        Toast.LENGTH_SHORT).show();
                break;
-            default:
+            default :
                break;
          }
       }
@@ -169,8 +169,7 @@ public class Training extends Activity{
    @Override
    protected void onStop() {
       super.onStop();
-      Toast.makeText(this, "Deregistro callback e mi disconnetto dal servizio", Toast.LENGTH_SHORT).show();
-              disconnectLocalService();
+      disconnectLocalService();
    }
 
    @Override
@@ -183,6 +182,9 @@ public class Training extends Activity{
 //Inizializziamo le due TextView
       lat = (TextView) this.findViewById(R.id.tvLatitudine);
       longit = (TextView) this.findViewById(R.id.tvLongitudine);
+
+      lat.setText(format(getIntent().getExtras().getDouble("latitudine")));
+      longit.setText(format(getIntent().getExtras().getDouble("longitudine")));
 
 
 
@@ -333,6 +335,17 @@ public class Training extends Activity{
          }
       });
    }
+   private Runnable mUpdateTimeTask = new Runnable() {
+      public void run() {
+         // do what you need to do here after the delay
+         activateGPS();
+      }
+   };
+   public  void activateGPS() {
+
+      Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+      startActivity(intent);
+   }
 
    private ServiceConnection mConnection = new ServiceConnection() {
       @Override
@@ -344,6 +357,13 @@ public class Training extends Activity{
          GPS.LocalBinder binder = (GPS.LocalBinder) service;
          mService = binder.getService();
          mIsBound = true;
+         if(!mService.mLocationManager.isProviderEnabled("gps")){
+            Toast.makeText(Training.this, "GPS e' attualmente disabilitato. E' possibile abilitarlo dal menu impostazioni.",
+                    Toast.LENGTH_LONG).show();
+            handleThreadMsg.postDelayed(mUpdateTimeTask, 3000);
+
+
+         }
          GPS.OnNewGPSPointsListener clientListener = new
                  GPS.OnNewGPSPointsListener() {
                     @Override
@@ -535,7 +555,11 @@ public class Training extends Activity{
       actionBar.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            finish();
+            Intent intent;
+            intent = new Intent(Training.this, MainActivity.class);
+            intent.putExtra("latitudine",mService.getLatitude());
+            intent.putExtra("longitudine",mService.getLongitude());
+            startActivity(intent);
          }
       });
 

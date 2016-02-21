@@ -37,6 +37,9 @@ public class MainActivity extends Activity{
    private ImageView mUserView;
     private GPS mService;
     private boolean mIsBound;
+    double latitude = 0.0;
+    double longitude = 0.0;
+
 
 
    final Handler handleThreadMsg = new Handler(Looper.getMainLooper()) {
@@ -56,6 +59,12 @@ public class MainActivity extends Activity{
          }
       }
    };
+    private Runnable mUpdateTimeTask = new Runnable() {
+        public void run() {
+            // do what you need to do here after the delay
+            activateGPS();
+        }
+    };
 
     @Override
     public boolean bindService(Intent service, ServiceConnection conn, int flags) {
@@ -72,8 +81,11 @@ public class MainActivity extends Activity{
             MainActivity.this.mService = (GPS) binder.getService();
             mIsBound = true;
             if(!mService.mLocationManager.isProviderEnabled("gps")){
+                Toast.makeText(MainActivity.this, "GPS e' attualmente disabilitato. E' possibile abilitarlo dal menu impostazioni.",
+                        Toast.LENGTH_LONG).show();
+                handleThreadMsg.postDelayed(mUpdateTimeTask, 3000);
 
-                activateGPS();
+
             }
             GPS.OnNewGPSPointsListener clientListener = new
                     GPS.OnNewGPSPointsListener() {
@@ -106,6 +118,8 @@ public class MainActivity extends Activity{
     }
 
     private void getGPSData() {
+
+//
     }
 
     @Override
@@ -154,6 +168,11 @@ public class MainActivity extends Activity{
          });
 
          mMainPageList.addView(v);
+          try{
+              latitude=getIntent().getExtras().getDouble("latitudine");
+              longitude=getIntent().getExtras().getDouble("longitudine");
+          }
+          catch(Exception e){}
 
 }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -204,8 +223,6 @@ public class MainActivity extends Activity{
         }
     }
     public  void activateGPS() {
-        Toast.makeText(this, "GPS e' attualmente disabilitato. E' possibile abilitarlo dal menu impostazioni.",
-                Toast.LENGTH_LONG).show();
         Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivity(intent);
     }
@@ -225,6 +242,8 @@ public class MainActivity extends Activity{
 
          case "Start":
             intent = new Intent(this, Training.class);
+             intent.putExtra("latitudine",latitude);
+             intent.putExtra("longitudine",longitude);
             break;
 
          case "Settings":
@@ -239,7 +258,6 @@ public class MainActivity extends Activity{
       }
       if (intent != null) {
          startActivity(intent);
-          disconnectLocalService();
       }
 
    }

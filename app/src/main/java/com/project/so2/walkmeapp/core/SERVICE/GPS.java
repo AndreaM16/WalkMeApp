@@ -9,9 +9,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,9 +23,10 @@ import android.widget.Toast;
 public class GPS extends Service {
 
     private static final String TAG = "TEST GPS";
+    private static final int THREAD_FINISH_MESSAGE = 1;
     public LocationManager mLocationManager;
-    private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 1;
+    private static final int LOCATION_INTERVAL = 5000;
+    private static final float LOCATION_DISTANCE = 5;
     public Location mLastLocation;
     private Double lat;
     private Double longit;
@@ -61,6 +66,7 @@ public class GPS extends Service {
 
         @Override
         public void onProviderDisabled(String provider) {
+
             Log.e(TAG, "onProviderDisabled: " + provider);
 
         }
@@ -68,6 +74,7 @@ public class GPS extends Service {
 
         @Override
         public void onProviderEnabled(String provider) {
+
             Log.e(TAG, "onProviderEnabled: " + provider);
         }
 
@@ -76,6 +83,7 @@ public class GPS extends Service {
             Log.e(TAG, "onStatusChanged: " + provider);
         }
     }
+
 
 
     @Override
