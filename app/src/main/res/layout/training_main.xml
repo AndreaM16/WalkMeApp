@@ -187,6 +187,19 @@
 
 
         </RelativeLayout>
+        <LinearLayout android:id="@+id/linearChart"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/view"
+            android:gravity="bottom"
+            android:layout_marginTop="50dp" >
+        </LinearLayout>
+        <View android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_alignParentBottom="true"
+            android:background="#00FF00" />
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/RelativeLayout01"

@@ -32,6 +32,7 @@ import android.telecom.ConnectionService;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -100,6 +101,7 @@ public class Training extends Activity{
    private int colorGreen;
    private int colorGrey;
    private PausableChronometer chronometer;
+   LinearLayout linearChart;
 
    private boolean isInitialValueSet = false;
    private boolean isPaused = true;
@@ -188,6 +190,14 @@ public class Training extends Activity{
       lat = (TextView) this.findViewById(R.id.tvLatitudine);
       longit = (TextView) this.findViewById(R.id.tvLongitudine);
       distanza_text=(TextView) this.findViewById(R.id.tvDistanza);
+      linearChart=(LinearLayout)findViewById(R.id.linearChart);
+      int colerloop[] = { 1, 2, 2, 2, 3, 3, 3, 3, 1, 1 };
+      int heightLoop[] = { 400, 300, 300, 300, 200, 200, 200, 200, 400, 400 };
+      for (int j = 0; j < colerloop.length; j++) {
+         drawChart(1, colerloop[j], heightLoop[j]);
+      }
+
+
 
       lat.setText(format(getIntent().getExtras().getDouble("latitudine")));
       longit.setText(format(getIntent().getExtras().getDouble("longitudine")));
@@ -341,6 +351,27 @@ public class Training extends Activity{
          }
       });
    }
+
+   public void drawChart(int count, int color, int height) {
+      System.out.println(count + color + height);
+      if (color == 3) {
+         color = Color.RED;
+      } else if (color == 1) {
+         color = Color.BLUE;
+      } else if (color == 2) {
+         color = Color.GREEN;
+      } for (int k = 1; k <= count; k++)
+      { View view = new View(this); view.setBackgroundColor(color);
+         view.setLayoutParams(new LinearLayout.LayoutParams(25, height));
+         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)view.getLayoutParams();
+         params.setMargins(3, 0, 0, 0); // substitute parameters for left, // top, right, bottom
+         view.setLayoutParams(params);
+         linearChart.addView(view);
+                  }
+   }
+
+
+
    private Runnable mUpdateTimeTask = new Runnable() {
       public void run() {
          // do what you need to do here after the delay
