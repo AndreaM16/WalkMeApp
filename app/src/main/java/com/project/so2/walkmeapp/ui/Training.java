@@ -49,6 +49,7 @@ import java.io.IOException;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +59,7 @@ import java.io.File;
 import com.project.so2.walkmeapp.R;
 import com.project.so2.walkmeapp.core.PausableChronometer;
 import com.project.so2.walkmeapp.core.SERVICE.GPS;
+import com.project.so2.walkmeapp.core.SERVICE.Position;
 import com.wnafee.vector.MorphButton;
 import com.wnafee.vector.compat.AnimatedVectorDrawable;
 
@@ -122,6 +124,9 @@ public class Training extends Activity{
    private int index;
    private TextView lat;
    private TextView longit;
+   private TextView distanza_text;
+   double distanza=0.0;
+   private ArrayList<Location> list=new ArrayList<Location>();
 
 
    private static final double MINUTE_IN_MILLIS = 60000.0;
@@ -182,6 +187,7 @@ public class Training extends Activity{
 //Inizializziamo le due TextView
       lat = (TextView) this.findViewById(R.id.tvLatitudine);
       longit = (TextView) this.findViewById(R.id.tvLongitudine);
+      distanza_text=(TextView) this.findViewById(R.id.tvDistanza);
 
       lat.setText(format(getIntent().getExtras().getDouble("latitudine")));
       longit.setText(format(getIntent().getExtras().getDouble("longitudine")));
@@ -399,14 +405,26 @@ public class Training extends Activity{
    private void getGPSData() {
       double latitude = 0.0;
       double longitude = 0.0;
-// Recupero le coordinate GPS usando i metodi pubblici del service
       latitude = mService.getLatitude();
       longitude = mService.getLongitude();
+      Location loc = new Location(mService.mLastLocation);
+      list.add(loc);
+      int i;
+      if (list.size() > 1) {
+
+         for (i = list.size() - 1; i > list.size() - 2; i--) {
+
+            distanza = distanza + list.get(i).distanceTo(list.get(i - 1));
+
+         }
+
 
 // Visualizza i nuovi dati
-      lat.setText( format(latitude));
-      longit.setText(format(longitude));
+         lat.setText(format(latitude));
+         longit.setText(format(longitude));
+         distanza_text.setText(format(distanza));
 
+      }
    }
 
    public static String format(double value) {

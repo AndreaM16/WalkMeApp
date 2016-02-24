@@ -191,7 +191,8 @@
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/RelativeLayout01"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="fill_parent"
+            android:layout_below="@id/icons_play_pause">
             <TextView
                 android:id="@+id/tvTitoloApp"
                 android:layout_width="wrap_content"
@@ -229,8 +230,26 @@
                 android:layout_toRightOf="@+id/tvLongitudineLabel"
                 android:text="No data" >
             </TextView>
+
+            <TextView
+                android:id="@+id/tvDistanzaLabel"
+                android:layout_width="85dip"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvLongitudineLabel"
+                android:text="Distanza" >
+            </TextView>
+            <TextView
+                android:id="@+id/tvDistanza"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/tvDistanzaLabel"
+                android:layout_alignBaseline="@+id/tvDistanzaLabel"
+
+                android:text="No data" >
+            </TextView>
         </RelativeLayout>
 
-      </RelativeLayout>
+
+    </RelativeLayout>
   </RelativeLayout>
 

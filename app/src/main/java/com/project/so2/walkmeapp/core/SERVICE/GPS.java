@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Binder;
@@ -25,7 +26,7 @@ public class GPS extends Service {
     private static final String TAG = "TEST GPS";
     private static final int THREAD_FINISH_MESSAGE = 1;
     public LocationManager mLocationManager;
-    private static final int LOCATION_INTERVAL = 5000;
+    private static final int LOCATION_INTERVAL = 500;
     private static final float LOCATION_DISTANCE = 5;
     public Location mLastLocation;
     private Double lat;
@@ -34,15 +35,16 @@ public class GPS extends Service {
     private OnNewGPSPointsListener clientListener;
     private LocationListener mLocationListener = new LocationListener(LocationManager.GPS_PROVIDER);
 
-
     private class LocationListener implements android.location.LocationListener {
 
 
         public LocationListener(String provider) {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
-            lat = mLastLocation.getLatitude();
-            longit = mLastLocation.getLongitude();
+            if(mLastLocation.getAccuracy()<10) {
+                lat = mLastLocation.getLatitude();
+                longit = mLastLocation.getLongitude();
+            }
             Log.e(TAG, "COORDINATE: " + " latitudine :" + mLastLocation.getLatitude() + "longitudine :" + mLastLocation.getLongitude());
 
 
@@ -52,15 +54,17 @@ public class GPS extends Service {
         @Override
         public void onLocationChanged(Location location) {
             Log.e(TAG, "onLocationChanged: " + location);
-            mLastLocation.set(location);
-            lat = mLastLocation.getLatitude();
-            longit = mLastLocation.getLongitude();
-            // Aggiorna le coordinate
+            if (location.getAccuracy()<10) {
+                mLastLocation.set(location);
+                lat = mLastLocation.getLatitude();
+                longit = mLastLocation.getLongitude();
+                // Aggiorna le coordinate
 
 
 //Avviso i client (uno in questo caso)
-            if (clientListener != null) {
-                clientListener.onNewGPSPoint();
+                if (clientListener != null) {
+                    clientListener.onNewGPSPoint();
+                }
             }
         }
 
