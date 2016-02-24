@@ -60,8 +60,6 @@ public class GPS extends Service {
                 longit = mLastLocation.getLongitude();
                 // Aggiorna le coordinate
 
-
-//Avviso i client (uno in questo caso)
                 if (clientListener != null) {
                     clientListener.onNewGPSPoint();
                 }

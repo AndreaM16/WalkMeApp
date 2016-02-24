@@ -27,7 +27,7 @@ public class DBTrainings {
     @DatabaseField
     public int avgXSteps;
     @DatabaseField
-    public int stepLengthInCm; //in cm
+    public int stepLengthInCm;
 
 
 

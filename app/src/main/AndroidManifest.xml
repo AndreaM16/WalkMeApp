@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.project.so2.walkmeapp">
+<manifest package="com.project.so2.walkmeapp"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -19,35 +20,50 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
+                android:resource="@xml/file_paths"/>
 
         </provider>
-        <activity android:name=".ui.MainActivity" android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
 
-        <activity android:name=".ui.Training" android:screenOrientation="portrait">
+        <activity
+            android:name=".ui.Training"
+            android:screenOrientation="portrait"
+            android:noHistory="true">
             <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
+                <action android:name="android.intent.action.GET_CONTENT"/>
             </intent-filter>
             <intent-filter>
-            <action android:name="android.intent.action.SEND"/>
-
+                <action android:name="android.intent.action.SEND"/>
             </intent-filter>
         </activity>
 
         <!-- Classes -->
-        <activity android:name=".ui.History" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.History"
+            android:screenOrientation="portrait"/>
         <service android:name=".core.SERVICE.GPS"/>
-        <activity android:name=".ui.SingleMonth" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.Settings" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.About" android:screenOrientation="portrait"/>
-        <uses-feature android:name="android.hardware.sensor.stepcounter" />
+
+        <activity
+            android:name=".ui.SingleMonth"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.Settings"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.About"
+            android:screenOrientation="portrait"/>
+
+        <uses-feature android:name="android.hardware.sensor.stepcounter"/>
     </application>
 
 </manifest>

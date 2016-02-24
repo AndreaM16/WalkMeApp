@@ -1,34 +1,29 @@
 package com.project.so2.walkmeapp.ui;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.content.FileProvider;
-import android.support.v4.content.LocalBroadcastManager;
-import android.telecom.ConnectionService;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -37,42 +32,35 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.project.so2.walkmeapp.core.ORM.DBManager;
-import com.project.so2.walkmeapp.core.ORM.DBTrainings;
-import com.project.so2.walkmeapp.core.ORM.DatabaseHelper;
-import com.project.so2.walkmeapp.core.POJO.TrainingPOJO;
-import java.sql.SQLException;
+
 import org.codehaus.jackson.map.ObjectMapper;
+
 import com.project.so2.walkmeapp.core.JacksonUtils;
+
 import java.io.IOException;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import java.io.File;
 
 import com.project.so2.walkmeapp.R;
+import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 import com.project.so2.walkmeapp.core.PausableChronometer;
 import com.project.so2.walkmeapp.core.SERVICE.GPS;
-import com.project.so2.walkmeapp.core.SERVICE.Position;
 import com.wnafee.vector.MorphButton;
 import com.wnafee.vector.compat.AnimatedVectorDrawable;
 
 import static android.app.PendingIntent.getActivity;
-import static android.support.v4.content.FileProvider.getUriForFile;
-import static java.security.AccessController.getContext;
 
 
 /**
  * Created by Andrea on 24/01/2016.
  */
-public class Training extends Activity{
+public class Training extends Activity {
 
    private static final String PREFS_NAME = "SETTINGS_PREFS";
 
@@ -102,12 +90,13 @@ public class Training extends Activity{
    private int colorGrey;
    private PausableChronometer chronometer;
    LinearLayout linearChart;
+   private ArrayList<TrainingInstant> trainingInsts;
+   private TrainingInstant ti;
 
    private boolean isInitialValueSet = false;
    private boolean isPaused = true;
    private boolean isStopped = true;
    private long startTime = -1000;
-   private TrainingPOJO trainingData;
    private float actualSteps;
    private long actualTime;
    private DBManager db;
@@ -127,8 +116,8 @@ public class Training extends Activity{
    private TextView lat;
    private TextView longit;
    private TextView distanza_text;
-   double distanza=0.0;
-   private ArrayList<Location> list=new ArrayList<Location>();
+   private double distance = 0.0;
+   private ArrayList<Location> list = new ArrayList<Location>();
 
 
    private static final double MINUTE_IN_MILLIS = 60000.0;
@@ -136,26 +125,27 @@ public class Training extends Activity{
    private ContextWrapper context = this;
    private static final int THREAD_FINISH_MESSAGE = 1;
    private boolean mIsBound;
+   private Intent serviceIntent;
    private GPS mService;
+
+   private boolean isEnded = false;
 
    final Handler handleThreadMsg = new Handler(Looper.getMainLooper()) {
       @Override
       public void handleMessage(Message msg) {
          super.handleMessage(msg);
-         switch( msg.what ) {
-            case THREAD_FINISH_MESSAGE :
-//Il worker thread ha terminato e lo notifico con un
-//Toast eseguito nell’UI Thread
-               Toast.makeText( getApplicationContext(),
+         switch (msg.what) {
+            case THREAD_FINISH_MESSAGE:
+               Toast.makeText(getApplicationContext(),
                        "worker thread finished",
                        Toast.LENGTH_SHORT).show();
                break;
-            default :
+            default:
                break;
          }
       }
    };
-   private Intent serviceIntent;
+   private Location previousLoc;
 
 
    @Override
@@ -163,16 +153,17 @@ public class Training extends Activity{
       return super.bindService(service, conn, flags);
    }
 
+
    @Override
    protected void onStart() {
       super.onStart();
 
-      Toast.makeText(this, "Mi connetto al servizio",
+      Toast.makeText(this, "Ricerca GPS",
               Toast.LENGTH_SHORT).show();
-      //Ci connettiamo al service
       connectLocalService();
 
    }
+
    @Override
    protected void onStop() {
       super.onStop();
@@ -183,32 +174,21 @@ public class Training extends Activity{
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       db = new DBManager(this);
-      //Binding Class to its View
       setContentView(R.layout.training_main);
+
       serviceIntent = new Intent(this, GPS.class);
-//Inizializziamo le due TextView
       lat = (TextView) this.findViewById(R.id.tvLatitudine);
       longit = (TextView) this.findViewById(R.id.tvLongitudine);
-      distanza_text=(TextView) this.findViewById(R.id.tvDistanza);
-      linearChart=(LinearLayout)findViewById(R.id.linearChart);
-      int colerloop[] = { 1, 2, 2, 2, 3, 3, 3, 3, 1, 1 };
-      int heightLoop[] = { 400, 300, 300, 300, 200, 200, 200, 200, 400, 400 };
+      distanza_text = (TextView) this.findViewById(R.id.tvDistanza);
+      trainingInsts = new ArrayList<TrainingInstant>();
+
+      //TEST GRAFICO
+      linearChart = (LinearLayout) findViewById(R.id.linearChart);
+      int colerloop[] = {1, 2, 2, 2, 3, 3, 3, 3, 1, 1};
+      int heightLoop[] = {400, 300, 300, 300, 200, 200, 200, 200, 400, 400};
       for (int j = 0; j < colerloop.length; j++) {
          drawChart(1, colerloop[j], heightLoop[j]);
       }
-
-
-
-      lat.setText(format(getIntent().getExtras().getDouble("latitudine")));
-      longit.setText(format(getIntent().getExtras().getDouble("longitudine")));
-
-
-
-
-
-
-      //Binding Strings to their View
-      //mMainTrainingElements = getResources().getStringArray(R.array.main_training_list_items);
 
       actionBar = (ImageView) findViewById(R.id.action_bar_icon);
       actionBarText = (TextView) findViewById(R.id.action_bar_title);
@@ -218,26 +198,16 @@ public class Training extends Activity{
       runContainer = (RelativeLayout) findViewById(R.id.training_run_container);
       stopContainer = (RelativeLayout) findViewById(R.id.training_stop_container);
       chronometer = (PausableChronometer) findViewById(R.id.digital_clock);
-      //LocalBroadcastManager.getInstance(this).registerReceiver(
-      //mMessageReceiver, new IntentFilter("GPSLocationUpdates"));
+
 
       setupActionbar();
-     // setupPedometerService();
+
+
       index = db.setupDB();
       setValuesFromShared();
       Calendar c = Calendar.getInstance();
       SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       formattedDate = df.format(c.getTime());
-      //trainingData = new TrainingPOJO(1, formattedDate, 10, 30, 2, 20, 2, 24, 10, 2, 4);
-      //ObjectMapper mapper = JacksonUtils.mapper;
-     /* File file = new File(Environment.DIRECTORY_DOWNLOADS, "training");
-
-      try {
-         mapper.writeValue(file, trainingData);
-      } catch (IOException e) {
-         e.printStackTrace();
-      }*/
-
 
       colorGreen = Color.parseColor(getResources().getString(R.string.training_green));
       colorGrey = Color.parseColor(getResources().getString(R.string.training_grey));
@@ -249,9 +219,7 @@ public class Training extends Activity{
       playButton.setEndDrawable(endDrawable);
 
 
-
-
-         playButton.setOnClickListener(new View.OnClickListener() {           //TODO: find out why the play/pause animation occours even on long touch //bug is gone? wtf
+      playButton.setOnClickListener(new View.OnClickListener() {           //TODO: find out why the play/pause animation occours even on long touch //bug is gone? wtf
          @Override
          public void onClick(View v) {
 
@@ -279,7 +247,6 @@ public class Training extends Activity{
 
 
             }
-            //new GPS(Training.this).execute(coord, coord, coord);
 
             updateIsPaused();
 
@@ -290,13 +257,10 @@ public class Training extends Activity{
          @Override
          public boolean onLongClick(View v) {
 
-
             isStopped = true;
-            //testCreateTraining();
-
 
             if (isPaused == false) {
-               playButton.animate();   //TODO: try to trigger the play animation, there gotta be a way goddammit
+               playButton.animate();
                fadeTo(runContainer, colorGreen, colorGrey);
                fadeTo(stopContainer, colorGrey, colorGreen);
                isPaused = true;
@@ -308,16 +272,18 @@ public class Training extends Activity{
             actualSteps = 0;
             actualTime = 0;
             isInitialValueSet = false;
+
+            endTrainingPrompt();
+
             Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
+
+
             trainingDate = formattedDate;
 
             db.saveTrainingInDB(index, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
-            //db.saveTrainingInDB();
             String res = db.getTrainings();
 
 
-
-            // how to save the file and share it by mail
             File path = new File(context.getFilesDir(), "training");
             File training = new File(path, "training.txt");
             try {
@@ -333,23 +299,48 @@ public class Training extends Activity{
             Uri contentUri = FileProvider.getUriForFile(context, "com.project.so2.walkmeapp", training);
 
 
-// set the type to 'email'
             emailIntent.setType("vnd.android.cursor.dir/email");
-            //String to[] = {"asd@gmail.com"};
-
-            //emailIntent .putExtra(Intent.EXTRA_EMAIL, to);
-// the attachment
             emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-// the mail subject
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
 
-            startActivity(Intent.createChooser(emailIntent, "Send email..."));
-            //emailIntent.setData(contentUri);
+            //startActivity(Intent.createChooser(emailIntent, "Send email..."));
             unbindService(mConnection);
 
             return true;
          }
       });
+   }
+
+   private void endTrainingPrompt() {
+
+      AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+              context);
+
+      //alertDialogBuilder.setTitle("");
+
+      alertDialogBuilder
+              .setMessage("Vuoi terminare l'allenamento?")
+              .setCancelable(false)
+              .setPositiveButton("Si",new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog,int id) {
+
+                    isEnded = true;
+                    Intent intent = new Intent(Training.this, Settings.class);
+                    startActivity(intent);
+                 }
+              })
+              .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog,int id) {
+
+                    dialog.cancel();
+                 }
+              });
+
+      // create alert dialog
+      AlertDialog alertDialog = alertDialogBuilder.create();
+
+      // show it
+      alertDialog.show();
    }
 
    public void drawChart(int count, int color, int height) {
@@ -360,25 +351,26 @@ public class Training extends Activity{
          color = Color.BLUE;
       } else if (color == 2) {
          color = Color.GREEN;
-      } for (int k = 1; k <= count; k++)
-      { View view = new View(this); view.setBackgroundColor(color);
+      }
+      for (int k = 1; k <= count; k++) {
+         View view = new View(this);
+         view.setBackgroundColor(color);
          view.setLayoutParams(new LinearLayout.LayoutParams(25, height));
-         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)view.getLayoutParams();
+         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
          params.setMargins(3, 0, 0, 0); // substitute parameters for left, // top, right, bottom
          view.setLayoutParams(params);
          linearChart.addView(view);
-                  }
+      }
    }
-
 
 
    private Runnable mUpdateTimeTask = new Runnable() {
       public void run() {
-         // do what you need to do here after the delay
          activateGPS();
       }
    };
-   public  void activateGPS() {
+
+   public void activateGPS() {
 
       Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
       startActivity(intent);
@@ -386,15 +378,11 @@ public class Training extends Activity{
 
    private ServiceConnection mConnection = new ServiceConnection() {
       @Override
-      public void onServiceConnected(ComponentName className, IBinder
-              service) {
-// This is called when the connection with the service has been
-// established, giving us the service object we can use to
-// interact with the service.
+      public void onServiceConnected(ComponentName className, IBinder service) {
          GPS.LocalBinder binder = (GPS.LocalBinder) service;
          mService = binder.getService();
          mIsBound = true;
-         if(!mService.mLocationManager.isProviderEnabled("gps")){
+         if (!mService.mLocationManager.isProviderEnabled("gps")) {
             Toast.makeText(Training.this, "GPS e' attualmente disabilitato. E' possibile abilitarlo dal menu impostazioni.",
                     Toast.LENGTH_LONG).show();
             handleThreadMsg.postDelayed(mUpdateTimeTask, 3000);
@@ -408,7 +396,6 @@ public class Training extends Activity{
                        getGPSData();
                     }
                  };
-//Registriamo il listener per ricevere gli aggiornamenti
          mService.addOnNewGPSPointsListener(clientListener);
       }
 
@@ -416,69 +403,58 @@ public class Training extends Activity{
       public void onServiceDisconnected(ComponentName name) {
          Log.i("ConnectionService", "Disconnected");
          mService = null;
-         mIsBound=false;
+         mIsBound = false;
       }
 
    };
+
    private void connectLocalService() {
       bindService(this.serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
    }
 
    private void disconnectLocalService() {
-      if(mIsBound) {
-//Deregistro il listener
+      if (mIsBound) {
          mService.removeOnNewGPSPointsListener();
-// Detach our existing connection.
-         unbindService(mConnection);
+         //unbindService(mConnection);  //TODO: Forse non serve
          mIsBound = false;
       }
    }
+
    private void getGPSData() {
-      double latitude = 0.0;
-      double longitude = 0.0;
-      latitude = mService.getLatitude();
-      longitude = mService.getLongitude();
-      Location loc = new Location(mService.mLastLocation);
-      list.add(loc);
-      int i;
-      if (list.size() > 1) {
 
-         for (i = list.size() - 1; i > list.size() - 2; i--) {
-
-            distanza = distanza + list.get(i).distanceTo(list.get(i - 1));
-
-         }
-
-
-// Visualizza i nuovi dati
-         lat.setText(format(latitude));
-         longit.setText(format(longitude));
-         distanza_text.setText(format(distanza));
-
+      if (isPaused != false || isStopped != false) {
+         return;
       }
+      Location loc = new Location(mService.mLastLocation);
+
+
+      double latitude = mService.getLatitude();
+      double longitude = mService.getLongitude();
+      double altitude = loc.getAltitude();
+      long time = loc.getTime();    //TODO: BUG - il cronometro e questo tempo non coincidono
+      float speed = loc.getSpeed();
+
+      if (trainingInsts.size() != 0) {
+         distance = distance + previousLoc.distanceTo(loc);
+      }
+      previousLoc = loc;
+
+
+         lat.setText(trainingInsts.size());
+         longit.setText(format(distance));
+
+
+      ti = new TrainingInstant(latitude, longitude, speed, altitude, time, distance);
+      trainingInsts.add(ti);
+
    }
+
 
    public static String format(double value) {
       DecimalFormat decimalFormat = new DecimalFormat("0.0000000");
       return decimalFormat.format(value);
    }
 
-
-   /*public void testCreateTraining( DBTrainings dbTrainingInstance) {
-
-
-      dbTrainingInstance.id = db.getId()+1;
-      dbTrainingInstance.trainingDate = "2015-12-11 18:00:23";
-      dbTrainingInstance.trainingSteps = 100;
-      dbTrainingInstance.trainingDuration = 500; //TODO: check if there is a better type
-      dbTrainingInstance.trainingDistance = 1000;
-      //this.lastMetersSettings = 30; set from real prefs, 10 is default value
-      dbTrainingInstance.avgTotSpeed = 10;
-      dbTrainingInstance.avgXSpeed = 4;
-      dbTrainingInstance.avgTotSteps = 600;
-      dbTrainingInstance.avgXSteps = 30;
-      //this.prefsstepLengthInCm = 70; set from real prefs, 100 is default value
-   }*/
 
 
    private void setValuesFromShared() {
@@ -500,21 +476,6 @@ public class Training extends Activity{
    }
 
 
-
-
-
-
-
-/*   private void setupChronometer() {
-      chronometer.setOnChronometerTickListener(new PausableChronometer.OnChronometerTickListener() {
-         public void onChronometerTick(Chronometer cArg) {
-            long t =  SystemClock.elapsedRealtime() - cArg.getBase();
-            cArg.setText(DateFormat.format("kk:mm:ss", t));
-         }
-      });
-   }*/
-
-
    private void fadeTo(RelativeLayout layout, int actualColor, int color) {
       ColorDrawable[] colour = {new ColorDrawable(actualColor), new ColorDrawable(color)};
 
@@ -522,6 +483,7 @@ public class Training extends Activity{
       layout.setBackground(trans);
       trans.startTransition(200);
    }
+
 
    private void updateIsPaused() {
 
@@ -534,71 +496,6 @@ public class Training extends Activity{
    }
 
 
-   /*public void setupPedometerService() {
-
-      sensorEventListener = new SensorEventListener() {
-
-         @Override
-         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-         }
-
-         @Override
-         public void onSensorChanged(SensorEvent event) {
-
-            float[] steps = event.values;
-
-            if (isInitialValueSet != true) {          //TODO: FIX THIS MESS
-               isInitialValueSet = true;
-               initialValue = steps[0];
-            }
-
-            if (isPaused != true && isStopped != true) {
-               actualSteps = steps[0];
-               actualTime = (System.currentTimeMillis() - startTime);
-               int avg = (int) ((actualSteps - initialValue) / (actualTime / MINUTE_IN_MILLIS));
-
-               stepsPerMin.setText(Integer.toString(avg));
-
-
-               int kmh = (int) ((((actualSteps - initialValue) * (STEP_IN_CENTIMETERS_TEST / 100)) / (actualTime / 1000.0)) * (3.6));
-               kilometersPerHour.setText(Integer.toString(kmh));
-
-            }
-
-/* if ((System.currentTimeMillis() - startTime) < (60 * 1000)) {
-               if (secsCheckSet == false ) {
-                  oldTime = System.currentTimeMillis() - startTime;
-                  oldSteps = steps[0];
-                  desideredTime = (System.currentTimeMillis() - startTime) + (TIME_SAMPLE * 1000);
-
-                  secsCheckSet = true;
-               }
-               if ((System.currentTimeMillis() - startTime) >= desideredTime) {
-                  secsCheckSet = false;
-
-                  float diffSteps = steps[0] - oldSteps;
-                  double value = diffSteps/(TIME_SAMPLE/60);
-                  stepsPerMin.setText(Double.toString(value));
-
-               }
-            } else {*/
-
-
-            //     }
-   /*      }
-      };
-
-      sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-      sensor = sensorService.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-
-      if (sensor != null) {
-         sensorService.registerListener(sensorEventListener, sensor,
-                 SensorManager.SENSOR_DELAY_FASTEST);
-      }
-
-   }
-
-*/
    private void setupActionbar() {
       actionBar.setImageResource(R.drawable.btn_back);
       actionBar.setOnClickListener(new View.OnClickListener() {
@@ -606,8 +503,8 @@ public class Training extends Activity{
          public void onClick(View v) {
             Intent intent;
             intent = new Intent(Training.this, MainActivity.class);
-            intent.putExtra("latitudine",mService.getLatitude());
-            intent.putExtra("longitudine",mService.getLongitude());
+            intent.putExtra("latitudine", mService.getLatitude());
+            intent.putExtra("longitudine", mService.getLongitude());
             startActivity(intent);
          }
       });
