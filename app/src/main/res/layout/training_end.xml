@@ -6,64 +6,63 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-
+   <RelativeLayout
+       android:id="@+id/training_graph"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content">
+       <ImageView
+           android:layout_width="wrap_content"
+           android:layout_height="180dp"
+           android:src="@drawable/icon"
+           />
+   </RelativeLayout>
     <RelativeLayout
-        android:id="@+id/layout_duration"
+        android:id="@+id/layout_name_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/training_graph"
+        android:paddingTop="20dp"
         android:layout_weight="1">
 
 
         <TextView
-            android:id="@+id/item_text1Duration"
+            android:id="@+id/training_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="@string/steps_min_label"
+            android:text="@string/training_name_label"
             android:textColor="@color/grey"
-            android:textSize="@dimen/generic_list_training_main_text" />
+            android:textSize="@dimen/generic_list_main_text" />
 
         <TextView
 
-            android:id="@+id/item_text2Duration"
+            android:id="@+id/training_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/item_text1Duration"
-            android:layout_centerHorizontal="true"
-            android:text="@string/steps_min_value"
+            android:layout_below="@id/training_name"
+
+            android:text="@string/training_date_label"
             android:textColor="@color/grey"
-            android:textSize="@dimen/generic_list_training_subtext" />
+            android:paddingBottom="20dp"
+            android:textSize="@dimen/generic_list_training_main_text" />
 
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/icon" />
+
 
     </RelativeLayout>
 
 
-    <LinearLayout
-        android:id="@+id/training_infos1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/layout_duration">
-
         <RelativeLayout
-            android:id="@+id/minute_steps1"
+            android:id="@+id/layout_totalDistance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_below="@id/layout_name_date">
 
 
             <TextView
-                android:id="@+id/item_text1Left1"
+                android:id="@+id/total_distance_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="@string/steps_min_label"
+                android:text="@string/total_distance_label"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/generic_list_training_main_text" />
 
@@ -72,27 +71,25 @@
                 android:id="@+id/item_text2Left1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/item_text1Left1"
-                android:layout_centerHorizontal="true"
-                android:text="@string/steps_min_value"
+                android:layout_below="@id/total_distance_label"
+                android:text="@string/total_distance_value"
                 android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_subtext" />
+                android:textSize="@dimen/generic_list_main_text" />
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/km_hour1"
+            android:id="@+id/layout_averageSpeed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_below="@id/layout_totalDistance">
 
             <TextView
 
                 android:id="@+id/item_text1Right1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="@string/km_hour_label"
+                android:text="@string/average_speed_label"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/generic_list_training_main_text" />
 
@@ -101,163 +98,59 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/item_text1Right1"
-                android:layout_centerHorizontal="true"
-                android:text="@string/km_hour_value"
+                android:text="@string/average_speed_value"
                 android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_subtext" />
+                android:textSize="@dimen/generic_list_main_text" />
+            </RelativeLayout>
 
-
-        </RelativeLayout>
-
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/training_infos2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/training_infos1"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:id="@+id/minute_steps2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-
-            <TextView
-                android:id="@+id/item_text1Left2"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/minute_steps2"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="@string/steps_min_label"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_main_text" />
-
-            <TextView
-
-                android:id="@+id/item_text2Left2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/item_text1Left2"
-                android:layout_centerHorizontal="true"
-                android:text="@string/steps_min_value"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_subtext" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/km_hour2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <TextView
-
-                android:id="@+id/item_text1Right2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="@string/km_hour_label"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_main_text" />
-
-            <TextView
-                android:id="@+id/item_text2Right2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/item_text1Right2"
-                android:layout_centerHorizontal="true"
-                android:text="@string/km_hour_value"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_subtext" />
+                android:layout_below="@id/layout_averageSpeed">
 
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/settings_average_step"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/average_steps_label"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/generic_list_training_main_text" />
 
+                <TextView
 
-    </LinearLayout>
+                    android:id="@+id/item_text2Left2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/settings_average_step"
+                    android:text="@string/steps_min_value"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/generic_list_main_text" />
 
-
-    <LinearLayout
-        android:id="@+id/training_infos3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/training_infos2"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:id="@+id/minute_steps3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-
-            <TextView
-                android:id="@+id/item_text1Left3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="@string/steps_min_label"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_main_text" />
-
-            <TextView
-
-                android:id="@+id/item_text2Left3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/item_text1Left3"
-                android:layout_centerHorizontal="true"
-                android:text="@string/steps_min_value"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_subtext" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/km_hour3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <TextView
-
-                android:id="@+id/item_text1Right3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="@string/km_hour_label"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_main_text" />
-
-            <TextView
-                android:id="@+id/item_text2Right3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/item_text1Right3"
-                android:layout_centerHorizontal="true"
-                android:text="@string/km_hour_value"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_subtext" />
-
-
-        </RelativeLayout>
-
-
-    </LinearLayout>
-
+            </RelativeLayout>
+<RelativeLayout
+    android:id="@+id/layout_face"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/training_graph"
+    android:layout_centerVertical="true">
     <ImageView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/training_infos3"
-        android:src="@drawable/icon"/>
-
-
+        android:src="@drawable/sad_face"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:paddingRight="10dp"/>
 </RelativeLayout>
+        </RelativeLayout>
+
+
+
+
+
+
+
 
 
 
