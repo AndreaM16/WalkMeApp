@@ -16,160 +16,126 @@ import java.sql.SQLException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.project.so2.walkmeapp.core.JacksonUtils;
+import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
 public class DBManager extends ContextWrapper {
 
-   private static final String TAG = "Training";
-   private DBTrainings dbTrainingInstance = new DBTrainings();
-   private int id;
-   private String trainingDate;
-   private int trainingSteps;
-   private int trainingDuration;
-   public int trainingDistance;
-   private int lastMetersSettings;
-   private float avgTotSpeed;
-   private float avgXSpeed;
-   private float avgTotSteps;
-   private int avgXSteps;
-   private int stepLengthInCm;
+    private static final String TAG = "Training";
+    public DBTrainings dbTrainingInstance = new DBTrainings();
+    private int id;
+    private String trainingDate;
+    private int pref_pace;
+    private int pref_lastXMeters;
+    private int pref_stepLength;
+    private String name;
+    private ArrayList<TrainingInstant> tiList;
+    private ObjectMapper mapper;
+    private DatabaseHelper databaseHelper;
+    private Dao<DBTrainings, String> dbDao;
+    private List<DBTrainings> results;
 
-   private ObjectMapper mapper;
-   private DatabaseHelper databaseHelper;
-   private Dao<DBTrainings, String> dbDao;
-   private List<DBTrainings> results;
-   private List<DBTrainings> lista;
-   private Context context;
+    public DBManager(ContextWrapper context) {
 
-   public DBManager(ContextWrapper context) {
+        super(context);
+        mapper = JacksonUtils.mapper;
 
-      super(context);
-      mapper = JacksonUtils.mapper;
+    }
 
-   }
+    public String getTrainings() {
 
-   public String getTrainings() {
-
-      try {
-         results = dbDao.queryForAll();
-      } catch (SQLException e) {
-         e.printStackTrace();
-      }
-      String res = null;
-      if (results.size() != 0) {
-
-         try {
-            res = mapper.writeValueAsString(results);
-         } catch (IOException e) {
+        try {
+            results = dbDao.queryForAll();
+        } catch (SQLException e) {
             e.printStackTrace();
-         }
-         Log.d(TAG, "risultati" + res + "\n");
-      }
-      return res;
-   }
+        }
+        String res = null;
+        if (results.size() != 0) {
 
-   public int setupDB() {
-      try {
-         this.dbDao = getHelper().getTrainingsDao();
-      } catch (SQLException e) {
-         e.printStackTrace();
-      }
+            try {
+                res = mapper.writeValueAsString(results); // TODO: FIX TIPO JSON
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "risultati" + res + "\n");
+        }
+        return res;
+    }
 
-      testCreateTraining(dbTrainingInstance.id);
-      return dbTrainingInstance.id;
-
-
-   }
-
-
-   public void testCreateTraining(int indice) {
-
-
-      this.id = indice;
-      this.trainingDate = "2015-12-11 18:00:23";
-      this.trainingSteps = 100;
-      this.trainingDuration = 500; //TODO: check if there is a better type
-      this.trainingDistance = 1000;
-      //this.lastMetersSettings = 30; set from real prefs, 10 is default value
-      this.avgTotSpeed = 10;
-      this.avgXSpeed = 4;
-      this.avgTotSteps = 600;
-      this.avgXSteps = 30;
-      //this.prefsstepLengthInCm = 70; set from real prefs, 100 is default value
-   }
-
-   //private void saveTrainingInDB(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLengthInCm) {
-   public void saveTrainingInDB(int id,
-                                String trainingDate,
-                                int trainingSteps,
-                                int trainingDuration,
-                                int trainingDistance,
-                                int lastMetersSettings,
-                                float avgTotSpeed,
-                                float avgXSpeed,
-                                float avgTotSteps,
-                                int avgXSteps,
-                                int stepLengthInCm) {
+    public int setupDB() {
+        try {
+            this.dbDao = getHelper().getTrainingsDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //testCreateTraining(dbTrainingInstance.id);
+        return dbTrainingInstance.id;
 
 
-      try {
-         this.id = id;
-         this.trainingDate = trainingDate;
-         this.trainingSteps = trainingSteps;
-         this.trainingDuration = trainingDuration; //TODO: check if there is a better type
-         this.trainingDistance = trainingDistance;
-         this.lastMetersSettings = lastMetersSettings;
-         this.avgTotSpeed = avgTotSpeed;
-         this.avgXSpeed = avgXSpeed;
-         this.avgTotSteps = avgTotSteps;
-         this.avgXSteps = avgXSteps;
-         this.stepLengthInCm = stepLengthInCm; //in cm
-         results = dbDao.queryForAll();
-         if (results.size() == 0) {
-            dbTrainingInstance.id = this.id;
-         } else {
-            dbTrainingInstance.id = (results.get(results.size() - 1).id) + 1;
-
-         }
-
-         dbTrainingInstance.trainingDate = this.trainingDate;
-         dbTrainingInstance.trainingSteps = this.trainingSteps;
-         dbTrainingInstance.trainingDuration = this.trainingDuration;
-         dbTrainingInstance.trainingDistance = this.trainingDistance;
-         dbTrainingInstance.lastMetersSettings = this.lastMetersSettings;
-         dbTrainingInstance.avgTotSpeed = this.avgTotSpeed;
-         dbTrainingInstance.avgXSpeed = this.avgXSpeed;
-         dbTrainingInstance.avgTotSteps = this.avgTotSteps;
-         dbTrainingInstance.avgXSteps = this.avgXSteps;
-         dbTrainingInstance.stepLengthInCm = this.lastMetersSettings;
+    }
 
 
-         dbDao.create(dbTrainingInstance);
-      } catch (
-              Exception e
-              )
-
-      {
-         e.printStackTrace();
-      }
+    public void createTraining(int indice, String name, String date, int pref_pace, int pref_lastXMeters, int pref_stepLength, ArrayList<TrainingInstant> tiList) {
 
 
-   }
+        this.id = indice;
+        this.name = name;
+        this.trainingDate = date;
+        this.pref_pace = pref_pace;
+        this.pref_lastXMeters = pref_lastXMeters;
+        this.pref_stepLength = pref_stepLength; //set from real prefs, 100 is default value
+        this.tiList = tiList;
+    }
 
-   public int getId() {
+    //private void saveTrainingInDB(int id, String trainingDate, int trainingSteps, int trainingDuration, int trainingDistance, int lastMetersSettings, float avgTotSpeed, float avgXSpeed, float avgTotSteps, int avgXSteps, int stepLengthInCm) {
+    public void saveTrainingInDB() throws SQLException {
+        if (dbDao.queryForAll() == null || dbDao.queryForAll().size() == 0) {
+            dbTrainingInstance.id = 0;
+        } else {
+            try {
+                results = dbDao.queryForAll();
+                dbTrainingInstance.id = results.get(results.size() - 1).id + 1;
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
 
-      return this.id;
-   }
 
-   public DatabaseHelper getHelper() {
-      if (databaseHelper == null) {
-         databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
-      }
-      return databaseHelper;
-   }
+        }
+
+
+        dbTrainingInstance.name = this.name;
+        dbTrainingInstance.trainingDate = this.trainingDate;
+        dbTrainingInstance.pref_pace = this.pref_pace;
+        dbTrainingInstance.pref_lastXMeters = this.pref_lastXMeters;
+        dbTrainingInstance.pref_stepLength = this.pref_stepLength;
+        dbTrainingInstance.setInstants(tiList);
+
+
+        try {
+            dbDao.create(dbTrainingInstance);
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+
+
+    }
+
+    public int getId() {
+
+        return this.id;
+    }
+
+    public DatabaseHelper getHelper() {
+        if (databaseHelper == null) {
+            databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+        }
+        return databaseHelper;
+    }
 
 }
 
