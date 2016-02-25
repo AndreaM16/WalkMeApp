@@ -47,24 +47,28 @@ public class DBManager extends ContextWrapper {
 
     }
 
-    public String getTrainings() {
+    public DBTrainings getTrainings() {
 
         try {
             results = dbDao.queryForAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        String res = null;
+
+       /* String res = null;
         if (results.size() != 0) {
 
             try {
-                res = mapper.writeValueAsString(results); // TODO: FIX TIPO JSON
+                res = mapper.writeValueAsString(results.get(results.size()-1)); // TODO: FIX TIPO JSON
             } catch (IOException e) {
                 e.printStackTrace();
             }
             Log.d(TAG, "risultati" + res + "\n");
-        }
-        return res;
+        }*/
+
+        if (results.size() != 0) {
+            return results.get(results.size()-1);
+        } else return null;
     }
 
     public int setupDB() {

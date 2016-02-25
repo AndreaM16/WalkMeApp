@@ -37,7 +37,6 @@ public class TrainingInstant {
    }
 
    public TrainingInstant( DBTrainings training, double latitude, double longitude, double altitude, double speed, long time, double distance) {
-
       this.training = training;
       this.latitude = latitude;
       this.longitude = longitude;

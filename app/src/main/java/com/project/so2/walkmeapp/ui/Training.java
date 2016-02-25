@@ -49,6 +49,7 @@ import java.util.Calendar;
 import java.io.File;
 
 import com.project.so2.walkmeapp.R;
+import com.project.so2.walkmeapp.core.ORM.DBTrainings;
 import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 import com.project.so2.walkmeapp.core.PausableChronometer;
 import com.project.so2.walkmeapp.core.SERVICE.GPS;
@@ -97,12 +98,13 @@ public class Training extends Activity {
    private boolean isInitialValueSet = false;
    private boolean isPaused = true;
    private boolean isStopped = true;
+   private boolean tiReset = false;
    private long startTime = -1000;
    private float actualSteps;
    private long actualTime;
    private DBManager db;
 
-   private int id;
+   private int id_tInstance=0;
    private String name="SBURRO";
    private int pref_pace;
    private int pref_lastXMeters;
@@ -304,7 +306,7 @@ public class Training extends Activity {
                     actualTime = 0;
                     isInitialValueSet = false;
 
-                    String res = db.getTrainings();
+                    DBTrainings res = db.getTrainings();
 
 
                         File path = new File(context.getFilesDir()+"/training");
@@ -452,8 +454,9 @@ public class Training extends Activity {
          //lat.setText(trainingInsts.size());
          longit.setText(format(distance));
 
+      ti = new TrainingInstant(db.dbTrainingInstance,latitude, longitude, speed, altitude, time, distance);
 
-      ti = new TrainingInstant(db.dbTrainingInstance, latitude, longitude, speed, altitude, time, distance);
+      //id_tInstance++;
       trainingInsts.add(ti);
       lat.setText(Integer.toString(trainingInsts.size()));
       Log.d("ti","latitudine: "+ti.latitude+" longitudine: "+ti.longitude+" velocità: "+ti.speed+" altitudine: "+ti.altitude+" tempo: "+ti.time+" distanza: "+ti.distance);
