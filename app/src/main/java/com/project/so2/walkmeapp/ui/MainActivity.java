@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.so2.walkmeapp.R;
+import com.project.so2.walkmeapp.core.ORM.DatabaseHelper;
 import com.project.so2.walkmeapp.core.SERVICE.GPS;
 
 public class MainActivity extends Activity {
@@ -98,6 +99,8 @@ public class MainActivity extends Activity {
               View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                       | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
       getWindow().setStatusBarColor(Color.TRANSPARENT);
+
+      DatabaseHelper.initialize(this);
 
       String[] mMenuStrings = getResources().getStringArray(R.array.main_page_list_items);
 

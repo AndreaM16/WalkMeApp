@@ -26,7 +26,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private static final int DATABASE_VERSION = 13;
 
     private Dao<DBTrainings, String> dbTrainingsDao;
-
+    private static DatabaseHelper mDatabaseHelper;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION );
@@ -76,6 +76,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             dbTrainingsDao = getDao(DBTrainings.class);
         }
         return dbTrainingsDao;
+    }
+
+    public static void initialize(Context ctx) {
+        if (mDatabaseHelper == null) {
+            mDatabaseHelper = new DatabaseHelper(ctx.getApplicationContext());
+        }
+    }
+
+    public static DatabaseHelper getIstance() {
+        return mDatabaseHelper;
     }
 
     /*public Dao<DBUsers, String> getUsersDao() throws SQLException {
