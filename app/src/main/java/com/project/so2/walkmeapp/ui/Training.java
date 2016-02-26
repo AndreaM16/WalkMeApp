@@ -40,6 +40,7 @@ import com.project.so2.walkmeapp.core.JacksonUtils;
 
 import java.io.IOException;
 
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ import java.util.Calendar;
 import java.io.File;
 
 import com.project.so2.walkmeapp.R;
+import com.project.so2.walkmeapp.core.ORM.DBTrainings;
 import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 import com.project.so2.walkmeapp.core.PausableChronometer;
 import com.project.so2.walkmeapp.core.SERVICE.GPS;
@@ -96,23 +98,18 @@ public class Training extends Activity {
    private boolean isInitialValueSet = false;
    private boolean isPaused = true;
    private boolean isStopped = true;
+   private boolean tiReset = false;
    private long startTime = -1000;
    private float actualSteps;
    private long actualTime;
    private DBManager db;
 
-   private int id;
-   private String trainingDate;
-   private int trainingSteps;
-   private int trainingDuration;
-   public int trainingDistance;
-   private int lastMetersSettings;
-   private float avgTotSpeed;
-   private float avgXSpeed;
-   private float avgTotSteps;
-   private int avgXSteps;
+   private int id_tInstance = 0;
+   private String name = "SBURRO";
+   private int pref_pace;
+   private int pref_lastXMeters;
+   private int pref_stepLength;
    private String formattedDate;
-   private int index;
    private TextView lat;
    private TextView longit;
    private TextView distanza_text;
@@ -173,7 +170,7 @@ public class Training extends Activity {
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      db = new DBManager(this);
+      db = DBManager.getIstance();
       setContentView(R.layout.training_main);
 
       serviceIntent = new Intent(this, GPS.class);
@@ -203,7 +200,6 @@ public class Training extends Activity {
       setupActionbar();
 
 
-      index = db.setupDB();
       setValuesFromShared();
       Calendar c = Calendar.getInstance();
       SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -266,45 +262,12 @@ public class Training extends Activity {
                isPaused = true;
             }
 
-            chronometer.reset();
-            stepsPerMin.setText("0");
-            kilometersPerHour.setText("0");
-            actualSteps = 0;
-            actualTime = 0;
-            isInitialValueSet = false;
 
             endTrainingPrompt();
 
+
             Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
 
-
-            trainingDate = formattedDate;
-
-            db.saveTrainingInDB(index, trainingDate, trainingSteps, trainingDuration, trainingDistance, lastMetersSettings, avgTotSpeed, avgXSpeed, avgTotSteps, avgXSteps, prefsstepLengthInCm);
-            String res = db.getTrainings();
-
-
-            File path = new File(context.getFilesDir(), "training");
-            File training = new File(path, "training.txt");
-            try {
-               ObjectMapper mapper = JacksonUtils.mapper;
-               mapper.writeValue(training, res);
-            } catch (IOException e) {
-               e.printStackTrace();
-            }
-            Intent emailIntent = new Intent(Intent.ACTION_SEND);
-            emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-            Uri contentUri = FileProvider.getUriForFile(context, "com.project.so2.walkmeapp", training);
-
-
-            emailIntent.setType("vnd.android.cursor.dir/email");
-            emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
-
-            //startActivity(Intent.createChooser(emailIntent, "Send email..."));
-            unbindService(mConnection);
 
             return true;
          }
@@ -321,16 +284,71 @@ public class Training extends Activity {
       alertDialogBuilder
               .setMessage("Vuoi terminare l'allenamento?")
               .setCancelable(false)
-              .setPositiveButton("Si",new DialogInterface.OnClickListener() {
-                 public void onClick(DialogInterface dialog,int id) {
+              .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
 
                     isEnded = true;
+                    //passare nome allenamento
+                    db.createTraining(name, formattedDate, pref_pace, pref_lastXMeters, pref_stepLength, trainingInsts);
+                    try {
+                       db.saveTrainingInDB();
+                    } catch (SQLException e) {
+                       e.printStackTrace();
+                    }
+
+
+                    chronometer.reset();
+
+                    // potenzialmente non necessari, non serve resettare l'activity se la abbandoniamo
+//                    stepsPerMin.setText("0");
+//                    kilometersPerHour.setText("0");
+//                    actualSteps = 0;
+//                    actualTime = 0;
+//                    isInitialValueSet = false;
+
+
+                    DBTrainings res = null;
+                    try {
+                       res = db.getLastTraining();
+                    } catch (SQLException e) {
+                       e.printStackTrace();
+                    }
+
+
+                    File path = new File(context.getFilesDir() + "/training");
+                    Log.d("percorso", path.toString());
+                    path.mkdirs();
+                    File training = new File(path, "training.walk");
+
+                    try {
+                       ObjectMapper mapper = JacksonUtils.mapper;
+                       mapper.writeValue(training, res);
+                    } catch (IOException e) {
+                       e.printStackTrace();
+                    }
+
+
+                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                    emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                    Uri contentUri = FileProvider.getUriForFile(context, "com.project.so2.walkmeapp", training);
+
+
+                    emailIntent.setType("vnd.android.cursor.dir/email");
+                    emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+
+                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+
+
+                    disconnectLocalService();
                     Intent intent = new Intent(Training.this, Settings.class);
                     startActivity(intent);
                  }
               })
-              .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                 public void onClick(DialogInterface dialog,int id) {
+              .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
 
                     dialog.cancel();
                  }
@@ -415,7 +433,7 @@ public class Training extends Activity {
    private void disconnectLocalService() {
       if (mIsBound) {
          mService.removeOnNewGPSPointsListener();
-         //unbindService(mConnection);  //TODO: Forse non serve
+         unbindService(mConnection);  //TODO: Forse non serve
          mIsBound = false;
       }
    }
@@ -435,17 +453,20 @@ public class Training extends Activity {
       float speed = loc.getSpeed();
 
       if (trainingInsts.size() != 0) {
-         distance = distance + previousLoc.distanceTo(loc);
+         distance = distance + Math.abs(previousLoc.distanceTo(loc));
       }
       previousLoc = loc;
 
 
-         lat.setText(trainingInsts.size());
-         longit.setText(format(distance));
+      //lat.setText(trainingInsts.size());
+      longit.setText(format(distance));
 
+      ti = new TrainingInstant(db.dbTrainingInstance, latitude, longitude, speed, altitude, time, distance);
 
-      ti = new TrainingInstant(latitude, longitude, speed, altitude, time, distance);
+      //id_tInstance++;
       trainingInsts.add(ti);
+      lat.setText(Integer.toString(trainingInsts.size()));
+      Log.d("ti", "latitudine: " + ti.latitude + " longitudine: " + ti.longitude + " velocità: " + ti.speed + " altitudine: " + ti.altitude + " tempo: " + ti.time + " distanza: " + ti.distance);
 
    }
 
@@ -454,7 +475,6 @@ public class Training extends Activity {
       DecimalFormat decimalFormat = new DecimalFormat("0.0000000");
       return decimalFormat.format(value);
    }
-
 
 
    private void setValuesFromShared() {

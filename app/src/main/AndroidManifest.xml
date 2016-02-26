@@ -54,9 +54,6 @@
         <service android:name=".core.SERVICE.GPS"/>
 
         <activity
-            android:name=".ui.SingleMonth"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name=".ui.Settings"
             android:screenOrientation="portrait"/>
         <activity

@@ -10,6 +10,7 @@ package com.project.so2.walkmeapp.core.ORM;
         import com.j256.ormlite.dao.Dao;
         import com.j256.ormlite.support.ConnectionSource;
         import com.j256.ormlite.table.TableUtils;
+        import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 
 /**
  * Database helper which creates and upgrades the database and provides the DAOs for the app.
@@ -42,7 +43,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
             // Create tables. This onCreate() method will be invoked only once of the application life time i.e. the first time when the application starts.
             TableUtils.createTableIfNotExists(connectionSource, DBTrainings.class);
-            //TableUtils.createTableIfNotExists(connectionSource, DBUsers.class);
+            TableUtils.createTableIfNotExists(connectionSource, TrainingInstant.class);
 
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
@@ -58,7 +59,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             // existing database etc.
 
             TableUtils.dropTable(connectionSource, DBTrainings.class, true);
-            //TableUtils.dropTable(connectionSource, DBUsers.class, true);
+            TableUtils.dropTable(connectionSource, TrainingInstant.class, true);
 
             onCreate(sqliteDatabase, connectionSource);
 
@@ -87,14 +88,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public static DatabaseHelper getIstance() {
         return mDatabaseHelper;
     }
-
-    /*public Dao<DBUsers, String> getUsersDao() throws SQLException {
-        if (dbUsersDao == null) {
-            dbUsersDao = getDao(DBUsers.class);
-        }
-        return dbUsersDao;
-    }
-    */
 
 
 }
