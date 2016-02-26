@@ -123,6 +123,24 @@ public class DBManager extends ContextWrapper {
       this.tiList = tiList;
    }
 
+   public void saveImportedTraining(DBTrainings training) {
+      try {
+         if(getTrainings()!=null){
+               training.id=getLastTrainingId()+1;}
+         else{
+            training.id=0;
+         }
+      } catch (SQLException e) {
+         e.printStackTrace();
+      }
+
+      try {
+         dbDao.create(training);
+      } catch (SQLException e1) {
+         e1.printStackTrace();
+      }
+
+   }
    /* Saving Trainings */
    public void saveTrainingInDB() throws SQLException {
 

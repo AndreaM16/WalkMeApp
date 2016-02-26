@@ -161,15 +161,18 @@ public class MainActivity extends Activity {
       }
 
       /* Checking service's permissions, if not allowed, asks for them */
-      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+              != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+              (this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
               != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
               (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
          ActivityCompat.requestPermissions(this,
-                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION},
                  ACCESS_FINE_LOCATION);
          return;
       }
+
       connectLocalService();
 
    }

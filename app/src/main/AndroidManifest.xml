@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -34,7 +35,18 @@
             </intent-filter>
         </activity>
 
+<activity android:name=".core.SERVICE.FileHandling">
 
+    <intent-filter>
+
+        <action android:name="android.intent.action.VIEW"/>
+        <action android:name="android.intent.action.EDIT"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <data android:pathPattern="*.walk"/>
+        <data android:mimeType="application/walkmeapp"/>
+    </intent-filter>
+
+</activity>
         <activity
             android:name=".ui.Training"
             android:screenOrientation="portrait">
@@ -44,6 +56,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
             </intent-filter>
+
+
+
+
+
+
+
         </activity>
 
         <!-- Classes -->
@@ -58,8 +77,6 @@
         <activity
             android:name=".ui.About"
             android:screenOrientation="portrait"/>
-
-        <uses-feature android:name="android.hardware.sensor.stepcounter"/>
     </application>
 
 </manifest>
