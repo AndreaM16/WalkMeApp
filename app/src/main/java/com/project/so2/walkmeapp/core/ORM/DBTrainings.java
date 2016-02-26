@@ -1,6 +1,5 @@
 package com.project.so2.walkmeapp.core.ORM;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -10,6 +9,9 @@ import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Class containing DB structure and managing
+ */
 @DatabaseTable(tableName = "trainings")
 public class DBTrainings {
 
@@ -38,12 +40,14 @@ public class DBTrainings {
    @ForeignCollectionField(eager = true)
    Collection<TrainingInstant> tiList;
 
-
+   /* ORMLite needs a no-arg constructor */
    public DBTrainings() {
-      // ORMLite needs a no-arg constructor
+
    }
 
-   public DBTrainings(int id, int date_year, int date_month, int date_day, int date_hour, int date_minutes, int date_seconds, int trainingSteps, int lastMetersSettings, int stepLengthInCm) {
+   public DBTrainings(int id, int date_year, int date_month, int date_day, int date_hour,
+                      int date_minutes, int date_seconds, int trainingSteps, int lastMetersSettings,
+                      int stepLengthInCm) {
 
       this.id = id;
       this.date_year = date_year;
@@ -66,6 +70,12 @@ public class DBTrainings {
       return tiArray;
    }
 
+   /**
+    * Setting DB instances per each point of the training (used for the plot)
+    *
+    * @param instants one per each point of the training
+    * @throws java.sql.SQLException SQLException
+    */
    public void setInstants(ArrayList<TrainingInstant> instants) throws java.sql.SQLException {
       if (this.tiList == null) {
          Dao<DBTrainings, String> dao = DatabaseHelper.getIstance().getTrainingsDao();
