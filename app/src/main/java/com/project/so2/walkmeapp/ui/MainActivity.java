@@ -48,6 +48,7 @@ import com.project.so2.walkmeapp.core.SERVICE.GPS;
 public class MainActivity extends Activity {
    private static final int THREAD_FINISH_MESSAGE = 1;
    private static final int ACCESS_FINE_LOCATION = 0;
+   public static Context context;
    private LinearLayout mMainPageList;
    private String[] mMainPageElements;
    private ImageView mUserView;
@@ -111,7 +112,7 @@ public class MainActivity extends Activity {
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
+      context=this;
       setContentView(R.layout.activity_main);
       mMainPageElements = getResources().getStringArray(R.array.main_page_list_items);
       mMainPageList = (LinearLayout) findViewById(R.id.main_page_list);
@@ -143,8 +144,6 @@ public class MainActivity extends Activity {
          v = inflater.inflate(R.layout.menu_fragment_item, null);
          TextView textTemp = (TextView) v.findViewById(R.id.item_text);
          textTemp.setText(i);
-         connectLocalService();
-
 
          v.setOnClickListener(new View.OnClickListener() {
 
@@ -171,6 +170,7 @@ public class MainActivity extends Activity {
                  ACCESS_FINE_LOCATION);
          return;
       }
+      connectLocalService();
 
    }
 
@@ -291,6 +291,7 @@ public class MainActivity extends Activity {
       }
       if (intent != null) {
          startActivity(intent);
+         disconnectLocalService();
       }
 
    }

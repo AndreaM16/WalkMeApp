@@ -81,7 +81,6 @@ public class History extends Activity {
       }
 
       if (trainings != null && trainings.size() > 0) {
-
          noTrainingsText.setVisibility(View.GONE);
          historyListView.setVisibility(View.VISIBLE);
 

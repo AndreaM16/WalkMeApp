@@ -20,6 +20,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.project.so2.walkmeapp.ui.MainActivity;
+
 
 public class GPS extends Service {
 
@@ -41,7 +43,7 @@ public class GPS extends Service {
         public LocationListener(String provider) {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
-            if(mLastLocation.getAccuracy()<10) {
+            if(mLastLocation.getAccuracy()<20) {
                 lat = mLastLocation.getLatitude();
                 longit = mLastLocation.getLongitude();
             }
@@ -54,7 +56,7 @@ public class GPS extends Service {
         @Override
         public void onLocationChanged(Location location) {
             Log.e(TAG, "onLocationChanged: " + location);
-            if (location.getAccuracy()<10) {
+            if (location.getAccuracy()<20) {
                 mLastLocation.set(location);
                 lat = mLastLocation.getLatitude();
                 longit = mLastLocation.getLongitude();
@@ -157,6 +159,7 @@ public class GPS extends Service {
                         Toast.LENGTH_LONG).show();
             }
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding

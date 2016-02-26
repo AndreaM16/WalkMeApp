@@ -64,242 +64,228 @@ import static android.app.PendingIntent.getActivity;
  */
 public class Training extends Activity {
 
-   private static final String PREFS_NAME = "SETTINGS_PREFS";
+    private static final String PREFS_NAME = "SETTINGS_PREFS";
 
-   private int prefsstepLengthInCm;
+    private int prefsstepLengthInCm;
 
-   private int prefsAvgStepInM;
-   private int prefsLastMetersInM;
+    private int prefsAvgStepInM;
+    private int prefsLastMetersInM;
 
-   private SharedPreferences settings;
-
-
-   private static final String TAG = "Training";
-   SensorManager sMgr;
-   Sensor steps;
-   private SensorManager sensorService;
-   private Sensor sensor;
-   private TextView stepsPerMin;
-   private TextView kilometersPerHour;
-   private float initialValue;
-   private ImageView actionBar;
-   private TextView actionBarText;
-   private SensorEventListener sensorEventListener;
-   private MorphButton playButton;
-   private RelativeLayout runContainer;
-   private RelativeLayout stopContainer;
-   private int colorGreen;
-   private int colorGrey;
-   private PausableChronometer chronometer;
-   LinearLayout linearChart;
-   private ArrayList<TrainingInstant> trainingInsts;
-   private TrainingInstant ti;
-
-   private boolean isInitialValueSet = false;
-   private boolean isPaused = true;
-   private boolean isStopped = true;
-   private boolean tiReset = false;
-   private long startTime = -1000;
-   private float actualSteps;
-   private long actualTime;
-   private DBManager db;
-
-   private int id_tInstance = 0;
-   private String name = "SBURRO";
-   private int pref_pace;
-   private int pref_lastXMeters;
-   private int pref_stepLength;
-   private String formattedDate;
-   private TextView lat;
-   private TextView longit;
-   private TextView distanza_text;
-   private double distance = 0.0;
-   private ArrayList<Location> list = new ArrayList<Location>();
+    private SharedPreferences settings;
 
 
-   private static final double MINUTE_IN_MILLIS = 60000.0;
-   private static final int STEP_IN_CENTIMETERS_TEST = 100;
-   private ContextWrapper context = this;
-   private static final int THREAD_FINISH_MESSAGE = 1;
-   private boolean mIsBound;
-   private Intent serviceIntent;
-   private GPS mService;
+    private static final String TAG = "Training";
+    SensorManager sMgr;
+    Sensor steps;
+    private SensorManager sensorService;
+    private Sensor sensor;
+    private TextView stepsPerMin;
+    private TextView kilometersPerHour;
+    private float initialValue;
+    private ImageView actionBar;
+    private TextView actionBarText;
+    private SensorEventListener sensorEventListener;
+    private MorphButton playButton;
+    private RelativeLayout runContainer;
+    private RelativeLayout stopContainer;
+    private int colorGreen;
+    private int colorGrey;
+    private PausableChronometer chronometer;
+    LinearLayout linearChart;
+    private ArrayList<TrainingInstant> trainingInsts;
+    private TrainingInstant ti;
 
-   private boolean isEnded = false;
-
-   final Handler handleThreadMsg = new Handler(Looper.getMainLooper()) {
-      @Override
-      public void handleMessage(Message msg) {
-         super.handleMessage(msg);
-         switch (msg.what) {
-            case THREAD_FINISH_MESSAGE:
-               Toast.makeText(getApplicationContext(),
-                       "worker thread finished",
-                       Toast.LENGTH_SHORT).show();
-               break;
-            default:
-               break;
-         }
-      }
-   };
-   private Location previousLoc;
-
-
-   @Override
-   public boolean bindService(Intent service, ServiceConnection conn, int flags) {
-      return super.bindService(service, conn, flags);
-   }
-
-
-   @Override
-   protected void onStart() {
-      super.onStart();
-
-      Toast.makeText(this, "Ricerca GPS",
-              Toast.LENGTH_SHORT).show();
-      connectLocalService();
-
-   }
-
-   @Override
-   protected void onStop() {
-      super.onStop();
-      disconnectLocalService();
-   }
-
-   @Override
-   public void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      db = DBManager.getIstance();
-      setContentView(R.layout.training_main);
-
-      serviceIntent = new Intent(this, GPS.class);
-      lat = (TextView) this.findViewById(R.id.tvLatitudine);
-      longit = (TextView) this.findViewById(R.id.tvLongitudine);
-      distanza_text = (TextView) this.findViewById(R.id.tvDistanza);
-      trainingInsts = new ArrayList<TrainingInstant>();
-
-      //TEST GRAFICO
-      linearChart = (LinearLayout) findViewById(R.id.linearChart);
-      int colerloop[] = {1, 2, 2, 2, 3, 3, 3, 3, 1, 1};
-      int heightLoop[] = {400, 300, 300, 300, 200, 200, 200, 200, 400, 400};
-      for (int j = 0; j < colerloop.length; j++) {
-         drawChart(1, colerloop[j], heightLoop[j]);
-      }
-
-      actionBar = (ImageView) findViewById(R.id.action_bar_icon);
-      actionBarText = (TextView) findViewById(R.id.action_bar_title);
-      playButton = (MorphButton) findViewById(R.id.playPauseBtn);
-      stepsPerMin = (TextView) findViewById(R.id.item_text2Left);
-      kilometersPerHour = (TextView) findViewById(R.id.item_text2Right);
-      runContainer = (RelativeLayout) findViewById(R.id.training_run_container);
-      stopContainer = (RelativeLayout) findViewById(R.id.training_stop_container);
-      chronometer = (PausableChronometer) findViewById(R.id.digital_clock);
+    private boolean isInitialValueSet = false;
+    private boolean isPaused = true;
+    private boolean isStopped = true;
+    private boolean tiReset = false;
+    private long startTime = -1000;
+    private float actualSteps;
+    private long actualTime;
+    private DBManager db;
+    private String name = "SBURRO";
+    private int pref_pace;
+    private int pref_lastXMeters;
+    private int pref_stepLength;
+    private String formattedDate;
+    private TextView lat;
+    private TextView longit;
+    private TextView distanza_text;
+    private double distance = 0.0;
+    private ArrayList<Location> list = new ArrayList<Location>();
 
 
-      setupActionbar();
+    private ContextWrapper context = this;
+    private boolean mIsBound;
+    private Intent serviceIntent;
+    private GPS mService;
+
+    private boolean isEnded = false;
 
 
-      setValuesFromShared();
-      Calendar c = Calendar.getInstance();
-      SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      formattedDate = df.format(c.getTime());
-
-      colorGreen = Color.parseColor(getResources().getString(R.string.training_green));
-      colorGrey = Color.parseColor(getResources().getString(R.string.training_grey));
-
-      final AnimatedVectorDrawable startDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_play_to_pause);
-      AnimatedVectorDrawable endDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_pause_to_play);      //STRANGE FIX TO ANDROID 6 BUG
-
-      playButton.setStartDrawable(startDrawable);
-      playButton.setEndDrawable(endDrawable);
+    private Location previousLoc;
+    private boolean wasInPause = false;
+    private boolean utenteAvvisato=false;
 
 
-      playButton.setOnClickListener(new View.OnClickListener() {           //TODO: find out why the play/pause animation occours even on long touch //bug is gone? wtf
-         @Override
-         public void onClick(View v) {
+    @Override
+    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+        return super.bindService(service, conn, flags);
+    }
 
 
-            if (isStopped != false) {
-               isStopped = false;
-            }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        connectLocalService();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        disconnectLocalService();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        db = DBManager.getIstance();
+        setContentView(R.layout.training_main);
+
+        serviceIntent = new Intent(this, GPS.class);
+        lat = (TextView) this.findViewById(R.id.tvLatitudine);
+        longit = (TextView) this.findViewById(R.id.tvLongitudine);
+        distanza_text = (TextView) this.findViewById(R.id.tvDistanza);
+        trainingInsts = new ArrayList<TrainingInstant>();
+
+        //TEST GRAFICO
+        linearChart = (LinearLayout) findViewById(R.id.linearChart);
+        int colerloop[] = {1, 2, 2, 2, 3, 3, 3, 3, 1, 1};
+        int heightLoop[] = {400, 300, 300, 300, 200, 200, 200, 200, 400, 400};
+        for (int j = 0; j < colerloop.length; j++) {
+            drawChart(1, colerloop[j], heightLoop[j]);
+        }
+
+        actionBar = (ImageView) findViewById(R.id.action_bar_icon);
+        actionBarText = (TextView) findViewById(R.id.action_bar_title);
+        playButton = (MorphButton) findViewById(R.id.playPauseBtn);
+        stepsPerMin = (TextView) findViewById(R.id.item_text2Left);
+        kilometersPerHour = (TextView) findViewById(R.id.item_text2Right);
+        runContainer = (RelativeLayout) findViewById(R.id.training_run_container);
+        stopContainer = (RelativeLayout) findViewById(R.id.training_stop_container);
+        chronometer = (PausableChronometer) findViewById(R.id.digital_clock);
 
 
-            if (isPaused == true) {
-               // TIME OF START TRAINING
-               if (startTime == -1000) {
-                  startTime = System.currentTimeMillis();
-               }
-
-               chronometer.start();
-               fadeTo(runContainer, colorGrey, colorGreen);
-               fadeTo(stopContainer, colorGreen, colorGrey);
-
-            } else {
-
-               chronometer.stop();
-               fadeTo(runContainer, colorGreen, colorGrey);
-               fadeTo(stopContainer, colorGrey, colorGreen);
+        setupActionbar();
 
 
-            }
+        setValuesFromShared();
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        formattedDate = df.format(c.getTime());
 
-            updateIsPaused();
+        colorGreen = Color.parseColor(getResources().getString(R.string.training_green));
+        colorGrey = Color.parseColor(getResources().getString(R.string.training_grey));
 
-         }
-      });
+        final AnimatedVectorDrawable startDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_play_to_pause);
+        AnimatedVectorDrawable endDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_pause_to_play);      //STRANGE FIX TO ANDROID 6 BUG
 
-      playButton.setOnLongClickListener(new View.OnLongClickListener() {
-         @Override
-         public boolean onLongClick(View v) {
-
-            isStopped = true;
-
-            if (isPaused == false) {
-               playButton.animate();
-               fadeTo(runContainer, colorGreen, colorGrey);
-               fadeTo(stopContainer, colorGrey, colorGreen);
-               isPaused = true;
-            }
+        playButton.setStartDrawable(startDrawable);
+        playButton.setEndDrawable(endDrawable);
 
 
-            endTrainingPrompt();
+
+        playButton.setOnClickListener(new View.OnClickListener() {           //TODO: find out why the play/pause animation occours even on long touch //bug is gone? wtf
+            @Override
+            public void onClick(View v) {
 
 
-            Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
+                if (isStopped != false) {
+                    isStopped = false;
+                }
 
 
-            return true;
-         }
-      });
-   }
+                if (isPaused == true) {
 
-   private void endTrainingPrompt() {
+                        wasInPause = true;
+                        // TIME OF START TRAINING
+                        if (startTime == -1000) {
+                            startTime = System.currentTimeMillis();
+                        }
 
-      AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-              context);
 
-      //alertDialogBuilder.setTitle("");
+                        chronometer.start();
+                        fadeTo(runContainer, colorGrey, colorGreen);
+                        fadeTo(stopContainer, colorGreen, colorGrey);
 
-      alertDialogBuilder
-              .setMessage("Vuoi terminare l'allenamento?")
-              .setCancelable(false)
-              .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                 public void onClick(DialogInterface dialog, int id) {
+                    } else {
 
-                    isEnded = true;
-                    //passare nome allenamento
-                    db.createTraining(name, formattedDate, pref_pace, pref_lastXMeters, pref_stepLength, trainingInsts);
-                    try {
-                       db.saveTrainingInDB();
-                    } catch (SQLException e) {
-                       e.printStackTrace();
+                    chronometer.stop();
+                    fadeTo(runContainer, colorGreen, colorGrey);
+                    fadeTo(stopContainer, colorGrey, colorGreen);
+                    if(utenteAvvisato==false) {
+
+                        Toast.makeText(Training.this, "Tieni premuto per concludere l'allenamento", Toast.LENGTH_LONG).show();
+                        utenteAvvisato=true;
                     }
 
 
-                    chronometer.reset();
+                }
 
-                    // potenzialmente non necessari, non serve resettare l'activity se la abbandoniamo
+                updateIsPaused();
+
+            }
+        });
+
+        playButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                isStopped = true;
+
+                if (isPaused == false) {
+                    playButton.animate();
+                    fadeTo(runContainer, colorGreen, colorGrey);
+                    fadeTo(stopContainer, colorGrey, colorGreen);
+                    isPaused = true;
+                }
+
+
+                endTrainingPrompt();
+
+
+                return true;
+            }
+        });
+    }
+
+    private void endTrainingPrompt() {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                context);
+
+        //alertDialogBuilder.setTitle("");
+
+        alertDialogBuilder
+                .setMessage("Vuoi terminare l'allenamento?")
+                .setCancelable(false)
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        isEnded = true;
+                        //passare nome allenamento
+                        db.createTraining(name, formattedDate, pref_pace, pref_lastXMeters, pref_stepLength, trainingInsts);
+                        try {
+                            db.saveTrainingInDB();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        chronometer.reset();
+
+                        // potenzialmente non necessari, non serve resettare l'activity se la abbandoniamo
 //                    stepsPerMin.setText("0");
 //                    kilometersPerHour.setText("0");
 //                    actualSteps = 0;
@@ -307,228 +293,229 @@ public class Training extends Activity {
 //                    isInitialValueSet = false;
 
 
-                    DBTrainings res = null;
-                    try {
-                       res = db.getLastTraining();
-                    } catch (SQLException e) {
-                       e.printStackTrace();
+                        DBTrainings res = null;
+                        try {
+                            res = db.getLastTraining();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        File path = new File(context.getFilesDir() + "/training");
+                        Log.d("percorso", path.toString());
+                        path.mkdirs();
+                        File training = new File(path, "training.walk");
+
+                        try {
+                            ObjectMapper mapper = JacksonUtils.mapper;
+                            mapper.writeValue(training, res);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                        Uri contentUri = FileProvider.getUriForFile(context, "com.project.so2.walkmeapp", training);
+
+
+                        emailIntent.setType("vnd.android.cursor.dir/email");
+                        emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+
+                        startActivity(Intent.createChooser(emailIntent, "Send email..."));
+
+
+                        disconnectLocalService();
+                        Intent intent = new Intent(Training.this, Settings.class);
+                        startActivity(intent);
                     }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
 
-
-                    File path = new File(context.getFilesDir() + "/training");
-                    Log.d("percorso", path.toString());
-                    path.mkdirs();
-                    File training = new File(path, "training.walk");
-
-                    try {
-                       ObjectMapper mapper = JacksonUtils.mapper;
-                       mapper.writeValue(training, res);
-                    } catch (IOException e) {
-                       e.printStackTrace();
+                        dialog.cancel();
                     }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
+    public void drawChart(int count, int color, int height) {
+        System.out.println(count + color + height);
+        if (color == 3) {
+            color = Color.RED;
+        } else if (color == 1) {
+            color = Color.BLUE;
+        } else if (color == 2) {
+            color = Color.GREEN;
+        }
+        for (int k = 1; k <= count; k++) {
+            View view = new View(this);
+            view.setBackgroundColor(color);
+            view.setLayoutParams(new LinearLayout.LayoutParams(25, height));
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+            params.setMargins(3, 0, 0, 0); // substitute parameters for left, // top, right, bottom
+            view.setLayoutParams(params);
+            linearChart.addView(view);
+        }
+    }
 
 
-                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                    emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                    Uri contentUri = FileProvider.getUriForFile(context, "com.project.so2.walkmeapp", training);
-
-
-                    emailIntent.setType("vnd.android.cursor.dir/email");
-                    emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
-
-                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            GPS.LocalBinder binder = (GPS.LocalBinder) service;
+            mService = binder.getService();
+            mIsBound = true;
+            if (!mService.mLocationManager.isProviderEnabled("gps")) {
+                Toast.makeText(Training.this, "GPS e' attualmente disabilitato. E' possibile abilitarlo dal menu impostazioni.",
+                        Toast.LENGTH_LONG).show();
 
 
-                    disconnectLocalService();
-                    Intent intent = new Intent(Training.this, Settings.class);
-                    startActivity(intent);
-                 }
-              })
-              .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                 public void onClick(DialogInterface dialog, int id) {
+            }
+            GPS.OnNewGPSPointsListener clientListener = new
+                    GPS.OnNewGPSPointsListener() {
+                        @Override
+                        public void onNewGPSPoint() {
+                            getGPSData();
+                        }
+                    };
+            mService.addOnNewGPSPointsListener(clientListener);
+        }
 
-                    dialog.cancel();
-                 }
-              });
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.i("ConnectionService", "Disconnected");
+            mService = null;
+            mIsBound = false;
+        }
 
-      // create alert dialog
-      AlertDialog alertDialog = alertDialogBuilder.create();
+    };
 
-      // show it
-      alertDialog.show();
-   }
+    private void connectLocalService() {
+        bindService(this.serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
+    }
 
-   public void drawChart(int count, int color, int height) {
-      System.out.println(count + color + height);
-      if (color == 3) {
-         color = Color.RED;
-      } else if (color == 1) {
-         color = Color.BLUE;
-      } else if (color == 2) {
-         color = Color.GREEN;
-      }
-      for (int k = 1; k <= count; k++) {
-         View view = new View(this);
-         view.setBackgroundColor(color);
-         view.setLayoutParams(new LinearLayout.LayoutParams(25, height));
-         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
-         params.setMargins(3, 0, 0, 0); // substitute parameters for left, // top, right, bottom
-         view.setLayoutParams(params);
-         linearChart.addView(view);
-      }
-   }
+    private void disconnectLocalService() {
+        if (mIsBound) {
+            mService.removeOnNewGPSPointsListener();
+            unbindService(mConnection);  //TODO: Forse non serve
+            mIsBound = false;
+        }
+    }
 
+    private void getGPSData() {
 
-   private Runnable mUpdateTimeTask = new Runnable() {
-      public void run() {
-         activateGPS();
-      }
-   };
-
-   public void activateGPS() {
-
-      Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-      startActivity(intent);
-   }
-
-   private ServiceConnection mConnection = new ServiceConnection() {
-      @Override
-      public void onServiceConnected(ComponentName className, IBinder service) {
-         GPS.LocalBinder binder = (GPS.LocalBinder) service;
-         mService = binder.getService();
-         mIsBound = true;
-         if (!mService.mLocationManager.isProviderEnabled("gps")) {
-            Toast.makeText(Training.this, "GPS e' attualmente disabilitato. E' possibile abilitarlo dal menu impostazioni.",
-                    Toast.LENGTH_LONG).show();
-            handleThreadMsg.postDelayed(mUpdateTimeTask, 3000);
+        if (isPaused != false || isStopped != false) {
+            return;
+        }
+        Location loc = new Location(mService.mLastLocation);
 
 
-         }
-         GPS.OnNewGPSPointsListener clientListener = new
-                 GPS.OnNewGPSPointsListener() {
-                    @Override
-                    public void onNewGPSPoint() {
-                       getGPSData();
-                    }
-                 };
-         mService.addOnNewGPSPointsListener(clientListener);
-      }
+        double latitude = mService.getLatitude();
+        double longitude = mService.getLongitude();
+        double altitude = loc.getAltitude();
+        long time = loc.getTime();    //TODO: BUG - il cronometro e questo tempo non coincidono
+        float speed = loc.getSpeed();
 
-      @Override
-      public void onServiceDisconnected(ComponentName name) {
-         Log.i("ConnectionService", "Disconnected");
-         mService = null;
-         mIsBound = false;
-      }
+        if (trainingInsts.size() != 0) {
+            if (wasInPause != true) {
 
-   };
+                distance = distance + Math.abs(previousLoc.distanceTo(loc));
 
-   private void connectLocalService() {
-      bindService(this.serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
-   }
+            } else {
+                wasInPause = false;
+            }
+        }
+        previousLoc = loc;
 
-   private void disconnectLocalService() {
-      if (mIsBound) {
-         mService.removeOnNewGPSPointsListener();
-         unbindService(mConnection);  //TODO: Forse non serve
-         mIsBound = false;
-      }
-   }
+        //lat.setText(trainingInsts.size());
+        longit.setText(format(distance));
 
-   private void getGPSData() {
+        ti = new TrainingInstant(db.dbTrainingInstance, latitude, longitude, speed, altitude, time, distance);
 
-      if (isPaused != false || isStopped != false) {
-         return;
-      }
-      Location loc = new Location(mService.mLastLocation);
+        //id_tInstance++;
+        trainingInsts.add(ti);
+        lat.setText(Integer.toString(trainingInsts.size()));
+        Log.d("ti", "latitudine: " + ti.latitude + " longitudine: " + ti.longitude + " velocità: " + ti.speed + " altitudine: " + ti.altitude + " tempo: " + ti.time + " distanza: " + ti.distance);
+
+    }
 
 
-      double latitude = mService.getLatitude();
-      double longitude = mService.getLongitude();
-      double altitude = loc.getAltitude();
-      long time = loc.getTime();    //TODO: BUG - il cronometro e questo tempo non coincidono
-      float speed = loc.getSpeed();
+    public static String format(double value) {
+        DecimalFormat decimalFormat = new DecimalFormat("0.0000000");
+        return decimalFormat.format(value);
+    }
 
-      if (trainingInsts.size() != 0) {
-         distance = distance + Math.abs(previousLoc.distanceTo(loc));
-      }
-      previousLoc = loc;
+    @Override
+    protected void onPause() {
+        super.onPause();
+        wasInPause = true;
+        disconnectLocalService();
 
+    }
 
-      //lat.setText(trainingInsts.size());
-      longit.setText(format(distance));
+    @Override
+    protected void onResume() {
+        super.onResume();
+        connectLocalService();
+    }
 
-      ti = new TrainingInstant(db.dbTrainingInstance, latitude, longitude, speed, altitude, time, distance);
+    private void setValuesFromShared() {
 
-      //id_tInstance++;
-      trainingInsts.add(ti);
-      lat.setText(Integer.toString(trainingInsts.size()));
-      Log.d("ti", "latitudine: " + ti.latitude + " longitudine: " + ti.longitude + " velocità: " + ti.speed + " altitudine: " + ti.altitude + " tempo: " + ti.time + " distanza: " + ti.distance);
-
-   }
-
-
-   public static String format(double value) {
-      DecimalFormat decimalFormat = new DecimalFormat("0.0000000");
-      return decimalFormat.format(value);
-   }
+        settings = getSharedPreferences(PREFS_NAME, 0);
 
 
-   private void setValuesFromShared() {
+        if (settings.contains("stepLength")) {
+            prefsstepLengthInCm = settings.getInt("stepLength", 100);
+        }
+        if (settings.contains("lastXMeters")) {
+            prefsLastMetersInM = settings.getInt("lastXMeters", 10);
+        }
+        if (settings.contains("avgStepInM")) {
+            prefsAvgStepInM = settings.getInt("avgStepInM", 1);
+        }
 
-      settings = getSharedPreferences(PREFS_NAME, 0);
-
-
-      if (settings.contains("stepLength")) {
-         prefsstepLengthInCm = settings.getInt("stepLength", 100);
-      }
-      if (settings.contains("lastXMeters")) {
-         prefsLastMetersInM = settings.getInt("lastXMeters", 10);
-      }
-      if (settings.contains("avgStepInM")) {
-         prefsAvgStepInM = settings.getInt("avgStepInM", 1);
-      }
-
-      Log.d(TAG, "Values from prefs ->  " + "stepLength: " + prefsstepLengthInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepInM + "m");
-   }
+        Log.d(TAG, "Values from prefs ->  " + "stepLength: " + prefsstepLengthInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepInM + "m");
+    }
 
 
-   private void fadeTo(RelativeLayout layout, int actualColor, int color) {
-      ColorDrawable[] colour = {new ColorDrawable(actualColor), new ColorDrawable(color)};
+    private void fadeTo(RelativeLayout layout, int actualColor, int color) {
+        ColorDrawable[] colour = {new ColorDrawable(actualColor), new ColorDrawable(color)};
 
-      TransitionDrawable trans = new TransitionDrawable(colour);
-      layout.setBackground(trans);
-      trans.startTransition(200);
-   }
-
-
-   private void updateIsPaused() {
-
-      if (isPaused != true) {
-         isPaused = true;
-      } else {
-         isPaused = false;
-      }
-
-   }
+        TransitionDrawable trans = new TransitionDrawable(colour);
+        layout.setBackground(trans);
+        trans.startTransition(200);
+    }
 
 
-   private void setupActionbar() {
-      actionBar.setImageResource(R.drawable.btn_back);
-      actionBar.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-            Intent intent;
-            intent = new Intent(Training.this, MainActivity.class);
-            intent.putExtra("latitudine", mService.getLatitude());
-            intent.putExtra("longitudine", mService.getLongitude());
-            startActivity(intent);
-         }
-      });
+    private void updateIsPaused() {
 
-      actionBarText.setText(getResources().getString(R.string.main_training_title));
-   }
+        if (isPaused != true) {
+            isPaused = true;
+        } else {
+            isPaused = false;
+        }
+
+    }
+
+
+    private void setupActionbar() {
+        actionBar.setImageResource(R.drawable.btn_back);
+        actionBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        actionBarText.setText(getResources().getString(R.string.main_training_title));
+    }
 }
