@@ -1,4 +1,4 @@
-/*
+
 package com.project.so2.walkmeapp.core;
 
 import android.content.Context;
@@ -10,106 +10,102 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.project.so2.walkmeapp.R;
+import com.project.so2.walkmeapp.core.ORM.DBTrainings;
 
 import java.util.HashMap;
 import java.util.List;
 
-*/
-/**
- * Created by Mark0 on 26/02/2016.
-*//*
 
+public class HistoryExpListAdapter extends BaseExpandableListAdapter {
 
-   public class HistoryExpListAdapter extends BaseExpandableListAdapter {
+   private Context context;
+   private List<String> listDataHeader; // header titles
+   // child data in format of header title, child title
+   private HashMap<String, List<DBTrainings>> listDataChild;
 
-      private Context context;
-      private List<String> listDataHeader; // header titles
-      // child data in format of header title, child title
-      private HashMap<String, List<String>> listDataChild;
+   public HistoryExpListAdapter(Context context, List<String> listDataHeader,
+                                HashMap<String, List<DBTrainings>> listChildData) {
+      this.context = context;
+      this.listDataHeader = listDataHeader;
+      this.listDataChild = listChildData;
+   }
 
-      public  HistoryExpListAdapter(Context context, List<String> listDataHeader,
-                                   HashMap<String, List<String>> listChildData) {
-         this.context = context;
-         this.listDataHeader = listDataHeader;
-         this.listDataChild = listChildData;
+   @Override
+   public DBTrainings getChild(int groupPosition, int childPosititon) {
+      return this.listDataChild.get(this.listDataHeader.get(groupPosition))
+              .get(childPosititon);
+   }
+
+   @Override
+   public long getChildId(int groupPosition, int childPosition) {
+      return childPosition;
+   }
+
+   @Override
+   public View getChildView(int groupPosition, final int childPosition,
+                            boolean isLastChild, View convertView, ViewGroup parent) {
+
+      final DBTrainings childText = getChild(groupPosition, childPosition);
+
+      if (convertView == null) {
+         LayoutInflater infalInflater = (LayoutInflater) this.context
+                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+         convertView = infalInflater.inflate(R.layout.history_day_element, null);
       }
 
-      @Override
-      public Object getChild(int groupPosition, int childPosititon) {
-         return this.listDataChild.get(this.listDataHeader.get(groupPosition))
-                 .get(childPosititon);
+      TextView txtListChild = (TextView) convertView
+              .findViewById(R.id.item_text);
+
+      txtListChild.setText("ID: " + childText.id + " - Data: " + childText.date_day + "/" + childText.date_month + " - " + childText.date_hour + ":" + childText.date_minutes);
+      return convertView;
+   }
+
+   @Override
+   public int getChildrenCount(int groupPosition) {
+      return this.listDataChild.get(this.listDataHeader.get(groupPosition))
+              .size();
+   }
+
+   @Override
+   public Object getGroup(int groupPosition) {
+      return this.listDataHeader.get(groupPosition);
+   }
+
+   @Override
+   public int getGroupCount() {
+      return this.listDataHeader.size();
+   }
+
+   @Override
+   public long getGroupId(int groupPosition) {
+      return groupPosition;
+   }
+
+   @Override
+   public View getGroupView(int groupPosition, boolean isExpanded,
+                            View convertView, ViewGroup parent) {
+      String headerTitle = (String) getGroup(groupPosition);
+      if (convertView == null) {
+         LayoutInflater infalInflater = (LayoutInflater) this.context
+                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+         convertView = infalInflater.inflate(R.layout.history_month_element, null);
       }
 
-      @Override
-      public long getChildId(int groupPosition, int childPosition) {
-         return childPosition;
-      }
+      TextView lblListHeader = (TextView) convertView
+              .findViewById(R.id.history_item_month);
+      lblListHeader.setTypeface(null, Typeface.BOLD);
+      lblListHeader.setText(headerTitle);
 
-      @Override
-      public View getChildView(int groupPosition, final int childPosition,
-                               boolean isLastChild, View convertView, ViewGroup parent) {
+      return convertView;
+   }
 
-         final String childText = (String) getChild(groupPosition, childPosition);
+   @Override
+   public boolean hasStableIds() {
+      return false;
+   }
 
-         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this.context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_item, null);
-         }
-
-         TextView txtListChild = (TextView) convertView
-                 .findViewById(R.id.lblListItem);
-
-         txtListChild.setText(childText);
-         return convertView;
-      }
-
-      @Override
-      public int getChildrenCount(int groupPosition) {
-         return this.listDataChild.get(this.listDataHeader.get(groupPosition))
-                 .size();
-      }
-
-      @Override
-      public Object getGroup(int groupPosition) {
-         return this.listDataHeader.get(groupPosition);
-      }
-
-      @Override
-      public int getGroupCount() {
-         return this.listDataHeader.size();
-      }
-
-      @Override
-      public long getGroupId(int groupPosition) {
-         return groupPosition;
-      }
-
-      @Override
-      public View getGroupView(int groupPosition, boolean isExpanded,
-                               View convertView, ViewGroup parent) {
-         String headerTitle = (String) getGroup(groupPosition);
-         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this.context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_group, null);
-         }
-
-         TextView lblListHeader = (TextView) convertView
-                 .findViewById(R.id.lblListHeader);
-         lblListHeader.setTypeface(null, Typeface.BOLD);
-         lblListHeader.setText(headerTitle);
-
-         return convertView;
-      }
-
-      @Override
-      public boolean hasStableIds() {
-         return false;
-      }
-
-      @Override
-      public boolean isChildSelectable(int groupPosition, int childPosition) {
-         return true;
-      }
-   }}*/
+   @Override
+   public boolean isChildSelectable(int groupPosition, int childPosition) {
+      return true;
+   }
+}

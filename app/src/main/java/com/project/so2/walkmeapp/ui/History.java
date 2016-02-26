@@ -16,6 +16,7 @@ import com.j256.ormlite.support.CompiledStatement;
 import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.support.DatabaseResults;
 //import com.project.so2.walkmeapp.core.HistoryExpListAdapter;
+import com.project.so2.walkmeapp.core.HistoryExpListAdapter;
 import com.project.so2.walkmeapp.core.ORM.DBManager;
 import com.project.so2.walkmeapp.core.ORM.DBTrainings;
 import com.project.so2.walkmeapp.R;
@@ -80,7 +81,13 @@ public class History extends Activity {
       }
 
       if (trainings != null && trainings.size() > 0) {
+
+         noTrainingsText.setVisibility(View.GONE);
+         historyListView.setVisibility(View.VISIBLE);
+
          prepareListData();
+         HistoryExpListAdapter expListAdapter = new HistoryExpListAdapter(this, listDataHeader,listDataChild);
+         historyListView.setAdapter(expListAdapter);
       }
 
    }
