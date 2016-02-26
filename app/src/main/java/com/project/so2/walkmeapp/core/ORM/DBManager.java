@@ -1,35 +1,23 @@
 package com.project.so2.walkmeapp.core.ORM;
 
 /**
- * Created by Alessio on 05/02/2016.
+ * Class used to handle all the operations involving DB management i.e. inserts, queries, ..
+ * DB stores and manages all the information about trainings such as dates, pace, step length, ..
  */
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.util.Log;
 
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-
-import java.sql.SQLException;
-
-import org.codehaus.jackson.map.ObjectMapper;
-
-import com.j256.ormlite.field.DatabaseField;
-import com.project.so2.walkmeapp.core.JacksonUtils;
+import com.j256.ormlite.dao.Dao;
 import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 
-import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
-
-import bolts.Task;
-import bolts.TaskCompletionSource;
 
 
 public class DBManager extends ContextWrapper {
@@ -53,6 +41,9 @@ public class DBManager extends ContextWrapper {
    public static Dao<DBTrainings, String> dbDao;
    private List<DBTrainings> results;
 
+   /**
+    * @param context Needed by DB Manager to work
+    */
    public DBManager(Context context) {
       super(context);
 
@@ -60,6 +51,9 @@ public class DBManager extends ContextWrapper {
 
    }
 
+   /**
+    * @param ctx context used to check if there is a current DB instance
+    */
    public static void initialize(Context ctx) {
       if (uniqInstance == null) {
          uniqInstance = new DBManager(ctx.getApplicationContext());
@@ -81,12 +75,12 @@ public class DBManager extends ContextWrapper {
    }
 
    public DBTrainings getLastTraining() throws SQLException {
-            return getTrainings().get(getTrainings().size() - 1);
+      return getTrainings().get(getTrainings().size() - 1);
    }
 
 
    public List<DBTrainings> getTrainings() throws SQLException {
-         return dbDao.queryForAll();
+      return dbDao.queryForAll();
    }
 
 
@@ -95,8 +89,17 @@ public class DBManager extends ContextWrapper {
       return dbTrainingInstance.id;
    }
 
-
-   public void createTraining(String name, String formattedDate, int pref_pace, int pref_lastXMeters, int pref_stepLength, ArrayList<TrainingInstant> tiList) {
+   /**
+    * @param name             Training's name
+    * @param formattedDate    Training's date
+    * @param pref_pace        Training's set pace set by the user
+    * @param pref_lastXMeters Training's last x meters set by the user
+    * @param pref_stepLength  Training's step length set by the user
+    * @param tiList           Training's parameters used to plot the training. It saves, for each point:
+    *                         training's id, latitude, longitude, altitude, speed, pace, time and distance
+    */
+   public void createTraining(String name, String formattedDate, int pref_pace, int pref_lastXMeters, int pref_stepLength,
+                              ArrayList<TrainingInstant> tiList) {
 
       SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -109,7 +112,7 @@ public class DBManager extends ContextWrapper {
 
       this.name = name;
       this.date_year = date.get(Calendar.YEAR);
-      this.date_month = date.get(Calendar.MONTH)+1;   //calendar di merda é buggato, conta i mesi da 0 a 11
+      this.date_month = date.get(Calendar.MONTH) + 1;   //calendar di merda é buggato, conta i mesi da 0 a 11
       this.date_day = date.get(Calendar.DAY_OF_MONTH);
       this.date_hour = date.get(Calendar.HOUR_OF_DAY);
       this.date_minutes = date.get(Calendar.MINUTE);
@@ -120,7 +123,7 @@ public class DBManager extends ContextWrapper {
       this.tiList = tiList;
    }
 
-
+   /* Saving Trainings */
    public void saveTrainingInDB() throws SQLException {
 
       if (dbDao.queryForAll() == null || dbDao.queryForAll().size() == 0) {
@@ -136,7 +139,7 @@ public class DBManager extends ContextWrapper {
 
       }
 
-      //popolare l'istanza per il salvataggio nel db
+      /* Populating the instance to be saved in the DB */
       dbTrainingInstance.name = this.name;
       dbTrainingInstance.date_year = date_year;
       dbTrainingInstance.date_month = date_month;
