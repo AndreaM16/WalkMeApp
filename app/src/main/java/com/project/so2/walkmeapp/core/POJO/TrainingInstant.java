@@ -5,7 +5,6 @@ import com.j256.ormlite.table.DatabaseTable;
 import com.project.so2.walkmeapp.core.ORM.DBTrainings;
 
 /**
- * Created by marco on 15/02/16.
  * This class models an instant of the workout
  */
 
@@ -31,12 +30,13 @@ public class TrainingInstant {
    @DatabaseField
    public double distance;
 
-
+   /* ORMLite needs a no-arg constructor */
    public TrainingInstant() {
-      // ORMLite needs a no-arg constructor
+
    }
 
-   public TrainingInstant( DBTrainings training, double latitude, double longitude, double altitude, double speed, long time, double distance) {
+   public TrainingInstant(DBTrainings training, double latitude, double longitude,
+                          double altitude, double speed, long time, double distance) {
       this.training = training;
       this.latitude = latitude;
       this.longitude = longitude;
