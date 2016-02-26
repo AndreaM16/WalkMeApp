@@ -1,8 +1,10 @@
 package com.project.so2.walkmeapp.core;
 
 /**
- * Created by Mark0 on 28/01/2016.
+ * Class Which manages the chronometer used by the application.
+ * Customized version of Android Chronometer
  */
+
 import android.content.Context;
 import android.os.SystemClock;
 import android.util.AttributeSet;
@@ -10,44 +12,46 @@ import android.widget.Chronometer;
 
 public class PausableChronometer extends Chronometer {
 
-    private long timeWhenStopped = 0;
+   private long timeWhenStopped = 0;
 
-    public PausableChronometer(Context context) {
-        super(context);
-    }
+   public PausableChronometer(Context context) {
 
-    public PausableChronometer(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+      super(context);
+   }
 
-    public PausableChronometer(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
+   public PausableChronometer(Context context, AttributeSet attrs) {
 
-    @Override
-    public void start() {
-        setBase(SystemClock.elapsedRealtime()+timeWhenStopped);
-        super.start();
-    }
+      super(context, attrs);
+   }
 
-    @Override
-    public void stop() {
-        super.stop();
-        timeWhenStopped = getBase() - SystemClock.elapsedRealtime();
-    }
+   public PausableChronometer(Context context, AttributeSet attrs, int defStyle) {
+      super(context, attrs, defStyle);
+   }
 
-    public void reset() {
-        stop();
-        setBase(SystemClock.elapsedRealtime());
-        timeWhenStopped = 0;
-    }
+   @Override
+   public void start() {
+      setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+      super.start();
+   }
 
-    public long getCurrentTime() {
-        return timeWhenStopped;
-    }
+   @Override
+   public void stop() {
+      super.stop();
+      timeWhenStopped = getBase() - SystemClock.elapsedRealtime();
+   }
 
-    public void setCurrentTime(long time) {
-        timeWhenStopped = time;
-        setBase(SystemClock.elapsedRealtime()+timeWhenStopped);
-    }
+   public void reset() {
+      stop();
+      setBase(SystemClock.elapsedRealtime());
+      timeWhenStopped = 0;
+   }
+
+   public long getCurrentTime() {
+      return timeWhenStopped;
+   }
+
+   public void setCurrentTime(long time) {
+      timeWhenStopped = time;
+      setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+   }
 }

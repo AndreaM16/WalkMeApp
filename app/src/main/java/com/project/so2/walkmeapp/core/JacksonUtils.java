@@ -1,13 +1,14 @@
 package com.project.so2.walkmeapp.core;
 
 import org.codehaus.jackson.map.ObjectMapper;
+
 /**
- * Created by Ale on 29/01/2016.
+ * Class required by Jackson
  */
 
 
 public class JacksonUtils {
 
-    public final static ObjectMapper mapper = new ObjectMapper();
+   public final static ObjectMapper mapper = new ObjectMapper();
 
 }
