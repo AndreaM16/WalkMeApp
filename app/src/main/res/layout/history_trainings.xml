@@ -11,7 +11,7 @@
         android:layout_below="@id/action_bar_load_trainings">
 
         <TextView
-            android:id="@+id/history_generic_element"
+            android:id="@+id/no_trainings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/history_no_trainings"
@@ -20,12 +20,12 @@
             android:visibility="visible"
             android:textSize="@dimen/generic_list_main_text"/>
 
-        <ListView
+        <ExpandableListView
+            android:id="@+id/load_trainings_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/load_trainings_list_view"
             android:visibility="gone">
-        </ListView>
+        </ExpandableListView>
 
     </RelativeLayout>
 

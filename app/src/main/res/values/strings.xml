@@ -28,6 +28,13 @@
     <string name="about_title">About</string>
     <string name="about_text_body">is a fitness app focused on Step monitoring. \n \n It is being developed with   </string>
     <string name="about_text_body_cont">   by these beauties: </string>
+    <string name="average_steps_label">place</string>
+    <string name="average_speed_value">placeholder</string>
+    <string name="average_speed_label">placeholder</string>
+    <string name="total_distance_value">placeholder</string>
+    <string name="total_distance_label">placeholder</string>
+    <string name="training_date_label">placeholder</string>
+    <string name="training_name_label">placeholder</string>
 
 
     <!-- Arrays for lists -->
@@ -45,6 +52,22 @@
         <item>History</item>
         <item><!--Dynamic Month and Dates--></item>
     </string-array>
+
+    <string-array name="history_list_months">
+        <item>Gennaio</item>
+        <item>Febbraio</item>
+        <item>Marzo</item>
+        <item>Aprile</item>
+        <item>Maggio</item>
+        <item>Giugno</item>
+        <item>Luglio</item>
+        <item>Agosto</item>
+        <item>Settembre</item>
+        <item>Ottobre</item>
+        <item>Novembre</item>
+        <item>Dicembre</item>
+    </string-array>
+
 
     <!-- About Page-->
     <string-array name="about_grid_items">

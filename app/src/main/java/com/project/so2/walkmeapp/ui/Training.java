@@ -104,13 +104,12 @@ public class Training extends Activity {
    private long actualTime;
    private DBManager db;
 
-   private int id_tInstance=0;
-   private String name="SBURRO";
+   private int id_tInstance = 0;
+   private String name = "SBURRO";
    private int pref_pace;
    private int pref_lastXMeters;
    private int pref_stepLength;
    private String formattedDate;
-   private int index;
    private TextView lat;
    private TextView longit;
    private TextView distanza_text;
@@ -171,7 +170,7 @@ public class Training extends Activity {
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      db = new DBManager(this);
+      db = DBManager.getIstance();
       setContentView(R.layout.training_main);
 
       serviceIntent = new Intent(this, GPS.class);
@@ -201,7 +200,6 @@ public class Training extends Activity {
       setupActionbar();
 
 
-      index = db.setupDB();
       setValuesFromShared();
       Calendar c = Calendar.getInstance();
       SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -265,12 +263,10 @@ public class Training extends Activity {
             }
 
 
-
             endTrainingPrompt();
 
 
             Toast.makeText(Training.this, "RESET", Toast.LENGTH_SHORT).show();
-
 
 
             return true;
@@ -288,37 +284,48 @@ public class Training extends Activity {
       alertDialogBuilder
               .setMessage("Vuoi terminare l'allenamento?")
               .setCancelable(false)
-              .setPositiveButton("Si",new DialogInterface.OnClickListener() {
-                 public void onClick(DialogInterface dialog,int id) {
+              .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
 
                     isEnded = true;
                     //passare nome allenamento
-                    db.createTraining(index, name,formattedDate,pref_pace,pref_lastXMeters,pref_stepLength,trainingInsts);
+                    db.createTraining(name, formattedDate, pref_pace, pref_lastXMeters, pref_stepLength, trainingInsts);
                     try {
                        db.saveTrainingInDB();
                     } catch (SQLException e) {
                        e.printStackTrace();
                     }
+
+
                     chronometer.reset();
-                    stepsPerMin.setText("0");
-                    kilometersPerHour.setText("0");
-                    actualSteps = 0;
-                    actualTime = 0;
-                    isInitialValueSet = false;
 
-                    DBTrainings res = db.getTrainings();
+                    // potenzialmente non necessari, non serve resettare l'activity se la abbandoniamo
+//                    stepsPerMin.setText("0");
+//                    kilometersPerHour.setText("0");
+//                    actualSteps = 0;
+//                    actualTime = 0;
+//                    isInitialValueSet = false;
 
 
-                        File path = new File(context.getFilesDir()+"/training");
-                        Log.d("percorso",path.toString());
-                        path.mkdirs();
-                         File training = new File(path, "training.txt");
-                        try {
-                           ObjectMapper mapper = JacksonUtils.mapper;
-                           mapper.writeValue(training, res);
-                        } catch (IOException e) {
-                           e.printStackTrace();
-                        }
+                    DBTrainings res = null;
+                    try {
+                       res = db.getLastTraining();
+                    } catch (SQLException e) {
+                       e.printStackTrace();
+                    }
+
+
+                    File path = new File(context.getFilesDir() + "/training");
+                    Log.d("percorso", path.toString());
+                    path.mkdirs();
+                    File training = new File(path, "training.walk");
+
+                    try {
+                       ObjectMapper mapper = JacksonUtils.mapper;
+                       mapper.writeValue(training, res);
+                    } catch (IOException e) {
+                       e.printStackTrace();
+                    }
 
 
                     Intent emailIntent = new Intent(Intent.ACTION_SEND);
@@ -340,8 +347,8 @@ public class Training extends Activity {
                     startActivity(intent);
                  }
               })
-              .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                 public void onClick(DialogInterface dialog,int id) {
+              .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
 
                     dialog.cancel();
                  }
@@ -451,15 +458,15 @@ public class Training extends Activity {
       previousLoc = loc;
 
 
-         //lat.setText(trainingInsts.size());
-         longit.setText(format(distance));
+      //lat.setText(trainingInsts.size());
+      longit.setText(format(distance));
 
-      ti = new TrainingInstant(db.dbTrainingInstance,latitude, longitude, speed, altitude, time, distance);
+      ti = new TrainingInstant(db.dbTrainingInstance, latitude, longitude, speed, altitude, time, distance);
 
       //id_tInstance++;
       trainingInsts.add(ti);
       lat.setText(Integer.toString(trainingInsts.size()));
-      Log.d("ti","latitudine: "+ti.latitude+" longitudine: "+ti.longitude+" velocità: "+ti.speed+" altitudine: "+ti.altitude+" tempo: "+ti.time+" distanza: "+ti.distance);
+      Log.d("ti", "latitudine: " + ti.latitude + " longitudine: " + ti.longitude + " velocità: " + ti.speed + " altitudine: " + ti.altitude + " tempo: " + ti.time + " distanza: " + ti.distance);
 
    }
 
@@ -468,7 +475,6 @@ public class Training extends Activity {
       DecimalFormat decimalFormat = new DecimalFormat("0.0000000");
       return decimalFormat.format(value);
    }
-
 
 
    private void setValuesFromShared() {

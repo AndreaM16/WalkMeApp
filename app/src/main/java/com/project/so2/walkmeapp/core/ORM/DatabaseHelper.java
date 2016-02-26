@@ -44,7 +44,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             // Create tables. This onCreate() method will be invoked only once of the application life time i.e. the first time when the application starts.
             TableUtils.createTableIfNotExists(connectionSource, DBTrainings.class);
             TableUtils.createTableIfNotExists(connectionSource, TrainingInstant.class);
-            //TableUtils.createTableIfNotExists(connectionSource, DBUsers.class);
 
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
@@ -89,14 +88,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public static DatabaseHelper getIstance() {
         return mDatabaseHelper;
     }
-
-    /*public Dao<DBUsers, String> getUsersDao() throws SQLException {
-        if (dbUsersDao == null) {
-            dbUsersDao = getDao(DBUsers.class);
-        }
-        return dbUsersDao;
-    }
-    */
 
 
 }
