@@ -1,9 +1,12 @@
+/**
+ * Operating Systems 2 Project - WALKMEAPP
+ * Made by: Marco Loriga, Alessio Pili, Andrea Medda and Cristin Sanna
+ */
+
 package com.project.so2.walkmeapp.ui;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +14,6 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -30,6 +32,18 @@ import com.project.so2.walkmeapp.R;
 import com.project.so2.walkmeapp.core.ORM.DatabaseHelper;
 import com.project.so2.walkmeapp.core.SERVICE.GPS;
 
+/**
+ * Main Activity handles all the set up operations, handles the main services, manages onCreate()
+ * and onBundle()
+ *
+ *  THREAD_FINISH_MESSAGE Sets a message used to check if the thread is done or not
+ *  ACCESS_FINE_LOCATION Sets permissions
+ *  mMainPageList Used to set up Main Activity's View
+ *  mUserView Used to set up User's View
+ *  mService Used to handle the GPS service
+ *  mIsBound Checks if there is a binding between the GPS Service and the Application
+ *  positiveGPSPermission Used to handle GPS permissions
+ */
 public class MainActivity extends Activity {
    private static final int THREAD_FINISH_MESSAGE = 1;
    private static final int ACCESS_FINE_LOCATION = 0;
@@ -40,7 +54,10 @@ public class MainActivity extends Activity {
    private boolean mIsBound;
    private boolean positiveGPSPermission = false;
 
-
+   /**
+    * TODO
+    * @param msg
+    */
    final Handler handleThreadMsg = new Handler(Looper.getMainLooper()) {
       @Override
       public void handleMessage(Message msg) {
@@ -59,13 +76,18 @@ public class MainActivity extends Activity {
       }
    };
 
+   /**
+    * Triggers GPS' Activation
+    */
    private Runnable mUpdateTimeTask = new Runnable() {
       public void run() {
          activateGPS();
       }
    };
 
-
+   /**
+    * Disconnects GPS' service using unbindService
+    */
    private void disconnectLocalService() {
       if (mIsBound) {
          mService.removeOnNewGPSPointsListener();
@@ -74,30 +96,35 @@ public class MainActivity extends Activity {
       }
    }
 
+   /**
+    * TODO
+    */
    private void getGPSData() {
 
    }
 
+   /**
+    * @param savedInstanceState stored instances of DB's elements
+    * AnimationDrawable Handles Stickman's animation
+    * DatabaseHelper.initialize() Initializes DB
+    */
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+
       setContentView(R.layout.activity_main);
-
       mMainPageElements = getResources().getStringArray(R.array.main_page_list_items);
-
       mMainPageList = (LinearLayout) findViewById(R.id.main_page_list);
       mUserView = (ImageView) findViewById(R.id.user_icon_view);
       View mView = findViewById(R.id.walking_man);
       mView.setBackgroundResource(R.drawable.walking_stickman);
       AnimationDrawable animMan = (AnimationDrawable) mView.getBackground();
-
       animMan.start();
 
       mUserView.bringToFront();
 
       getWindow().getDecorView().setSystemUiVisibility(
-              View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                      | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+              View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
       getWindow().setStatusBarColor(Color.TRANSPARENT);
 
       DatabaseHelper.initialize(this);

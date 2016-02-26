@@ -3,6 +3,14 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- Standard Plot XML-->
+    <dimen name="title_font_size">16dp</dimen>
+    <dimen name="domain_label_font_size">12dp</dimen>
+    <dimen name="range_label_font_size">12dp</dimen>
+    <dimen name="range_tick_label_font_size">12dp</dimen>
+    <dimen name="domain_tick_label_font_size">12dp</dimen>
+    <dimen name="legend_text_font_size">12dp</dimen>
+
     <!-- Some standard Dimens to work easily when creating objects -->
     <dimen name="generic_list_item_height">80dp</dimen>
     <dimen name="generic_list_main_text">26dp</dimen>
