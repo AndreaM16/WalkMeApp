@@ -11,27 +11,20 @@ import android.widget.TextView;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.StatementBuilder;
-import com.j256.ormlite.support.CompiledStatement;
-import com.j256.ormlite.support.DatabaseConnection;
-import com.j256.ormlite.support.DatabaseResults;
-//import com.project.so2.walkmeapp.core.HistoryExpListAdapter;
+import com.project.so2.walkmeapp.R;
 import com.project.so2.walkmeapp.core.HistoryExpListAdapter;
 import com.project.so2.walkmeapp.core.ORM.DBManager;
 import com.project.so2.walkmeapp.core.ORM.DBTrainings;
-import com.project.so2.walkmeapp.R;
 
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+//import com.project.so2.walkmeapp.core.HistoryExpListAdapter;
+
 /**
- * Created by Andrea on 24/01/2016.
+ * Class used to Handle trainings' history
  */
 public class History extends Activity {
 
@@ -41,24 +34,30 @@ public class History extends Activity {
 
    private ExpandableListView historyListView;
    private List<DBTrainings> trainings;
-   //private HistoryExpListAdapter expListAdapter;
+   ;
    private TextView noTrainingsText;
    private ArrayList<String> listDataHeader;
    private HashMap<String, List<DBTrainings>> listDataChild;
 
+   /**
+    * @param savedInstanceState Used to get DB resources' instances
+    */
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      //Binding Class to its View
+      /* Binding Class to its View */
       setContentView(R.layout.history_trainings);
 
-      //Binding Strings to their View
+      /* Binding Strings to their View */
       mLoadTrainingsElements = getResources().getStringArray(R.array.history_list_items);
 
       ImageView actionBar = (ImageView) findViewById(R.id.action_bar_icon);
       actionBar.setImageResource(R.drawable.btn_back);
       actionBar.setOnClickListener(new View.OnClickListener() {
+         /**
+          * @param v View
+          */
          @Override
          public void onClick(View v) {
             finish();
@@ -72,6 +71,7 @@ public class History extends Activity {
       historyListView = (ExpandableListView) findViewById(R.id.load_trainings_list_view);
       noTrainingsText = (TextView) findViewById(R.id.no_trainings);
 
+      /* Getting trainings' information from the DB */
       DBManager dbMan = DBManager.getIstance();
       dbTrainingDao = dbMan.dbDao;
       try {
@@ -80,18 +80,20 @@ public class History extends Activity {
          e.printStackTrace();
       }
 
+      /* If there is at least one training it'll be shown */
       if (trainings != null && trainings.size() > 0) {
 
          noTrainingsText.setVisibility(View.GONE);
          historyListView.setVisibility(View.VISIBLE);
 
          prepareListData();
-         HistoryExpListAdapter expListAdapter = new HistoryExpListAdapter(this, listDataHeader,listDataChild);
+         HistoryExpListAdapter expListAdapter = new HistoryExpListAdapter(this, listDataHeader, listDataChild);
          historyListView.setAdapter(expListAdapter);
       }
 
    }
 
+   /* Used to order trainings and to correctly format them by data */
    private void prepareListData() {
       listDataHeader = new ArrayList<String>();
       listDataChild = new HashMap<String, List<DBTrainings>>();
@@ -119,7 +121,7 @@ public class History extends Activity {
 
       }
 
-      Log.d("HRES", listDataChild.toString()) ;
+      Log.d("HRES", listDataChild.toString());
 
    }
 
