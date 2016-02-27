@@ -24,8 +24,10 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.content.FileProvider;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -52,6 +54,7 @@ import com.project.so2.walkmeapp.R;
 import com.project.so2.walkmeapp.core.ORM.DBTrainings;
 import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 import com.project.so2.walkmeapp.core.PausableChronometer;
+import com.project.so2.walkmeapp.core.SERVICE.AttachmentHandling;
 import com.project.so2.walkmeapp.core.SERVICE.GPS;
 import com.wnafee.vector.MorphButton;
 import com.wnafee.vector.compat.AnimatedVectorDrawable;
@@ -119,6 +122,7 @@ public class Training extends Activity {
     private boolean mIsBound;
     private Intent serviceIntent;
     private GPS mService;
+    public static File training;
 
     private boolean isEnded = false;
 
@@ -272,6 +276,30 @@ public class Training extends Activity {
                 .setCancelable(false)
                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Training.this);
+                        builder.setTitle("Title");
+
+// Set up the input
+                        final EditText input = new EditText(Training.this);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                        input.setInputType(InputType.TYPE_CLASS_TEXT);
+                        builder.setView(input);
+
+// Set up the buttons
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                name = input.getText().toString();
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                        builder.show();
 
                         isEnded = true;
                         //passare nome allenamento
@@ -293,44 +321,12 @@ public class Training extends Activity {
 //                    isInitialValueSet = false;
 
 
-                        DBTrainings res = null;
-                        try {
-                            res = db.getLastTraining();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-
-
-                        File path = new File(context.getFilesDir() + "/training");
-                        Log.d("percorso", path.toString());
-                        path.mkdirs();
-                        File training = new File(path, "training.walk");
-
-                        try {
-                            ObjectMapper mapper = JacksonUtils.mapper;
-                            mapper.writeValue(training, res);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-
-                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                        Uri contentUri = FileProvider.getUriForFile(context, "com.project.so2.walkmeapp", training);
-
-
-                        emailIntent.setType("vnd.android.cursor.dir/email");
-                        emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
-
-                        startActivity(Intent.createChooser(emailIntent, "Send email..."));
-
-
+                     /*   AttachmentHandling attachmentHandling = new AttachmentHandling();
+                        attachmentHandling.share(Training.this);
+*/
                         disconnectLocalService();
-                        Intent intent = new Intent(Training.this, Settings.class);
-                        startActivity(intent);
+                       /* Intent intent = new Intent(Training.this, Settings.class);
+                        startActivity(intent);*/
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

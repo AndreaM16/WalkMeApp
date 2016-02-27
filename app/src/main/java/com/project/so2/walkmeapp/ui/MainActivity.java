@@ -169,7 +169,7 @@ public class MainActivity extends Activity {
 
          ActivityCompat.requestPermissions(this,
                  new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION},
-                 ACCESS_FINE_LOCATION);
+                 1);
          return;
       }
 

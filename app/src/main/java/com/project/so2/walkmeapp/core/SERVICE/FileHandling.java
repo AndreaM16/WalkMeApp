@@ -12,6 +12,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -32,7 +33,9 @@ public class FileHandling extends Activity {
         ObjectMapper mapper = JacksonUtils.mapper;
 
         if (getIntent().getData() != null) {
-            String filePath = getIntent().getData().getPath();
+
+
+            String filePath = getIntent().getData().getEncodedPath();
 
             try {
                 StringBuilder text = new StringBuilder();
