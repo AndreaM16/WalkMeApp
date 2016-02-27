@@ -43,7 +43,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="file" android:mimeType="*/*" android:pathPattern=".*\\.walk"/>
-        <data android:scheme="content" android:pathPattern=".*\\.walk" android:mimeType="application/walkmeapp" />
+        <data android:scheme="content" android:pathPattern=".*\\.walk" android:mimeType="*/*" />
         <!-- <data android:host="*"/> -->
     </intent-filter>
 

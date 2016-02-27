@@ -1,6 +1,7 @@
 package com.project.so2.walkmeapp.core.SERVICE;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -32,6 +33,9 @@ public class FileHandling extends Activity {
         db=DBManager.getIstance();
         ObjectMapper mapper = JacksonUtils.mapper;
 
+        Intent intent=getIntent();
+        Bundle bundle=intent.getExtras();
+
         if (getIntent().getData() != null) {
 
 
@@ -48,13 +52,13 @@ public class FileHandling extends Activity {
                     text.append(line);
                 }
                 br.close();
-                Log.d("training",text.toString());
+                Log.d("BAU:training",text.toString());
 
 
                 //convert the json file in a WorkoutItem object
                 training = mapper.readValue(text.toString(), DBTrainings.class);
 
-                        db.saveImportedTraining(training);
+                        db.saveImportedTraining(training,getApplicationContext());
 
 
 

@@ -40,6 +40,7 @@ public class DBManager extends ContextWrapper {
    private static DatabaseHelper databaseHelper;
    public static Dao<DBTrainings, String> dbDao;
    private List<DBTrainings> results;
+   private static boolean isInizialized=false;
 
    /**
     * @param context Needed by DB Manager to work
@@ -67,7 +68,7 @@ public class DBManager extends ContextWrapper {
       } catch (SQLException e) {
          e.printStackTrace();
       }
-
+      isInizialized=true;
    }
 
    public static DBManager getIstance() {
@@ -81,12 +82,6 @@ public class DBManager extends ContextWrapper {
 
    public List<DBTrainings> getTrainings() throws SQLException {
       return dbDao.queryForAll();
-   }
-
-
-   public int getLastTrainingId() {
-
-      return dbTrainingInstance.id;
    }
 
    /**
@@ -123,10 +118,15 @@ public class DBManager extends ContextWrapper {
       this.tiList = tiList;
    }
 
-   public void saveImportedTraining(DBTrainings training) {
+   public void saveImportedTraining(DBTrainings training,Context ctx) {
+
+      if(isInizialized==false){
+         initialize(ctx);
+      }
       try {
-         if(getTrainings()!=null){
-               training.id=getLastTrainingId()+1;}
+         if(getTrainings()!=null && getTrainings().size()>0 ){
+
+            training.id= getLastTraining().id+1;}
          else{
             training.id=0;
          }
