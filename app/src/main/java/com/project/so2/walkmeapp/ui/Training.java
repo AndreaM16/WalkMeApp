@@ -104,6 +104,8 @@ public class Training extends Activity {
    private yAxisType mYAxis;
    private LineChartView graph;
    private int stepsMinValue = 0;
+   private ImageView arrow_up;
+   private ImageView arrow_down;
 
 
    @Override
@@ -135,6 +137,8 @@ public class Training extends Activity {
       trainingInsts = new ArrayList<TrainingInstant>();
 
       actionBar = (ImageView) findViewById(R.id.action_bar_icon);
+      arrow_up = (ImageView) findViewById(R.id.arrow_up);
+      arrow_down = (ImageView) findViewById(R.id.arrow_down);
       actionBarText = (TextView) findViewById(R.id.action_bar_title);
       playButton = (MorphButton) findViewById(R.id.playPauseBtn);
       stepsPerMin = (TextView) findViewById(R.id.item_text2Left);
@@ -210,7 +214,6 @@ public class Training extends Activity {
          @Override
          public boolean onLongClick(View v) {
 
-            isStopped = true;
 
             if (isPaused == false) {
                playButton.animate();
@@ -240,8 +243,14 @@ public class Training extends Activity {
               .setCancelable(false)
               .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                  public void onClick(DialogInterface dialog, int id) {
+
+                    isStopped = true;
+                    isPaused = true;
+
+                    chronometer.stop();
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(Training.this);
-                    builder.setTitle("Title");
+                    builder.setTitle("Scegli il nome:");
 
                     final EditText input = new EditText(Training.this);
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -260,13 +269,12 @@ public class Training extends Activity {
                           } catch (SQLException e) {
                              e.printStackTrace();
                           }
+                          finish();
                           disconnectLocalService();
-
                        }
                     });
 
                     builder.show();
-                    chronometer.reset();
 
 
                  }
@@ -371,17 +379,25 @@ public class Training extends Activity {
 
    private void updateView(long deltaTime, double deltaDistance, float speed) {
 
-         if (deltaTime == 0 && deltaDistance == 0 && speed == 0) {
-            stepsPerMin.setText("--");
-            kilometersPerHour.setText("--");
-            stepsMinValue = 0;
+      if (deltaTime == 0 && deltaDistance == 0 && speed == 0) {
+         stepsPerMin.setText("--");
+         kilometersPerHour.setText("--");
+         stepsMinValue = 0;
 
-         } else {
-            double numberSteps = deltaDistance / (prefsStepLengthInCm / 100);
-            stepsMinValue = (int) ((numberSteps / (deltaTime / 1000)) * 60);
-            stepsPerMin.setText(Integer.toString(stepsMinValue));
-            kilometersPerHour.setText(Integer.toString((int) (speed * 3.6)));
-         }
+      } else {
+         double numberSteps = deltaDistance / (prefsStepLengthInCm / 100);
+         stepsMinValue = (int) ((numberSteps / (deltaTime / 1000)) * 60);
+         stepsPerMin.setText(Integer.toString(stepsMinValue));
+         kilometersPerHour.setText(Integer.toString((int) (speed * 3.6)));
+      }
+
+      if (stepsMinValue < prefsAvgStepPerMin-10) {
+         accelerate();
+      } else if (stepsMinValue >= prefsAvgStepPerMin-10 && stepsMinValue <= prefsAvgStepPerMin+10){
+         both();
+      } else {
+         decelerate();
+      }
 
       plot(trainingInsts);
 
@@ -542,10 +558,10 @@ public class Training extends Activity {
       graph.setContainerScrollEnabled(false, null);
       graph.setLineChartData(data);
       graph.setInteractive(true);
-     // graph.setViewportCalculationEnabled(true);
+      // graph.setViewportCalculationEnabled(true);
 
       Viewport v = new Viewport(graph.getMaximumViewport());
-      v.top = prefsAvgStepPerMin *2;
+      v.top = prefsAvgStepPerMin * 2;
       graph.setMaximumViewport(v);
       graph.setMinimumHeight(0);
       graph.setCurrentViewport(v);
@@ -565,5 +581,20 @@ public class Training extends Activity {
       SPEED, PACE, ALTITUDE
    }
 
+   private void accelerate() {
+      arrow_up.setBackgroundResource(R.drawable.colored);
+      arrow_down.setBackgroundResource(R.drawable.grey_down);
+   }
+
+   private void decelerate() {
+      arrow_up.setBackgroundResource(R.drawable.grey);
+      arrow_down.setBackgroundResource(R.drawable.color_down);
+   }
+
+   private void both() {
+      arrow_up.setBackgroundResource(R.drawable.colored);
+      arrow_down.setBackgroundResource(R.drawable.color_down);
+
+   }
 
 }

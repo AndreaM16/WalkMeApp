@@ -38,6 +38,7 @@ public class History extends Activity {
    private TextView noTrainingsText;
    private ArrayList<String> listDataHeader;
    private HashMap<String, List<DBTrainings>> listDataChild;
+   private HistoryExpListAdapter expListAdapter;
 
    /**
     * @param savedInstanceState Used to get DB resources' instances
@@ -86,7 +87,7 @@ public class History extends Activity {
          historyListView.setVisibility(View.VISIBLE);
 
          prepareListData();
-         HistoryExpListAdapter expListAdapter = new HistoryExpListAdapter(this, listDataHeader, listDataChild);
+         expListAdapter = new HistoryExpListAdapter(this, listDataHeader, listDataChild);
          historyListView.setAdapter(expListAdapter);
       }
 
@@ -123,6 +124,7 @@ public class History extends Activity {
       Log.d("HRES", listDataChild.toString());
 
    }
+
 
 }
 
