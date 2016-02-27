@@ -13,14 +13,14 @@ import com.project.so2.walkmeapp.R;
 /**
  * Class used to handle all application's settings
  * stepLengthInCm used to set user's step length in order to calculate the different metrics
- * avgStepInM used to set user's average steps preferences
+ * avgStepPerMin used to set user's average steps preferences
  * lastMetersInM used to set user's last meters preferences
  * SharedPreferences used to share these resources within the application
  */
 public class Settings extends Activity {
    private static final String PREFS_NAME = "SETTINGS_PREFS";
    private int stepLengthInCm;
-   private int avgStepInM;
+   private int avgStepPerMin;
    private int lastMetersInM;
    private EditText stepLengthET;
    private EditText avgStepET;
@@ -58,7 +58,7 @@ public class Settings extends Activity {
       settings = getSharedPreferences(PREFS_NAME, 0);
 
       stepLengthInCm = checkAndSet("stepLength", stepLengthET);
-      avgStepInM = checkAndSet("avgStepInM", avgStepET);
+      avgStepPerMin = checkAndSet("avgStepPerMin", avgStepET);
       lastMetersInM = checkAndSet("lastXMeters", lastMetersET);
 
    }
@@ -87,7 +87,7 @@ public class Settings extends Activity {
       }
 
       if (avgStepET.getText() != null && !(avgStepET.getText().toString().equals(""))) {
-         editor.putInt("avgStepInM", Integer.parseInt(avgStepET.getText().toString()));
+         editor.putInt("avgStepPerMin", Integer.parseInt(avgStepET.getText().toString()));
       }
 
       if (lastMetersET.getText() != null && !(lastMetersET.getText().toString().equals(""))) {

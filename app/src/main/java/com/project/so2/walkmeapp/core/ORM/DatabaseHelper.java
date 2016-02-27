@@ -19,7 +19,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
    /* Standard Initialization*/
    private static final String DATABASE_NAME = "database.db";
-   private static final int DATABASE_VERSION = 13;
+   private static final int DATABASE_VERSION = 14;
 
    private Dao<DBTrainings, String> dbTrainingsDao;
    private static DatabaseHelper mDatabaseHelper;

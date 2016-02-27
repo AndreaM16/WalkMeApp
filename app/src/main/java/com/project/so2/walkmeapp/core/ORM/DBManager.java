@@ -40,7 +40,7 @@ public class DBManager extends ContextWrapper {
    private static DatabaseHelper databaseHelper;
    public static Dao<DBTrainings, String> dbDao;
    private List<DBTrainings> results;
-   private static boolean isInizialized=false;
+   private static boolean isInitialized = false;
 
    /**
     * @param context Needed by DB Manager to work
@@ -68,7 +68,7 @@ public class DBManager extends ContextWrapper {
       } catch (SQLException e) {
          e.printStackTrace();
       }
-      isInizialized=true;
+      isInitialized = true;
    }
 
    public static DBManager getIstance() {
@@ -93,6 +93,7 @@ public class DBManager extends ContextWrapper {
     * @param tiList           Training's parameters used to plot the training. It saves, for each point:
     *                         training's id, latitude, longitude, altitude, speed, pace, time and distance
     */
+
    public void createTraining(String name, String formattedDate, int pref_pace, int pref_lastXMeters, int pref_stepLength,
                               ArrayList<TrainingInstant> tiList) {
 
@@ -118,17 +119,16 @@ public class DBManager extends ContextWrapper {
       this.tiList = tiList;
    }
 
-   public void saveImportedTraining(DBTrainings training,Context ctx) {
+   public void saveImportedTraining(DBTrainings training, Context ctx) {
 
-      if(isInizialized==false){
+      if (isInitialized == false) {
          initialize(ctx);
       }
       try {
-         if(getTrainings()!=null && getTrainings().size()>0 ){
-
-            training.id= getLastTraining().id+1;}
-         else{
-            training.id=0;
+         if (getTrainings() != null && getTrainings().size() > 0) {
+            training.id = getLastTraining().id + 1;
+         } else {
+            training.id = 0;
          }
       } catch (SQLException e) {
          e.printStackTrace();
@@ -141,6 +141,7 @@ public class DBManager extends ContextWrapper {
       }
 
    }
+
    /* Saving Trainings */
    public void saveTrainingInDB() throws SQLException {
 

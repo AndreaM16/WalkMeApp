@@ -10,5 +10,6 @@
     <color name="transparent">#00000000</color>
     <color name="training_green">#28ada5</color>
     <color name="training_grey">#5f5f5f</color>
+    <color name="black">#000</color>
 
 </resources>

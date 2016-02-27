@@ -35,6 +35,11 @@
     <string name="total_distance_label">placeholder</string>
     <string name="training_date_label">placeholder</string>
     <string name="training_name_label">placeholder</string>
+    <string name="axisX_time">Tempo</string>
+    <string name="axisX_distance">Distanza</string>
+    <string name="axisY_speed">Velocita</string>
+    <string name="axisY_pace">Andamento</string>
+    <string name="axisY_altitude">Altitudine</string>
 
 
     <!-- Arrays for lists -->
