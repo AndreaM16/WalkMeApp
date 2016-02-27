@@ -130,6 +130,7 @@ public class Training extends Activity {
     private Location previousLoc;
     private boolean wasInPause = false;
     private boolean utenteAvvisato=false;
+    private DBTrainings last_training;
 
 
     @Override
@@ -277,7 +278,7 @@ public class Training extends Activity {
                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(Training.this);
-                        builder.setTitle("Title");
+                        builder.setTitle("Nome allenamento");
 
 // Set up the input
                         final EditText input = new EditText(Training.this);
@@ -299,17 +300,21 @@ public class Training extends Activity {
                             }
                         });
 
-                        builder.show();
+                       // builder.show();
 
                         isEnded = true;
                         //passare nome allenamento
                         db.createTraining(name, formattedDate, pref_pace, pref_lastXMeters, pref_stepLength, trainingInsts);
                         try {
                             db.saveTrainingInDB();
+                            last_training=db.getLastTraining();
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
 
+                        Intent intent=new Intent(Training.this,ViewTraining.class);
+                        intent.putExtra("id",last_training.id);
+                        startActivity(intent);
 
                         chronometer.reset();
 

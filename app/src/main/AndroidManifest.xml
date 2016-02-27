@@ -35,7 +35,15 @@
             </intent-filter>
         </activity>
 
-<activity android:name=".core.SERVICE.FileHandling">
+
+        <activity android:name=".ui.ViewTraining"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+
+
+        <activity android:name=".core.SERVICE.FileHandling">
 
 
     <intent-filter>
@@ -43,7 +51,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="file" android:mimeType="*/*" android:pathPattern=".*\\.walk"/>
-        <data android:scheme="content" android:pathPattern=".*\\.walk" android:mimeType="*/*" />
+        <data android:scheme="content" android:pathPattern=".*\\.walk" android:mimeType="application/walk" />
         <!-- <data android:host="*"/> -->
     </intent-filter>
 

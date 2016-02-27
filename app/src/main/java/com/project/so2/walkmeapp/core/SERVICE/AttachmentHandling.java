@@ -26,26 +26,23 @@ DBManager db;
 
 
 
-   public void share( Context context){
+   public void share( Context context,DBTrainings training){
        db=DBManager.getIstance();
 
 
-       DBTrainings res = null;
-       try {
-           res = db.getLastTraining();
-       } catch (SQLException e) {
-           e.printStackTrace();
-       }
+       DBTrainings res = training;
+
+
 
 
        File path = new File(context.getFilesDir() + "/training");
        Log.d("percorso", path.toString());
        path.mkdirs();
-       File training = new File(path, "training.walk");
+       File training_file = new File(path, res.name+".walk");
 
        try {
            ObjectMapper mapper = JacksonUtils.mapper;
-           mapper.writeValue(training, res);
+           mapper.writeValue(training_file, res);
        } catch (IOException e) {
            e.printStackTrace();
        }
@@ -53,7 +50,7 @@ DBManager db;
         emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-        Uri contentUri = FileProvider.getUriForFile(context, "com.project.so2.walkmeapp", training);
+        Uri contentUri = FileProvider.getUriForFile(context, "com.project.so2.walkmeapp", training_file);
 
 
         emailIntent.setType("vnd.android.cursor.dir/email");

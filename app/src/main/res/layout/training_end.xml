@@ -1,156 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_end_training"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:layout_width="match_parent" android:layout_height="match_parent">
 
-   <RelativeLayout
-       android:id="@+id/training_graph"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content">
-       <ImageView
-           android:layout_width="wrap_content"
-           android:layout_height="180dp"
-           android:src="@drawable/icon"
-           />
-   </RelativeLayout>
+    <include layout="@layout/actionbar_main" android:id="@+id/action_bar_settings"/>
+
+    <!-- Graph -->
     <RelativeLayout
-        android:id="@+id/layout_name_date"
+        android:id="@+id/training_end_top_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/training_graph"
-        android:paddingTop="20dp"
-        android:layout_weight="1">
-
-
-        <TextView
-            android:id="@+id/training_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/training_name_label"
-            android:textColor="@color/grey"
-            android:textSize="@dimen/generic_list_main_text" />
-
-        <TextView
-
-            android:id="@+id/training_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/training_name"
-
-            android:text="@string/training_date_label"
-            android:textColor="@color/grey"
-            android:paddingBottom="20dp"
-            android:textSize="@dimen/generic_list_training_main_text" />
-
-
-
+        android:layout_height="200dp"
+        android:layout_below="@id/action_bar_settings">
 
     </RelativeLayout>
 
+    <!-- Contents -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/training_end_top_container">
 
-        <RelativeLayout
-            android:id="@+id/layout_totalDistance"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/layout_name_date">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-
-            <TextView
-                android:id="@+id/total_distance_label"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/total_distance_label"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_main_text" />
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="vertical">
 
-            <TextView
-
-                android:id="@+id/item_text2Left1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/total_distance_label"
-                android:text="@string/total_distance_value"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_main_text" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_averageSpeed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/layout_totalDistance">
-
-            <TextView
-
-                android:id="@+id/item_text1Right1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/average_speed_label"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_training_main_text" />
-
-            <TextView
-                android:id="@+id/item_text2Right1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/item_text1Right1"
-                android:text="@string/average_speed_value"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/generic_list_main_text" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/minute_steps2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/layout_averageSpeed">
-
-
-                <TextView
-                    android:id="@+id/settings_average_step"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:id="@+id/end_train_1"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/average_steps_label"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/generic_list_training_main_text" />
+                    android:layout_weight="1">
 
-                <TextView
+                    <TextView
 
-                    android:id="@+id/item_text2Left2"
-                    android:layout_width="wrap_content"
+                        android:id="@+id/tot_dist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/total_distance_label"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_main_text" />
+
+                    <TextView
+                        android:id="@+id/tot_dist_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tot_dist"
+                        android:layout_centerHorizontal="true"
+                        android:text="00"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_subtext" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/end_train_2"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/settings_average_step"
-                    android:text="@string/steps_min_value"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/generic_list_main_text" />
+                    android:layout_weight="1">
 
-            </RelativeLayout>
-<RelativeLayout
-    android:id="@+id/layout_face"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/training_graph"
-    android:layout_centerVertical="true">
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/sad_face"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:paddingRight="10dp"/>
+                    <TextView
+
+                        android:id="@+id/average_speed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/average_speed_label"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_main_text" />
+
+                    <TextView
+                        android:id="@+id/average_speed_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/average_speed"
+                        android:layout_centerHorizontal="true"
+                        android:text="0"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_subtext" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/end_train_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+
+                        android:id="@+id/avg_pace"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/average_pace_label"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_main_text" />
+
+                    <TextView
+                        android:id="@+id/avg_pace_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/avg_pace"
+                        android:layout_centerHorizontal="true"
+                        android:text="0"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_subtext" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/end_train_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+
+                        android:id="@+id/total_steps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/total_steps_label"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_main_text" />
+
+                    <TextView
+                        android:id="@+id/total_steps_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/total_steps"
+                        android:layout_centerHorizontal="true"
+                        android:text="0"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_subtext" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/end_train_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+
+                        android:id="@+id/avg_speed_x"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/x_speed_label"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_main_text" />
+
+                    <TextView
+                        android:id="@+id/x_speed_label_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/avg_speed_x"
+                        android:layout_centerHorizontal="true"
+                        android:text="0"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_subtext" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/end_train_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+
+                        android:id="@+id/avg_x_pace"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/x_pace_label"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_main_text" />
+
+                    <TextView
+                        android:id="@+id/avg_x_pace_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/avg_x_pace"
+                        android:layout_centerHorizontal="true"
+                        android:text="0"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/generic_list_training_subtext" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
 </RelativeLayout>
-        </RelativeLayout>
-
-
-
-
-
-
-
-
-
-
