@@ -28,6 +28,7 @@
     <string name="about_title">About</string>
     <string name="about_text_body">is a fitness app focused on Step monitoring. \n \n It is being developed with   </string>
     <string name="about_text_body_cont">   by these beauties: </string>
+<<<<<<< HEAD
     <string name="average_steps_label">place</string>
     <string name="average_speed_value">placeholder</string>
     <string name="average_speed_label">placeholder</string>
@@ -40,7 +41,19 @@
     <string name="axisY_speed">Velocita</string>
     <string name="axisY_pace">Andamento</string>
     <string name="axisY_altitude">Altitudine</string>
+=======
+>>>>>>> a0374e9fe16b1271f561ee9e6a2451c5201107b7
 
+    <!-- ViewTraining -->
+    <string name="total_steps_label">Tot Steps</string>
+    <string name="average_speed_label">Avg Speed</string>
+    <string name="total_distance_label">Tot Distance</string>
+    <string name="training_date_label">label</string>
+    <string name="training_name_label">label</string>
+    <string name="average_pace_label">Avg Pace</string>
+    <string name="x_steps_label"> label</string>
+    <string name="x_speed_label"> Avg X Speed </string>
+    <string name="x_pace_label"> Avg X Pace </string>
 
     <!-- Arrays for lists -->
 

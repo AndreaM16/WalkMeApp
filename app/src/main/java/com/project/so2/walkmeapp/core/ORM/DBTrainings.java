@@ -1,5 +1,7 @@
 package com.project.so2.walkmeapp.core.ORM;
 
+import android.util.Log;
+
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -78,6 +80,7 @@ public class DBTrainings {
     */
    public void setInstants(ArrayList<TrainingInstant> instants) throws java.sql.SQLException {
       if (this.tiList == null) {
+         Log.d("dbHelper.getInstance",DatabaseHelper.getIstance().toString());
          Dao<DBTrainings, String> dao = DatabaseHelper.getIstance().getTrainingsDao();
          this.tiList = dao.getEmptyForeignCollection("tiList");
       }

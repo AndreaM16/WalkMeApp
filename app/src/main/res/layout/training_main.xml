@@ -87,7 +87,6 @@
                     android:textColor="@color/grey"
                     android:textSize="@dimen/generic_list_training_subtext"/>
 
-
             </RelativeLayout>
 
         </LinearLayout>
