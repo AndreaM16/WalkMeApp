@@ -23,59 +23,58 @@ import java.io.IOException;
  */
 public class FileHandling extends Activity {
 
-    private DBManager db;
-    public static DBTrainings training;
+   private DBManager db;
+   public static DBTrainings training;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
 
   /* Initializing DBhelper and DBManager*/
-        DatabaseHelper.initialize(this);
-        DBManager.initialize(this);
+      DatabaseHelper.initialize(this);
+      DBManager.initialize(this);
 
 
-        db=DBManager.getIstance();
-        ObjectMapper mapper = JacksonUtils.mapper;
+      db = DBManager.getIstance();
+      ObjectMapper mapper = JacksonUtils.mapper;
 
-        Intent intent=getIntent();
-        Bundle bundle=intent.getExtras();
+      Intent intent = getIntent();
+      Bundle bundle = intent.getExtras();
 
-        if (getIntent().getData() != null) {
-
-
-            String filePath = getIntent().getData().getPath();
-            try {
-                StringBuilder text = new StringBuilder();
-
-                //read the file passed in the intent
-                BufferedReader br = new BufferedReader(new FileReader(new File(filePath)));
-                String line;
-
-                while ((line = br.readLine()) != null) {
-                    text.append(line);
-                }
-                br.close();
-
-                Log.d("BAU:training",text.toString());
+      if (getIntent().getData() != null) {
 
 
-                //convert the json file in a WorkoutItem object
-                training = mapper.readValue(text.toString(), DBTrainings.class);
+         String filePath = getIntent().getData().getPath();
+         try {
+            StringBuilder text = new StringBuilder();
 
-                //Intent intent_view_training=new Intent(this,ViewTraining.class);
-               // startActivity(intent_view_training);
+            //read the file passed in the intent
+            BufferedReader br = new BufferedReader(new FileReader(new File(filePath)));
+            String line;
 
-                        db.saveImportedTraining(training,getApplicationContext());
+            while ((line = br.readLine()) != null) {
+               text.append(line);
+            }
+            br.close();
+
+            Log.d("BAU:training", text.toString());
 
 
+            //convert the json file in a WorkoutItem object
+            training = mapper.readValue(text.toString(), DBTrainings.class);
 
-            } catch (IOException e) {
-        e.printStackTrace();
+            //Intent intent_view_training=new Intent(this,ViewTraining.class);
+            // startActivity(intent_view_training);
 
-        }
-        }
-        }
+            db.saveImportedTraining(training, getApplicationContext());
+
+
+         } catch (IOException e) {
+            e.printStackTrace();
+
+         }
+      }
+   }
 }
 
 

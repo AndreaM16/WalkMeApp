@@ -10,26 +10,20 @@
         android:layout_height="@dimen/generic_list_item_height"
         android:padding="10dp">
 
-        <ImageView
-            android:id="@+id/history_item_logo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitStart"
-            android:src="@drawable/icon" />
-
         <TextView
             android:id="@+id/history_item_month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="MonthPH"
+            android:textColor="@color/white"
             android:textAllCaps="true"
             android:textSize="45dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:inputType="none"
-            android:textStyle="bold" />
+            />
 
         <!--<TextView
             android:id="@+id/history_item_year"

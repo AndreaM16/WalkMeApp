@@ -179,6 +179,14 @@ public class DBManager extends ContextWrapper {
       }
    }
 
+   public void destroyTraining(DBTrainings training){
+      try {
+         dbDao.delete(training);
+      } catch (SQLException e) {
+         e.printStackTrace();
+      }
+   }
+
    public static DatabaseHelper getHelper() {
       return databaseHelper;
    }

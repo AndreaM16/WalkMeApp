@@ -37,8 +37,6 @@
     <string name="axisY_pace">Andamento</string>
     <string name="axisY_altitude">Altitudine</string>
 
-
-
     <!-- ViewTraining -->
     <string name="total_steps_label">Tot Steps</string>
     <string name="average_speed_label">Avg Speed</string>

@@ -1,17 +1,29 @@
 
 package com.project.so2.walkmeapp.core;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.project.so2.walkmeapp.R;
+import com.project.so2.walkmeapp.core.ORM.DBManager;
 import com.project.so2.walkmeapp.core.ORM.DBTrainings;
+import com.project.so2.walkmeapp.core.SERVICE.AttachmentHandling;
+import com.project.so2.walkmeapp.ui.ViewTraining;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -89,9 +101,65 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
 
       TextView txtListChild = (TextView) convertView
               .findViewById(R.id.item_text);
+      TextView subTxtListChild = (TextView) convertView
+              .findViewById(R.id.item_subtext);
+      ImageView shareIcon = (ImageView) convertView.findViewById(R.id.share);
+      ImageView deletionIcon = (ImageView) convertView.findViewById(R.id.delete);
 
-      txtListChild.setText("ID: " + childText.id + " - Data: " + childText.date_day + "/" +
-              childText.date_month + " - " + childText.date_hour + ":" + childText.date_minutes);
+      txtListChild.setText(childText.name);
+      subTxtListChild.setText( childText.date_day + " | " + childText.date_hour + ":" +childText.date_minutes);
+
+      convertView.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            Intent intent = new Intent((Activity) context, ViewTraining.class);
+            intent.putExtra("id", childText.id);
+            context.startActivity(intent);
+         }
+      });
+
+      shareIcon.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            AttachmentHandling test = new AttachmentHandling();
+            test.share(context, childText);
+         }
+      });
+
+      deletionIcon.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+
+            Log.d("Hist", "deletion click succeded");
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+            alertDialogBuilder
+                    .setMessage("Sei sicuro?")
+                    .setCancelable(false)
+                    .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+
+                          DBManager.getIstance().destroyTraining(childText);
+                          //notifyDataSetInvalidated();
+
+                          //TODO NOTIFICARE LA VISTA
+
+                       }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+
+                          dialog.cancel();
+                       }
+                    });
+
+            alertDialogBuilder.show();
+
+         }
+      });
+
+
       return convertView;
    }
 

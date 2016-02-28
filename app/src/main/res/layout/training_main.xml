@@ -180,7 +180,7 @@
             android:layout_below="@id/icons_play_pause">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
@@ -188,17 +188,32 @@
                     android:id="@+id/chart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_weight="0.25"
                     />
+
                 <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <ImageSwitcher
-                        android:layout_width=""
-                        android:layout_height=""></ImageSwitcher>
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:id="@+id/arrow_up"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/grey"/>
+
+                    <ImageView
+                        android:id="@+id/arrow_down"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/arrow_up"
+                        android:background="@drawable/grey_down"/>
                 </RelativeLayout>
             </LinearLayout>
-
-
         </RelativeLayout>
 
 
