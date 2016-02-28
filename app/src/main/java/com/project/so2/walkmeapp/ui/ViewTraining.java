@@ -24,7 +24,7 @@ import bolts.Task;
 
 
 /**
- * Created by alex_ on 27/02/2016.
+ * Class that manages end training stats
  */
 public class ViewTraining extends Activity {
 
@@ -54,13 +54,17 @@ public class ViewTraining extends Activity {
    private int avg_X_pace;
    private int total_steps_count = 0;
 
-
+   /**
+    * On Create
+    *
+    * @param savedInstanceState instances
+    */
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.training_end);
 
-         /* Initializing DBhelper and DBManager*/
+      /* Initializing DBhelper and DBManager*/
       DatabaseHelper.initialize(this);
       DBManager.initialize(this);
 
@@ -80,11 +84,23 @@ public class ViewTraining extends Activity {
       boltsTask();
    }
 
+   /**
+    * Bolts used to make ordered tasks and ensure the correct operations workflow
+    * Combination of 3 different tasks (ContinueWith)
+    *
+    * @return
+    */
    public Task<Void> boltsTask() {
 
       Task<Void>.TaskCompletionSource tcs = Task.create();
       Task<Void> task = tcs.getTask();
       return task.call(new Callable<Void>() {
+
+         /**
+          * Bolts Task
+          * @return
+          * @throws Exception
+          */
          @Override
          public Void call() throws Exception {
             QueryBuilder<DBTrainings, String> queryBuilder = dbTrainingDao.queryBuilder();
@@ -107,6 +123,13 @@ public class ViewTraining extends Activity {
             return null;
          }
       }, Task.BACKGROUND_EXECUTOR).continueWith(new Continuation<Void, Void>() {
+
+         /**
+          * Bolts Task
+          * @param task
+          * @return
+          * @throws Exception
+          */
          @Override
          public Void then(Task<Void> task) throws Exception {
 
@@ -133,12 +156,19 @@ public class ViewTraining extends Activity {
 
             int pace = (int) ((training.getInstants().get(size - 1).pace + training.getInstants().get(size - 3).pace) / 2);
             int meters_pace = (int) ((training.getInstants().get(size - 1).distance) - (training.getInstants().get(size - 3).distance));
-            avg_X_pace =(int) (pace / meters_pace * prefsLastMetersInM);
+            avg_X_pace = (int) (pace / meters_pace * prefsLastMetersInM);
 
             return null;
 
          }
       }, Task.BACKGROUND_EXECUTOR).continueWith(new Continuation<Void, Void>() {
+
+         /**
+          * Bolts Task
+          * @param task
+          * @return
+          * @throws Exception
+          */
          @Override
          public Void then(Task<Void> task) throws Exception {
 
@@ -164,6 +194,11 @@ public class ViewTraining extends Activity {
    private void setupActionbar() {
       actionBar.setImageResource(R.drawable.btn_back);
       actionBar.setOnClickListener(new View.OnClickListener() {
+
+         /**
+          * Setting up the view
+          * @param v
+          */
          @Override
          public void onClick(View v) {
             finish();
@@ -179,6 +214,5 @@ public class ViewTraining extends Activity {
       prefsAvgStepInM = training.pref_pace;
 
    }
-
 
 }
