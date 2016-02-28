@@ -31,11 +31,11 @@
     <string name="average_steps_label">place</string>
     <string name="average_speed_value">placeholder</string>
     <string name="total_distance_value">placeholder</string>
-    <string name="axisX_time">Tempo</string>
-    <string name="axisX_distance">Distanza</string>
-    <string name="axisY_speed">Velocita</string>
-    <string name="axisY_pace">Andamento</string>
-    <string name="axisY_altitude">Altitudine</string>
+    <string name="axisX_time">Time</string>
+    <string name="axisX_distance">Distance</string>
+    <string name="axisY_speed">Speed</string>
+    <string name="axisY_pace">Pace</string>
+    <string name="axisY_altitude">Height</string>
 
     <!-- ViewTraining -->
     <string name="total_steps_label">Tot Steps</string>
@@ -86,6 +86,17 @@
         <item>Alessio</item>
         <item>Cristin</item>
         <item>Marco</item>
+    </string-array>
+
+    <string-array name="y_array">
+        <item>Speed</item>
+        <item>Pace</item>
+        <item>Altitude</item>
+    </string-array>
+
+    <string-array name="x_array">
+        <item>Time</item>
+        <item>Distance</item>
     </string-array>
 
     <!-- Trainings List -->

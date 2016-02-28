@@ -178,7 +178,7 @@ public class MainActivity extends Activity {
       public void onServiceConnected(ComponentName className, IBinder service) {
 
          GPS.LocalBinder binder = (GPS.LocalBinder) service;
-         MainActivity.this.mService = (GPS) binder.getService();
+         MainActivity.this.mService = binder.getService();
          mIsBound = true;
          if (!mService.mLocationManager.isProviderEnabled("gps") && Training.comingFromTraining == false) {
             dialogGps();
@@ -207,6 +207,7 @@ public class MainActivity extends Activity {
       }
    };
 
+
    /**
     * Checks GPS Service Permissions
     *
@@ -226,7 +227,6 @@ public class MainActivity extends Activity {
                Toast.makeText(this, "One of the permissions hasn't been allowed. Some functionalities will not be supported.", Toast.LENGTH_LONG).show();
                hardPermission = false;
             } else {
-
                connectLocalService();
                if (mService != null) {
 
@@ -234,13 +234,9 @@ public class MainActivity extends Activity {
                      dialogGps();
                   }
                }
-
-
             }
             return;
          }
-
-
       }
    }
 
@@ -252,17 +248,12 @@ public class MainActivity extends Activity {
               .setCancelable(false)
               .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                  public void onClick(DialogInterface dialog, int id) {
-
                     activateGPS();
-
-
                  }
               })
               .setNegativeButton("No", new DialogInterface.OnClickListener() {
                  public void onClick(DialogInterface dialog, int id) {
                     Toast.makeText(MainActivity.this, "GPS permissions denied, " + "some functionalities will not be supported", Toast.LENGTH_LONG).show();
-
-
                     dialog.cancel();
                  }
               });
@@ -274,6 +265,7 @@ public class MainActivity extends Activity {
       alertDialog.show();
    }
 
+
    public void activateGPS() {
       Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
       startActivity(intent);
@@ -284,6 +276,7 @@ public class MainActivity extends Activity {
       Intent service = new Intent(this, GPS.class);
       bindService(service, mConnection, Context.BIND_AUTO_CREATE);
    }
+
 
    @Override
    protected void onResume() {
@@ -315,13 +308,11 @@ public class MainActivity extends Activity {
             intent = new Intent(this, History.class);
             break;
 
-
          case "Start":
             if (hardPermission) {
                intent = new Intent(this, Training.class);
             }
             break;
-
 
          case "Settings":
             intent = new Intent(this, Settings.class);
@@ -331,14 +322,11 @@ public class MainActivity extends Activity {
             intent = new Intent(this, About.class);
             break;
 
-
       }
       if (intent != null) {
          startActivity(intent);
          disconnectLocalService();
       }
-
    }
-
 }
 

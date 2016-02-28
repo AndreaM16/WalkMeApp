@@ -10,6 +10,7 @@ import android.content.ContextWrapper;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.project.so2.walkmeapp.ui.Training;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -123,12 +124,28 @@ public class DBManager extends ContextWrapper {
       if (isInitialized == false) {
          initialize(ctx);
       }
+
+      int newId = 0;
       try {
          if (getTrainings() != null && getTrainings().size() > 0) {
-            training.id = getLastTraining().id + 1;
+            newId = getLastTraining().id + 1;
          } else {
-            training.id = 0;
+            newId = 0;
          }
+      } catch (SQLException e) {
+         e.printStackTrace();
+      }
+
+      training.id = newId;
+
+      ArrayList<TrainingInstant> instants = training.getInstants();
+
+      for (TrainingInstant inst : instants) {
+         inst.training = training;
+      }
+
+      try {
+         training.setInstants(instants);
       } catch (SQLException e) {
          e.printStackTrace();
       }
@@ -154,7 +171,6 @@ public class DBManager extends ContextWrapper {
             e1.printStackTrace();
          }
 
-
       }
 
       /* Populating the instance to be saved in the DB */
@@ -170,13 +186,13 @@ public class DBManager extends ContextWrapper {
       dbTrainingInstance.pref_stepLength = this.pref_stepLength;
       dbTrainingInstance.setInstants(tiList);
 
-
       try {
          dbDao.create(dbTrainingInstance);
       } catch (SQLException e1) {
          e1.printStackTrace();
       }
    }
+
 
    public void destroyTraining(DBTrainings training) {
       try {
@@ -185,6 +201,7 @@ public class DBManager extends ContextWrapper {
          e.printStackTrace();
       }
    }
+
 
    public static DatabaseHelper getHelper() {
       return databaseHelper;

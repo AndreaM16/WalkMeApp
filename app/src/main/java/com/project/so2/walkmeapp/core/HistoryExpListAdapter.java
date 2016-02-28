@@ -45,6 +45,7 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
    public boolean datasetChanged = false;
    private List<DBTrainings> trainings;
    private Dao<DBTrainings, String> dbTrainingDao;
+   private boolean notEmpty;
 
    /**
     * Defining History's information to be shown
@@ -116,7 +117,7 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
       convertView.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            Intent intent = new Intent((Activity) context, ViewTraining.class);
+            Intent intent = new Intent(context, ViewTraining.class);
             intent.putExtra("id", childText.id);
             context.startActivity(intent);
          }
@@ -134,8 +135,6 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
          @Override
          public void onClick(View v) {
 
-            Log.d("Hist", "deletion click succeded");
-
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
             alertDialogBuilder
@@ -148,9 +147,27 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
                           prepareListData(trainings, dbTrainingDao);
                           notifyDataSetChanged();
 
-                          //notifyDataSetInvalidated();
+                          for (int i = 0; i < getGroupCount(); i++) {
+                             if (getChildrenCount(i) != 0) {
+                                notEmpty = true;
+                             }
+                          }
 
-                          //TODO NOTIFICARE LA VISTA
+                          if (notEmpty == false) {
+                             AlertDialog.Builder alertDialogBuild = new AlertDialog.Builder(context);
+
+                             alertDialogBuild
+                                     .setMessage("Non ci sono altri allenamenti.")
+                                     .setCancelable(false)
+                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+
+                                           ((History) context).finish();
+
+                                        }
+                                     }).show();
+                          }
+
 
                        }
                     })
@@ -283,7 +300,6 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
 
                PreparedQuery<DBTrainings> preparedQuery = queryBuilder.prepare();
                trainingList = dbTrainingDao.query(preparedQuery);
-               Log.d("TEST", trainingList.toString());
             } catch (SQLException e) {
                e.printStackTrace();
             }
@@ -293,7 +309,6 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
 
       }
 
-      Log.d("HRES", listDataChild.toString());
 
    }
 

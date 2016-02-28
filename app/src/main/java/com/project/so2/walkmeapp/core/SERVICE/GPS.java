@@ -233,7 +233,7 @@ public class GPS extends Service {
    }
 
    public interface OnNewGPSPointsListener {
-      public void onNewGPSPoint();
+      void onNewGPSPoint();
    }
 
    public boolean onUnbind(Intent intent) {

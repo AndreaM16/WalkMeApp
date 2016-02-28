@@ -320,7 +320,6 @@ public class Training extends Activity {
                           } else {
                              name = "Training";
                           }
-                          Log.d("TEST", name);
 
                           db.createTraining(name, formattedDate, prefsAvgStepPerMin, prefsLastMetersInM, prefsStepLengthInCm, trainingInsts);
                           try {
@@ -486,7 +485,7 @@ public class Training extends Activity {
          stepsMinValue = 0;
       }
 
-      ti = new TrainingInstant(db.dbTrainingInstance, latitude, longitude, speed, altitude, time, distance, stepsMinValue);
+      ti = new TrainingInstant(db.dbTrainingInstance, latitude, longitude, altitude, speed, time, distance, stepsMinValue);
 
       if (previousLoc == null) {
          updateView(0, 0);
@@ -498,7 +497,6 @@ public class Training extends Activity {
 
       trainingInsts.add(ti);
 
-      Log.d("ti", "latitudine: " + ti.latitude + " longitude: " + ti.longitude + " speed: " + ti.speed + " altitude: " + ti.altitude + " time: " + ti.time + " distance: " + ti.distance);
 
    }
 
@@ -570,7 +568,6 @@ public class Training extends Activity {
          prefsAvgStepPerMin = settings.getInt("avgStepPerMin", 60);
       }
 
-      Log.d(TAG, "Values from prefs ->  " + "stepLength: " + prefsStepLengthInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepPerMin + "m");
    }
 
    /**
@@ -590,11 +587,7 @@ public class Training extends Activity {
 
    private void updateIsPaused() {
 
-      if (isPaused != true) {
-         isPaused = true;
-      } else {
-         isPaused = false;
-      }
+      isPaused = isPaused != true;
    }
 
    private void setupActionbar() {

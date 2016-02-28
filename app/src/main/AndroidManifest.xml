@@ -43,7 +43,10 @@
         </activity>
 
 
-        <activity android:name=".core.SERVICE.FileHandling" android:noHistory="true" android:theme="@style/Theme.Transparent" >
+        <activity
+            android:name=".core.SERVICE.FileHandling"
+            android:noHistory="true"
+            android:theme="@style/Theme.Transparent">
 
 
             <intent-filter>
@@ -57,6 +60,7 @@
             </intent-filter>
 
         </activity>
+
         <activity
             android:name=".ui.Training"
             android:screenOrientation="portrait">
@@ -69,9 +73,11 @@
 
 
         </activity>
+
         <activity
             android:name=".ui.History"
             android:screenOrientation="portrait"/>
+
         <service android:name=".core.SERVICE.GPS"/>
 
         <activity

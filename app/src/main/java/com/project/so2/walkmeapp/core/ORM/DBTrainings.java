@@ -79,10 +79,10 @@ public class DBTrainings {
     */
    public void setInstants(ArrayList<TrainingInstant> instants) throws java.sql.SQLException {
       if (this.tiList == null) {
-         Log.d("dbHelper.getInstance", DatabaseHelper.getIstance().toString());
          Dao<DBTrainings, String> dao = DatabaseHelper.getIstance().getTrainingsDao();
          this.tiList = dao.getEmptyForeignCollection("tiList");
       }
+      this.tiList.clear();
       this.tiList.addAll(instants);
    }
 

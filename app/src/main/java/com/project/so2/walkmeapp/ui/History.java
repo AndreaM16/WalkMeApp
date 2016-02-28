@@ -73,7 +73,7 @@ public class History extends Activity {
 
       /* Getting trainings' information from the DB */
       DBManager dbMan = DBManager.getIstance();
-      dbTrainingDao = dbMan.dbDao;
+      dbTrainingDao = DBManager.dbDao;
       try {
          trainings = dbMan.getTrainings();
       } catch (SQLException e) {
