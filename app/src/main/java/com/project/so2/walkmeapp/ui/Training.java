@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import com.project.so2.walkmeapp.R;
+import com.project.so2.walkmeapp.core.ORM.DBTrainings;
 import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 import com.project.so2.walkmeapp.core.PausableChronometer;
 import com.project.so2.walkmeapp.core.SERVICE.GPS;
@@ -104,7 +105,8 @@ public class Training extends Activity {
    private yAxisType mYAxis;
    private LineChartView graph;
    private int stepsMinValue = 0;
-
+   private DBTrainings last_training;
+   public  static boolean comingFromTraining=false;
 
    @Override
    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
@@ -117,6 +119,18 @@ public class Training extends Activity {
       super.onStart();
       connectLocalService();
 
+   }
+
+   @Override
+   protected void onDestroy() {
+      super.onDestroy();
+
+   }
+
+   @Override
+   public void onBackPressed() {
+      comingFromTraining=true;
+      finish();
    }
 
    @Override
@@ -257,9 +271,15 @@ public class Training extends Activity {
                           db.createTraining(name, formattedDate, prefsAvgStepPerMin, prefsLastMetersInM, prefsStepLengthInCm, trainingInsts);
                           try {
                              db.saveTrainingInDB();
+                             last_training=db.getLastTraining();
                           } catch (SQLException e) {
                              e.printStackTrace();
                           }
+
+                          Intent intent=new Intent(Training.this,ViewTraining.class);
+                          intent.putExtra("id",last_training.id);
+                          startActivity(intent);
+                          
                           disconnectLocalService();
 
                        }
@@ -291,9 +311,10 @@ public class Training extends Activity {
          GPS.LocalBinder binder = (GPS.LocalBinder) service;
          mService = binder.getService();
          mIsBound = true;
-         if (!mService.mLocationManager.isProviderEnabled("gps")) {
-            Toast.makeText(Training.this, "GPS e' attualmente disabilitato. E' possibile abilitarlo dal menu impostazioni.",
-                    Toast.LENGTH_LONG).show();
+
+         if (!mService.mLocationManager.isProviderEnabled("gps")&& Training.comingFromTraining==false) {
+            dialogGps();
+
 
 
          }
@@ -306,6 +327,46 @@ public class Training extends Activity {
                  };
          mService.addOnNewGPSPointsListener(clientListener);
       }
+      public void activateGPS() {
+         Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+         startActivity(intent);
+      }
+
+      public void dialogGps(){
+         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                 context);
+
+         //alertDialogBuilder.setTitle("");
+
+         alertDialogBuilder
+                 .setMessage("GPS disabilitato. Vuoi attivarlo dalle impostazioni?")
+                 .setCancelable(false)
+                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                       activateGPS();
+
+
+                    }
+                 })
+                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                       Toast.makeText(Training.this, "Permesso uso GPS negato, " + "l'applicazione non funzionerà correttamente", Toast.LENGTH_LONG).show();
+
+
+                       dialog.cancel();
+                    }
+                 });
+
+         // create alert dialog
+         AlertDialog alertDialog = alertDialogBuilder.create();
+
+         // show it
+         alertDialog.show();
+
+
+      }
+
 
       @Override
       public void onServiceDisconnected(ComponentName name) {
@@ -443,6 +504,7 @@ public class Training extends Activity {
       actionBar.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
+            comingFromTraining=true;
             finish();
          }
       });

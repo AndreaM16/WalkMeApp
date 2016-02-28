@@ -154,10 +154,7 @@ public class GPS extends Service {
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
             //Verifica se il GPS e' abilitato altrimenti avvisa l'utente
-            if (!mLocationManager.isProviderEnabled("gps")) {
-                Toast.makeText(this, "GPS e' attualmente disabilitato. E' possibile abilitarlo dal menu impostazioni.",
-                        Toast.LENGTH_LONG).show();
-            }
+
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 // TODO: Consider calling

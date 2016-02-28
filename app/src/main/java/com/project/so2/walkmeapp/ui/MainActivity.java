@@ -7,8 +7,10 @@ package com.project.so2.walkmeapp.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -20,9 +22,11 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +36,8 @@ import com.project.so2.walkmeapp.R;
 import com.project.so2.walkmeapp.core.ORM.DBManager;
 import com.project.so2.walkmeapp.core.ORM.DatabaseHelper;
 import com.project.so2.walkmeapp.core.SERVICE.GPS;
+
+import java.sql.SQLException;
 
 /**
  * Main Activity handles all the set up operations, handles the main services, manages onCreate()
@@ -54,13 +60,16 @@ public class MainActivity extends Activity {
    private ImageView mUserView;
    private GPS mService;
    private boolean mIsBound;
-   private boolean positiveGPSPermission = false;
+   private boolean hardPermission = true;
+   private boolean onResume=false;
+   private static final int ACCESS_EXTERNAL_STORAGE=1;
 
    /**
     * TODO
     *
     * @param msg
     */
+
    final Handler handleThreadMsg = new Handler(Looper.getMainLooper()) {
       @Override
       public void handleMessage(Message msg) {
@@ -88,6 +97,7 @@ public class MainActivity extends Activity {
       }
    };
 
+
    /**
     * Disconnects GPS' service using unbindService
     */
@@ -102,9 +112,6 @@ public class MainActivity extends Activity {
    /**
     * TODO
     */
-   private void getGPSData() {
-
-   }
 
    /**
     * @param savedInstanceState stored instances of DB's elements
@@ -114,6 +121,10 @@ public class MainActivity extends Activity {
       super.onCreate(savedInstanceState);
       context=this;
       setContentView(R.layout.activity_main);
+
+      /* Checking service's permissions, if not allowed, asks for them */
+
+
       mMainPageElements = getResources().getStringArray(R.array.main_page_list_items);
       mMainPageList = (LinearLayout) findViewById(R.id.main_page_list);
       mUserView = (ImageView) findViewById(R.id.user_icon_view);
@@ -160,20 +171,20 @@ public class MainActivity extends Activity {
 
       }
 
-      /* Checking service's permissions, if not allowed, asks for them */
-      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+      if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
               != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
-              (this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-              != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
-              (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+              (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+              != PackageManager.PERMISSION_GRANTED )  {
 
          ActivityCompat.requestPermissions(this,
-                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION},
-                 1);
+                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_EXTERNAL_STORAGE},
+                 ACCESS_FINE_LOCATION);
          return;
       }
 
+
       connectLocalService();
+
 
    }
 
@@ -204,16 +215,17 @@ public class MainActivity extends Activity {
          GPS.LocalBinder binder = (GPS.LocalBinder) service;
          MainActivity.this.mService = (GPS) binder.getService();
          mIsBound = true;
-         if (!mService.mLocationManager.isProviderEnabled("gps")) {
-            Toast.makeText(MainActivity.this, "GPS Currently Disabled. It's possible Enabling it from Settings.",
-                    Toast.LENGTH_LONG).show();
-            handleThreadMsg.postDelayed(mUpdateTimeTask, 3000);
+         if (!mService.mLocationManager.isProviderEnabled("gps")&& Training.comingFromTraining==false) {
+            dialogGps();
+
+
+
          }
 
          GPS.OnNewGPSPointsListener clientListener = new GPS.OnNewGPSPointsListener() {
             @Override
             public void onNewGPSPoint() {
-               getGPSData();
+
             }
          };
 
@@ -245,15 +257,60 @@ public class MainActivity extends Activity {
       switch (requestCode) {
          case ACCESS_FINE_LOCATION: {
             /* If request is cancelled, the result arrays are empty. */
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-               positiveGPSPermission = true;
+            if (grantResults.length > 1 &&( (grantResults[0] == PackageManager.PERMISSION_GRANTED &&grantResults[1]==PackageManager.PERMISSION_DENIED)||(grantResults[1] == PackageManager.PERMISSION_GRANTED &&grantResults[0]==PackageManager.PERMISSION_DENIED)||(grantResults[0]==PackageManager.PERMISSION_DENIED && grantResults[1]==PackageManager.PERMISSION_DENIED)))  {
+               Toast.makeText(this, "Almeno uno dei permessi non è stato abilitato,l'applicazione non funzionerà correttamente", Toast.LENGTH_LONG).show();
+               hardPermission=false;
             } else {
-               Toast.makeText(this, "GPS Service Permissions Denied, " + "application will not be able to " +
-                       "use functionality involving current position ", Toast.LENGTH_LONG).show();
+
+               connectLocalService();
+if(mService!=null) {
+
+   if (!mService.mLocationManager.isProviderEnabled("gps") && Training.comingFromTraining==false) {
+      dialogGps();
+   }
+}
+
             }
             return;
          }
+
+
       }
+   }
+
+   public void dialogGps(){
+      AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+              context);
+
+      //alertDialogBuilder.setTitle("");
+
+      alertDialogBuilder
+              .setMessage("GPS disabilitato. Vuoi attivarlo dalle impostazioni?")
+              .setCancelable(false)
+              .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
+
+                    activateGPS();
+
+
+                 }
+              })
+              .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(MainActivity.this, "Permesso uso GPS negato, " + "l'applicazione non funzionerà correttamente", Toast.LENGTH_LONG).show();
+
+
+                    dialog.cancel();
+                 }
+              });
+
+      // create alert dialog
+      AlertDialog alertDialog = alertDialogBuilder.create();
+
+      // show it
+      alertDialog.show();
+
+
    }
 
    public void activateGPS() {
@@ -264,6 +321,21 @@ public class MainActivity extends Activity {
    private void connectLocalService() {
       Intent service = new Intent(this, GPS.class);
       bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+   }
+
+   @Override
+   protected void onResume() {
+      super.onResume();
+      onResume=true;
+      if(mService!=null){
+
+      if (!mService.mLocationManager.isProviderEnabled("gps")){
+         //handleThreadMsg.postDelayed(mUpdateTimeTask,2000);
+         if(onResume && Training.comingFromTraining==false) {
+            dialogGps();
+         }
+      }
+      }
    }
 
    /**
@@ -279,7 +351,8 @@ public class MainActivity extends Activity {
             break;
 
          case "Start":
-            intent = new Intent(this, Training.class);
+            if(hardPermission){
+            intent = new Intent(this, Training.class);}
             break;
 
          case "Settings":
