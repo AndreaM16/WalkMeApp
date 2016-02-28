@@ -1,7 +1,6 @@
 package com.project.so2.walkmeapp.ui;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,21 +38,21 @@ public class ViewTraining extends Activity {
    private int id;
    private ImageView actionBar;
    private TextView actionBarText;
-   private TextView total_distance;
-   private TextView total_steps;
-   private TextView average_speed;
-   private TextView avg_x_speed;
-   private TextView total_avg_steps;
-   private TextView avg_x_steps;
+   private TextView tot_dist_view;
+   private TextView tot_steps_view;
+   private TextView average_speed_view;
+   private TextView avg_x_speed_view;
+   private TextView avg_pace_view;
+   private TextView avg_x_pace_view;
    private int prefsAvgStepInM;
    private int prefsLastMetersInM;
 
-   private double total_speed;
-   private double total_pace;
-   private double distance;
+   private int avg_speed;
+   private int distance;
    private int avg_X_speed;
-   private int avg_step;
+   private int avg_pace;
    private int avg_X_pace;
+   private int total_steps_count = 0;
 
 
    @Override
@@ -71,12 +70,12 @@ public class ViewTraining extends Activity {
 
       actionBar = (ImageView) this.findViewById(R.id.action_bar_icon);
       actionBarText = (TextView) this.findViewById(R.id.action_bar_title);
-      total_distance = (TextView) this.findViewById(R.id.tot_dist_value);
-      total_steps = (TextView) this.findViewById(R.id.total_steps_value);
-      average_speed = (TextView) this.findViewById(R.id.average_speed_value);
-      avg_x_speed = (TextView) this.findViewById(R.id.x_speed_label_value);
-      total_avg_steps = (TextView) this.findViewById(R.id.avg_pace_value);
-      avg_x_steps = (TextView) this.findViewById(R.id.avg_x_pace_value);
+      tot_dist_view = (TextView) this.findViewById(R.id.tot_dist_value);
+      tot_steps_view = (TextView) this.findViewById(R.id.total_steps_value);
+      average_speed_view = (TextView) this.findViewById(R.id.average_speed_value);
+      avg_x_speed_view = (TextView) this.findViewById(R.id.x_speed_label_value);
+      avg_pace_view = (TextView) this.findViewById(R.id.avg_pace_value);
+      avg_x_pace_view = (TextView) this.findViewById(R.id.avg_x_pace_value);
 
       boltsTask();
    }
@@ -91,6 +90,7 @@ public class ViewTraining extends Activity {
             QueryBuilder<DBTrainings, String> queryBuilder = dbTrainingDao.queryBuilder();
 
             List<DBTrainings> trainingList = null;
+
             try {
                queryBuilder.where().eq("id", id);
                PreparedQuery<DBTrainings> preparedQuery = queryBuilder.prepare();
@@ -111,31 +111,29 @@ public class ViewTraining extends Activity {
          public Void then(Task<Void> task) throws Exception {
 
             int size = training.getInstants().size() - 1;
-            distance = training.getInstants().get(size).distance;
 
 
-            int total_pace = 0;
+            distance = (int) (training.getInstants().get(size).distance);
+
             for (int i = 0; i < size; i++) {
-               total_pace += training.getInstants().get(i).pace;
+               total_steps_count += training.getInstants().get(i).pace;
             }
-
 
             for (int i = 0; i < training.getInstants().size() - 1; i++) {
-               total_speed += training.getInstants().get(i).speed;
+               avg_speed += training.getInstants().get(i).speed;
             }
-            total_speed = total_speed / (size);
+            avg_speed = avg_speed / (size);
 
 
-            int speed = (int) training.getInstants().get(size - 1).speed;
-            int meters = (int) training.getInstants().get(size - 1).distance;
-            avg_X_speed = (speed / meters) * prefsLastMetersInM;
+            int speed = (int) ((training.getInstants().get(size - 1).speed) + (training.getInstants().get(size - 1).speed) / 2);
+            int meters = (int) ((training.getInstants().get(size - 1).distance) - (training.getInstants().get(size - 3).distance));
+            avg_X_speed = (int) (speed / meters) * prefsLastMetersInM;
 
+            avg_pace = (int) (total_steps_count / (size));
 
-            avg_step = total_pace / (size);
-
-            int pace = (int) training.getInstants().get(size - 1).pace;
-            int meters_pace = (int) training.getInstants().get(size - 1).distance;
-            avg_X_pace = pace / meters_pace * prefsLastMetersInM;
+            int pace = (int) ((training.getInstants().get(size - 1).pace + training.getInstants().get(size - 3).pace) / 2);
+            int meters_pace = (int) ((training.getInstants().get(size - 1).distance) - (training.getInstants().get(size - 3).distance));
+            avg_X_pace =(int) (pace / meters_pace * prefsLastMetersInM);
 
             return null;
 
@@ -144,16 +142,18 @@ public class ViewTraining extends Activity {
          @Override
          public Void then(Task<Void> task) throws Exception {
 
-            Log.d("RESULTS", "Distance:" + distance + " | AvgTotSpd: " + total_speed + " | TotalSteps: " + total_pace + " | AvgXSpd: " + avg_X_speed);
+            Log.d("RESULTS", "Distance:" + distance + " | AvgTotSpd: " + avg_speed + " | TotalSteps: " + total_steps_count + " | AvgXSpd: " + avg_X_speed);
 
             setupActionbar();
 
-            total_steps.setText(format(total_pace));
-            total_distance.setText(format(distance));
-            average_speed.setText(format(total_speed));
-            avg_x_speed.setText(format(avg_X_speed));
-            total_avg_steps.setText(format(avg_step));
-            avg_x_steps.setText(format(avg_X_pace));
+            tot_dist_view.setText(Integer.toString(distance));
+            tot_steps_view.setText(Integer.toString(total_steps_count));
+
+            average_speed_view.setText(Integer.toString(avg_speed));
+            avg_x_speed_view.setText(Integer.toString(avg_X_speed));
+
+            avg_pace_view.setText(Integer.toString(avg_pace));
+            avg_x_pace_view.setText(Integer.toString(avg_X_pace));
 
 
             return null;
@@ -178,10 +178,6 @@ public class ViewTraining extends Activity {
       prefsLastMetersInM = training.pref_lastXMeters;
       prefsAvgStepInM = training.pref_pace;
 
-   }
-
-   public static String format(double value) {
-      return Integer.toString((int) value);
    }
 
 

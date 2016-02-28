@@ -366,13 +366,11 @@ public class Training extends Activity {
 
                        activateGPS();
 
-
                     }
                  })
                  .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                        Toast.makeText(Training.this, "Permesso uso GPS negato, " + "l'applicazione non funzionerà correttamente", Toast.LENGTH_LONG).show();
-
 
                        dialog.cancel();
                     }
