@@ -61,8 +61,8 @@ public class MainActivity extends Activity {
    private GPS mService;
    private boolean mIsBound;
    private boolean hardPermission = true;
-   private boolean onResume=false;
-   private static final int ACCESS_EXTERNAL_STORAGE=1;
+   private boolean onResume = false;
+   private static final int ACCESS_EXTERNAL_STORAGE = 1;
 
    /**
     * TODO
@@ -119,7 +119,7 @@ public class MainActivity extends Activity {
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      context=this;
+      context = this;
       setContentView(R.layout.activity_main);
 
       /* Checking service's permissions, if not allowed, asks for them */
@@ -171,13 +171,13 @@ public class MainActivity extends Activity {
 
       }
 
-      if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
               != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
               (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-              != PackageManager.PERMISSION_GRANTED )  {
+              != PackageManager.PERMISSION_GRANTED) {
 
          ActivityCompat.requestPermissions(this,
-                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_EXTERNAL_STORAGE},
+                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE},
                  ACCESS_FINE_LOCATION);
          return;
       }
@@ -215,9 +215,8 @@ public class MainActivity extends Activity {
          GPS.LocalBinder binder = (GPS.LocalBinder) service;
          MainActivity.this.mService = (GPS) binder.getService();
          mIsBound = true;
-         if (!mService.mLocationManager.isProviderEnabled("gps")&& Training.comingFromTraining==false) {
+         if (!mService.mLocationManager.isProviderEnabled("gps") && Training.comingFromTraining == false) {
             dialogGps();
-
 
 
          }
@@ -257,18 +256,18 @@ public class MainActivity extends Activity {
       switch (requestCode) {
          case ACCESS_FINE_LOCATION: {
             /* If request is cancelled, the result arrays are empty. */
-            if (grantResults.length > 1 &&( (grantResults[0] == PackageManager.PERMISSION_GRANTED &&grantResults[1]==PackageManager.PERMISSION_DENIED)||(grantResults[1] == PackageManager.PERMISSION_GRANTED &&grantResults[0]==PackageManager.PERMISSION_DENIED)||(grantResults[0]==PackageManager.PERMISSION_DENIED && grantResults[1]==PackageManager.PERMISSION_DENIED)))  {
+            if (grantResults.length > 1 && ((grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_DENIED) || (grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[0] == PackageManager.PERMISSION_DENIED) || (grantResults[0] == PackageManager.PERMISSION_DENIED && grantResults[1] == PackageManager.PERMISSION_DENIED))) {
                Toast.makeText(this, "Almeno uno dei permessi non è stato abilitato,l'applicazione non funzionerà correttamente", Toast.LENGTH_LONG).show();
-               hardPermission=false;
+               hardPermission = false;
             } else {
 
                connectLocalService();
-if(mService!=null) {
+               if (mService != null) {
 
-   if (!mService.mLocationManager.isProviderEnabled("gps") && Training.comingFromTraining==false) {
-      dialogGps();
-   }
-}
+                  if (!mService.mLocationManager.isProviderEnabled("gps") && Training.comingFromTraining == false) {
+                     dialogGps();
+                  }
+               }
 
             }
             return;
@@ -278,7 +277,7 @@ if(mService!=null) {
       }
    }
 
-   public void dialogGps(){
+   public void dialogGps() {
       AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
               context);
 
@@ -289,17 +288,12 @@ if(mService!=null) {
               .setCancelable(false)
               .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                  public void onClick(DialogInterface dialog, int id) {
-
                     activateGPS();
-
-
                  }
               })
               .setNegativeButton("No", new DialogInterface.OnClickListener() {
                  public void onClick(DialogInterface dialog, int id) {
                     Toast.makeText(MainActivity.this, "Permesso uso GPS negato, " + "l'applicazione non funzionerà correttamente", Toast.LENGTH_LONG).show();
-
-
                     dialog.cancel();
                  }
               });
@@ -326,15 +320,15 @@ if(mService!=null) {
    @Override
    protected void onResume() {
       super.onResume();
-      onResume=true;
-      if(mService!=null){
+      onResume = true;
+      if (mService != null) {
 
-      if (!mService.mLocationManager.isProviderEnabled("gps")){
-         //handleThreadMsg.postDelayed(mUpdateTimeTask,2000);
-         if(onResume && Training.comingFromTraining==false) {
-            dialogGps();
+         if (!mService.mLocationManager.isProviderEnabled("gps")) {
+            //handleThreadMsg.postDelayed(mUpdateTimeTask,2000);
+            if (onResume && Training.comingFromTraining == false) {
+               dialogGps();
+            }
          }
-      }
       }
    }
 
@@ -351,8 +345,9 @@ if(mService!=null) {
             break;
 
          case "Start":
-            if(hardPermission){
-            intent = new Intent(this, Training.class);}
+            if (hardPermission) {
+               intent = new Intent(this, Training.class);
+            }
             break;
 
          case "Settings":
