@@ -1,10 +1,13 @@
 package com.project.so2.walkmeapp.core.SERVICE;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.project.so2.walkmeapp.R;
 import com.project.so2.walkmeapp.core.JacksonUtils;
 import com.project.so2.walkmeapp.core.ORM.DBManager;
 import com.project.so2.walkmeapp.core.ORM.DBTrainings;
@@ -29,18 +32,14 @@ public class FileHandling extends Activity {
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      setContentView(R.layout.import_xml);
 
-  /* Initializing DBhelper and DBManager*/
       DatabaseHelper.initialize(this);
       DBManager.initialize(this);
 
-
       db = DBManager.getIstance();
       ObjectMapper mapper = JacksonUtils.mapper;
-
-      Intent intent = getIntent();
-      Bundle bundle = intent.getExtras();
-
+      
       if (getIntent().getData() != null) {
 
 
@@ -73,6 +72,21 @@ public class FileHandling extends Activity {
             e.printStackTrace();
 
          }
+
+         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+         alertDialogBuilder
+                 .setTitle("WalkMeApp Importer")
+                 .setMessage("Training \"" + training.name + "\" successfully imported.\nIt is now in your WalkMeApp History.")
+                 .setCancelable(false)
+                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                       finish();
+                    }
+                 });
+
+         alertDialogBuilder.show();
+
       }
    }
 }
