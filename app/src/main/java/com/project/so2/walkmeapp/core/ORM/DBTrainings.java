@@ -82,7 +82,6 @@ public class DBTrainings {
          Dao<DBTrainings, String> dao = DatabaseHelper.getIstance().getTrainingsDao();
          this.tiList = dao.getEmptyForeignCollection("tiList");
       }
-      this.tiList.clear();
       this.tiList.addAll(instants);
    }
 
