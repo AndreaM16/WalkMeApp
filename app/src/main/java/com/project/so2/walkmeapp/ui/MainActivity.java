@@ -52,325 +52,304 @@ import java.sql.SQLException;
  * positiveGPSPermission Used to handle GPS permissions
  */
 public class MainActivity extends Activity {
-   private static final int THREAD_FINISH_MESSAGE = 1;
-   private static final int ACCESS_FINE_LOCATION = 0;
-   public static Context context;
-   private LinearLayout mMainPageList;
-   private String[] mMainPageElements;
-   private ImageView mUserView;
-   private GPS mService;
-   private boolean mIsBound;
-   private boolean hardPermission = true;
-   private boolean onResume=false;
-   private static final int ACCESS_EXTERNAL_STORAGE=1;
+    private static final int THREAD_FINISH_MESSAGE = 1;
+    private static final int ACCESS_FINE_LOCATION = 0;
+    public static Context context;
+    private LinearLayout mMainPageList;
+    private String[] mMainPageElements;
+    private ImageView mUserView;
+    private GPS mService;
+    private boolean mIsBound;
+    private boolean hardPermission = true;
+    private boolean onResume = false;
+    private static final int ACCESS_EXTERNAL_STORAGE = 1;
+    private static AlertDialog.Builder alertDialogBuilder;
+    private static AlertDialog alertDialog;
 
-   /**
-    * TODO
-    *
-    * @param msg
-    */
+    /**
+     * TODO
+     *
+     * @param msg
+     */
 
-   final Handler handleThreadMsg = new Handler(Looper.getMainLooper()) {
-      @Override
-      public void handleMessage(Message msg) {
-         super.handleMessage(msg);
-         switch (msg.what) {
+    /**
+     * Disconnects GPS' service using unbindService
+     */
+    private void disconnectLocalService() {
+        if (mIsBound) {
+            mService.removeOnNewGPSPointsListener();
+            unbindService(mConnection);
+            mIsBound = false;
+        }
+    }
 
-            case THREAD_FINISH_MESSAGE:
-               Toast.makeText(getApplicationContext(),
-                       "worker thread finished",
-                       Toast.LENGTH_SHORT).show();
-               break;
+    /**
+     * TODO
+     */
 
-            default:
-               break;
-         }
-      }
-   };
-
-   /**
-    * Triggers GPS' Activation
-    */
-   private Runnable mUpdateTimeTask = new Runnable() {
-      public void run() {
-         activateGPS();
-      }
-   };
-
-
-   /**
-    * Disconnects GPS' service using unbindService
-    */
-   private void disconnectLocalService() {
-      if (mIsBound) {
-         mService.removeOnNewGPSPointsListener();
-         unbindService(mConnection);
-         mIsBound = false;
-      }
-   }
-
-   /**
-    * TODO
-    */
-
-   /**
-    * @param savedInstanceState stored instances of DB's elements
-    */
-   @Override
-   public void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      context=this;
-      setContentView(R.layout.activity_main);
-
-      /* Checking service's permissions, if not allowed, asks for them */
+    /**
+     * @param savedInstanceState stored instances of DB's elements
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        context = this;
+        setContentView(R.layout.activity_main);
+        alertDialogBuilder = new AlertDialog.Builder(
+                context);
 
 
-      mMainPageElements = getResources().getStringArray(R.array.main_page_list_items);
-      mMainPageList = (LinearLayout) findViewById(R.id.main_page_list);
-      mUserView = (ImageView) findViewById(R.id.user_icon_view);
-      View mView = findViewById(R.id.walking_man);
-      mView.setBackgroundResource(R.drawable.walking_stickman);
+
+
+        mMainPageElements = getResources().getStringArray(R.array.main_page_list_items);
+        mMainPageList = (LinearLayout) findViewById(R.id.main_page_list);
+        mUserView = (ImageView) findViewById(R.id.user_icon_view);
+        View mView = findViewById(R.id.walking_man);
+        mView.setBackgroundResource(R.drawable.walking_stickman);
 
       /* AnimationDrawable Handles Stickman's animation */
-      AnimationDrawable animMan = (AnimationDrawable) mView.getBackground();
-      animMan.start();
+        AnimationDrawable animMan = (AnimationDrawable) mView.getBackground();
+        animMan.start();
 
-      mUserView.bringToFront();
+        mUserView.bringToFront();
 
-      getWindow().getDecorView().setSystemUiVisibility(
-              View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-      getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
 
       /* Initializing DBhelper and DBManager*/
-      DatabaseHelper.initialize(this);
-      DBManager.initialize(this);
+        DatabaseHelper.initialize(this);
+        DBManager.initialize(this);
 
-      String[] mMenuStrings = getResources().getStringArray(R.array.main_page_list_items);
+        String[] mMenuStrings = getResources().getStringArray(R.array.main_page_list_items);
 
-      for (final String i : mMenuStrings) {
+        for (final String i : mMenuStrings) {
 
          /* Creating an instance for View Object */
-         final View v;
-         LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-         v = inflater.inflate(R.layout.menu_fragment_item, null);
-         TextView textTemp = (TextView) v.findViewById(R.id.item_text);
-         textTemp.setText(i);
+            final View v;
+            LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = inflater.inflate(R.layout.menu_fragment_item, null);
+            TextView textTemp = (TextView) v.findViewById(R.id.item_text);
+            textTemp.setText(i);
 
-         v.setOnClickListener(new View.OnClickListener() {
+            v.setOnClickListener(new View.OnClickListener() {
 
-            /**
-             * @param v View
-             */
-            @Override
-            public void onClick(View v) {
-               launchNextActivity(i);
-            }
-         });
+                /**
+                 * @param v View
+                 */
+                @Override
+                public void onClick(View v) {
+                    launchNextActivity(i);
+                }
+            });
 
-         mMainPageList.addView(v);
+            mMainPageList.addView(v);
 
-      }
+        }
 
-      if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-              != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
-              (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-              != PackageManager.PERMISSION_GRANTED )  {
+         /* Checking service's permissions, if not allowed, asks for them */
 
-         ActivityCompat.requestPermissions(this,
-                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_EXTERNAL_STORAGE},
-                 ACCESS_FINE_LOCATION);
-         return;
-      }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
 
-
-      connectLocalService();
-
-
-   }
-
-   /**
-    * Binding GPS Service to the Application
-    *
-    * @param service Service used
-    * @param conn    Used to  establishing the connection
-    * @param flags   Flags used to establish the connection
-    * @return returns the Bound Service
-    */
-   @Override
-   public boolean bindService(Intent service, ServiceConnection conn, int flags) {
-      return super.bindService(service, conn, flags);
-   }
-
-   /* Establishing Connection */
-   private ServiceConnection mConnection = new ServiceConnection() {
-
-      /**
-       * Handling GPS
-       * @param className ClassName passed for the connection
-       * @param service Service passed in order to communicate
-       */
-      @Override
-      public void onServiceConnected(ComponentName className, IBinder service) {
-
-         GPS.LocalBinder binder = (GPS.LocalBinder) service;
-         MainActivity.this.mService = (GPS) binder.getService();
-         mIsBound = true;
-         if (!mService.mLocationManager.isProviderEnabled("gps")&& Training.comingFromTraining==false) {
-            dialogGps();
-
-
-
-         }
-
-         GPS.OnNewGPSPointsListener clientListener = new GPS.OnNewGPSPointsListener() {
-            @Override
-            public void onNewGPSPoint() {
-
-            }
-         };
-
-         mService.addOnNewGPSPointsListener(clientListener);
-      }
-
-      /**
-       * Handling GPS Service disconnection
-       * @param name Id Service Passed
-       */
-      @Override
-      public void onServiceDisconnected(ComponentName name) {
-         Log.i("ConnectionService", "Disconnected");
-         mService = null;
-
-      }
-
-   };
-
-   /**
-    * Check GPS Service Permissions
-    *
-    * @param requestCode  Service's request code
-    * @param permissions  Service's Permissions
-    * @param grantResults Permission Granted or Denied
-    */
-   @Override
-   public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-      switch (requestCode) {
-         case ACCESS_FINE_LOCATION: {
-            /* If request is cancelled, the result arrays are empty. */
-            if (grantResults.length > 1 &&( (grantResults[0] == PackageManager.PERMISSION_GRANTED &&grantResults[1]==PackageManager.PERMISSION_DENIED)||(grantResults[1] == PackageManager.PERMISSION_GRANTED &&grantResults[0]==PackageManager.PERMISSION_DENIED)||(grantResults[0]==PackageManager.PERMISSION_DENIED && grantResults[1]==PackageManager.PERMISSION_DENIED)))  {
-               Toast.makeText(this, "Almeno uno dei permessi non è stato abilitato,l'applicazione non funzionerà correttamente", Toast.LENGTH_LONG).show();
-               hardPermission=false;
-            } else {
-
-               connectLocalService();
-if(mService!=null) {
-
-   if (!mService.mLocationManager.isProviderEnabled("gps") && Training.comingFromTraining==false) {
-      dialogGps();
-   }
-}
-
-            }
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE},
+                    ACCESS_FINE_LOCATION);
             return;
-         }
+        }
 
 
-      }
-   }
-
-   public void dialogGps(){
-      AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-              context);
-
-      //alertDialogBuilder.setTitle("");
-
-      alertDialogBuilder
-              .setMessage("GPS disabilitato. Vuoi attivarlo dalle impostazioni?")
-              .setCancelable(false)
-              .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                 public void onClick(DialogInterface dialog, int id) {
-
-                    activateGPS();
+        connectLocalService();
 
 
-                 }
-              })
-              .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                 public void onClick(DialogInterface dialog, int id) {
-                    Toast.makeText(MainActivity.this, "Permesso uso GPS negato, " + "l'applicazione non funzionerà correttamente", Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Binding GPS Service to the Application
+     *
+     * @param service Service used
+     * @param conn    Used to  establishing the connection
+     * @param flags   Flags used to establish the connection
+     * @return returns the Bound Service
+     */
+    @Override
+    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+        return super.bindService(service, conn, flags);
+    }
+
+    /* Establishing Connection */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        /**
+         * Handling GPS
+         * @param className ClassName passed for the connection
+         * @param service Service passed in order to communicate
+         */
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+
+            GPS.LocalBinder binder = (GPS.LocalBinder) service;
+            MainActivity.this.mService = (GPS) binder.getService();
+            mIsBound = true;
+            if (!mService.mLocationManager.isProviderEnabled("gps") && Training.comingFromTraining == false) {
+                dialogGps();
 
 
-                    dialog.cancel();
-                 }
-              });
+            }
 
-      // create alert dialog
-      AlertDialog alertDialog = alertDialogBuilder.create();
+            GPS.OnNewGPSPointsListener clientListener = new GPS.OnNewGPSPointsListener() {
+                @Override
+                public void onNewGPSPoint() {
 
-      // show it
-      alertDialog.show();
+                }
+            };
 
+            mService.addOnNewGPSPointsListener(clientListener);
+        }
 
-   }
+        /**
+         * Handling GPS Service disconnection
+         * @param name Id Service Passed
+         */
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.i("ConnectionService", "Disconnected");
+            mService = null;
 
-   public void activateGPS() {
-      Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-      startActivity(intent);
-   }
+        }
 
-   private void connectLocalService() {
-      Intent service = new Intent(this, GPS.class);
-      bindService(service, mConnection, Context.BIND_AUTO_CREATE);
-   }
+    };
 
-   @Override
-   protected void onResume() {
-      super.onResume();
-      onResume=true;
-      if(mService!=null){
+    /**
+     * Check GPS Service Permissions
+     *
+     * @param requestCode  Service's request code
+     * @param permissions  Service's Permissions
+     * @param grantResults Permission Granted or Denied
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case ACCESS_FINE_LOCATION: {
+            /* If request is cancelled, the result arrays are empty. */
+                if (grantResults.length > 1 && ((grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_DENIED) || (grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[0] == PackageManager.PERMISSION_DENIED) || (grantResults[0] == PackageManager.PERMISSION_DENIED && grantResults[1] == PackageManager.PERMISSION_DENIED))) {
+                    Toast.makeText(this, "Almeno uno dei permessi non è stato abilitato,l'applicazione non funzionerà correttamente", Toast.LENGTH_LONG).show();
+                    hardPermission = false;
+                } else {
 
-      if (!mService.mLocationManager.isProviderEnabled("gps")){
-         //handleThreadMsg.postDelayed(mUpdateTimeTask,2000);
-         if(onResume && Training.comingFromTraining==false) {
-            dialogGps();
-         }
-      }
-      }
-   }
+                    connectLocalService();
+                    if (mService != null) {
 
-   /**
-    * Handling Activity Switching
-    **/
-   private void launchNextActivity(String activityName) {
-      Intent intent = null;
+                        if (!mService.mLocationManager.isProviderEnabled("gps") && Training.comingFromTraining == false) {
+                            dialogGps();
+                        }
+                    }
 
-      switch (activityName) {
-
-         case "History":
-            intent = new Intent(this, History.class);
-            break;
-
-         case "Start":
-            if(hardPermission){
-            intent = new Intent(this, Training.class);}
-            break;
-
-         case "Settings":
-            intent = new Intent(this, Settings.class);
-            break;
-
-         case "About":
-            intent = new Intent(this, About.class);
-            break;
+                }
+                return;
+            }
 
 
-      }
-      if (intent != null) {
-         startActivity(intent);
-         disconnectLocalService();
-      }
+        }
+    }
 
-   }
+    public void dialogGps() {
+
+
+        //alertDialogBuilder.setTitle("");
+
+        alertDialogBuilder
+                .setMessage("GPS disabilitato. Vuoi attivarlo dalle impostazioni?")
+                .setCancelable(false)
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        activateGPS();
+
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(MainActivity.this, "Permesso uso GPS negato, " + "l'applicazione non funzionerà correttamente", Toast.LENGTH_LONG).show();
+
+
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+
+    }
+
+    public void activateGPS() {
+        Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(intent);
+    }
+
+    private void connectLocalService() {
+        Intent service = new Intent(this, GPS.class);
+        bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        onResume = true;
+        if (mService != null) {
+
+            if (!mService.mLocationManager.isProviderEnabled("gps")) {
+
+                if (onResume && Training.comingFromTraining == false && alertDialog == null) {
+
+                    dialogGps();
+
+                }
+            }
+        }
+    }
+
+    /**
+     * Handling Activity Switching
+     **/
+    private void launchNextActivity(String activityName) {
+        Intent intent = null;
+
+        switch (activityName) {
+
+            case "History":
+                intent = new Intent(this, History.class);
+                break;
+
+            case "Start":
+                if (hardPermission) {
+                    intent = new Intent(this, Training.class);
+                }
+                break;
+
+            case "Settings":
+                intent = new Intent(this, Settings.class);
+                break;
+
+            case "About":
+                intent = new Intent(this, About.class);
+                break;
+
+
+        }
+        if (intent != null) {
+            startActivity(intent);
+            disconnectLocalService();
+        }
+
+    }
 
 
 }

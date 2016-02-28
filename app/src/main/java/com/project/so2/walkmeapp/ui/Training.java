@@ -109,7 +109,8 @@ public class Training extends Activity {
    public  static boolean comingFromTraining=false;
    private ImageView arrow_up;
    private ImageView arrow_down;
-
+   private static AlertDialog.Builder alertDialogBuilder;
+   private static AlertDialog alertDialog;
 
    @Override
    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
@@ -147,6 +148,10 @@ public class Training extends Activity {
       super.onCreate(savedInstanceState);
       db = DBManager.getIstance();
       setContentView(R.layout.training_main);
+
+
+      alertDialogBuilder= new AlertDialog.Builder(
+              context);
 
       serviceIntent = new Intent(this, GPS.class);
       trainingInsts = new ArrayList<TrainingInstant>();
@@ -321,7 +326,7 @@ public class Training extends Activity {
          mService = binder.getService();
          mIsBound = true;
 
-         if (!mService.mLocationManager.isProviderEnabled("gps")&& Training.comingFromTraining==false) {
+         if (!mService.mLocationManager.isProviderEnabled("gps")&& Training.comingFromTraining==false && alertDialog==null) {
             dialogGps();
 
 
@@ -342,8 +347,7 @@ public class Training extends Activity {
       }
 
       public void dialogGps(){
-         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                 context);
+
 
          //alertDialogBuilder.setTitle("");
 
@@ -368,7 +372,7 @@ public class Training extends Activity {
                  });
 
          // create alert dialog
-         AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog = alertDialogBuilder.create();
 
          // show it
          alertDialog.show();
@@ -407,6 +411,8 @@ public class Training extends Activity {
       Location loc = new Location(mService.mLastLocation);
       double latitude = mService.getLatitude();
       double longitude = mService.getLongitude();
+      /*double latitude = loc.getLatitude();
+      double longitude = loc.getLongitude();*/
       double altitude = loc.getAltitude();
       long time = loc.getTime();    //TODO: BUG - il cronometro e questo tempo non coincidono
       float speed = loc.getSpeed();
