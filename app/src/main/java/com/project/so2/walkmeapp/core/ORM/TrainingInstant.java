@@ -1,4 +1,4 @@
-package com.project.so2.walkmeapp.core.POJO;
+package com.project.so2.walkmeapp.core.ORM;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -36,7 +36,7 @@ public class TrainingInstant {
    }
 
    public TrainingInstant(DBTrainings training, double latitude, double longitude,
-                          double altitude, double speed, long time, double distance) {
+                          double altitude, double speed, long time, double distance, double pace) {
       this.training = training;
       this.latitude = latitude;
       this.longitude = longitude;
@@ -48,7 +48,7 @@ public class TrainingInstant {
       if (speed == 0) {
          this.pace = 0;
       } else {
-         this.pace = (1 / speed) * 60;
+         this.pace = pace;
       }
    }
 

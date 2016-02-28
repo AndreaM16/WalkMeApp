@@ -39,7 +39,7 @@ import java.util.TimeZone;
 
 import com.project.so2.walkmeapp.R;
 import com.project.so2.walkmeapp.core.ORM.DBTrainings;
-import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
+import com.project.so2.walkmeapp.core.ORM.TrainingInstant;
 import com.project.so2.walkmeapp.core.PausableChronometer;
 import com.project.so2.walkmeapp.core.SERVICE.GPS;
 import com.wnafee.vector.MorphButton;
@@ -106,11 +106,13 @@ public class Training extends Activity {
    private LineChartView graph;
    private int stepsMinValue = 0;
    private DBTrainings last_training;
-   public  static boolean comingFromTraining=false;
+   public static boolean comingFromTraining = false;
    private ImageView arrow_up;
    private ImageView arrow_down;
    private static AlertDialog.Builder alertDialogBuilder;
    private static AlertDialog alertDialog;
+   private long deltaTime;
+
 
    @Override
    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
@@ -133,7 +135,7 @@ public class Training extends Activity {
 
    @Override
    public void onBackPressed() {
-      comingFromTraining=true;
+      comingFromTraining = true;
       finish();
    }
 
@@ -167,7 +169,6 @@ public class Training extends Activity {
       stopContainer = (RelativeLayout) findViewById(R.id.training_stop_container);
       chronometer = (PausableChronometer) findViewById(R.id.digital_clock);
       graph = (LineChartView) findViewById(R.id.chart);
-
 
       setupActionbar();
 
@@ -280,20 +281,25 @@ public class Training extends Activity {
                        @Override
                        public void onClick(DialogInterface dialog, int which) {
 
-                          name = input.getText().toString();
+
+                          if (input.getText().toString() != null && !(input.getText().toString().equals(""))) {
+                             name = input.getText().toString();
+                          } else {
+                             name = "Training";
+                          }
                           Log.d("TYEST", name);
 
                           db.createTraining(name, formattedDate, prefsAvgStepPerMin, prefsLastMetersInM, prefsStepLengthInCm, trainingInsts);
                           try {
                              db.saveTrainingInDB();
-                             last_training=db.getLastTraining();
+                             last_training = db.getLastTraining();
                           } catch (SQLException e) {
                              e.printStackTrace();
                           }
 
 
-                          Intent intent=new Intent(Training.this,ViewTraining.class);
-                          intent.putExtra("id",last_training.id);
+                          Intent intent = new Intent(Training.this, ViewTraining.class);
+                          intent.putExtra("id", last_training.id);
                           startActivity(intent);
                           finish();
                           disconnectLocalService();
@@ -327,8 +333,8 @@ public class Training extends Activity {
          mIsBound = true;
 
          if (!mService.mLocationManager.isProviderEnabled("gps")&& Training.comingFromTraining==false && alertDialog==null) {
-            dialogGps();
 
+            dialogGps();
 
 
          }
@@ -341,13 +347,14 @@ public class Training extends Activity {
                  };
          mService.addOnNewGPSPointsListener(clientListener);
       }
+
       public void activateGPS() {
          Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
          startActivity(intent);
       }
 
-      public void dialogGps(){
 
+      public void dialogGps(){
 
          //alertDialogBuilder.setTitle("");
 
@@ -397,7 +404,7 @@ public class Training extends Activity {
    private void disconnectLocalService() {
       if (mIsBound) {
          mService.removeOnNewGPSPointsListener();
-         unbindService(mConnection);  //TODO: Forse non serve
+         unbindService(mConnection);
          mIsBound = false;
       }
    }
@@ -414,27 +421,31 @@ public class Training extends Activity {
       /*double latitude = loc.getLatitude();
       double longitude = loc.getLongitude();*/
       double altitude = loc.getAltitude();
-      long time = loc.getTime();    //TODO: BUG - il cronometro e questo tempo non coincidono
+      long time = loc.getTime();
       float speed = loc.getSpeed();
 
       if (trainingInsts.size() != 0) {
          if (wasInPause != true) {
-
             distance = distance + Math.abs(previousLoc.distanceTo(loc));
-
          } else {
             wasInPause = false;
          }
       }
 
-      ti = new TrainingInstant(db.dbTrainingInstance, latitude, longitude, speed, altitude, time, distance);
+      if (distance != 0) {
+         double numberSteps = Math.abs(previousLoc.distanceTo(loc)) / (prefsStepLengthInCm / 100);
+         deltaTime = time - previousLoc.getTime();
+         stepsMinValue = (int) ((numberSteps / (deltaTime / 1000)) * 60);
+      } else {
+         stepsMinValue = 0;
+      }
 
-      //id_tInstance++;
+      ti = new TrainingInstant(db.dbTrainingInstance, latitude, longitude, speed, altitude, time, distance, stepsMinValue);
 
       if (previousLoc == null) {
-         updateView(0, 0, 0);
+         updateView(0, 0);
       } else {
-         updateView(loc.getTime() - previousLoc.getTime(), Math.abs(previousLoc.distanceTo(loc)), speed);
+         updateView(stepsMinValue, speed);
       }
 
       previousLoc = loc;
@@ -445,23 +456,21 @@ public class Training extends Activity {
 
    }
 
-   private void updateView(long deltaTime, double deltaDistance, float speed) {
+   private void updateView(int paceValue, float speed) {
 
-      if (deltaTime == 0 && deltaDistance == 0 && speed == 0) {
+      if (paceValue == 0 && speed == 0) {
          stepsPerMin.setText("--");
          kilometersPerHour.setText("--");
-         stepsMinValue = 0;
 
       } else {
-         double numberSteps = deltaDistance / (prefsStepLengthInCm / 100);
-         stepsMinValue = (int) ((numberSteps / (deltaTime / 1000)) * 60);
-         stepsPerMin.setText(Integer.toString(stepsMinValue));
+
+         stepsPerMin.setText(Integer.toString(paceValue));
          kilometersPerHour.setText(Integer.toString((int) (speed * 3.6)));
       }
 
-      if (stepsMinValue < prefsAvgStepPerMin-10) {
+      if (paceValue < prefsAvgStepPerMin - 10) {
          accelerate();
-      } else if (stepsMinValue >= prefsAvgStepPerMin-10 && stepsMinValue <= prefsAvgStepPerMin+10){
+      } else if (paceValue >= prefsAvgStepPerMin - 10 && paceValue <= prefsAvgStepPerMin + 10) {
          both();
       } else {
          decelerate();
@@ -495,10 +504,10 @@ public class Training extends Activity {
          prefsStepLengthInCm = settings.getInt("stepLength", 100);
       }
       if (settings.contains("lastXMeters")) {
-         prefsLastMetersInM = settings.getInt("lastXMeters", 10);
+         prefsLastMetersInM = settings.getInt("lastXMeters", 15);
       }
-      if (settings.contains("avgStepInM")) {
-         prefsAvgStepPerMin = settings.getInt("avgStepInM", 1);
+      if (settings.contains("avgStepPerMin")) {
+         prefsAvgStepPerMin = settings.getInt("avgStepPerMin", 60);
       }
 
       Log.d(TAG, "Values from prefs ->  " + "stepLength: " + prefsStepLengthInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepPerMin + "m");
@@ -527,7 +536,7 @@ public class Training extends Activity {
       actionBar.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            comingFromTraining=true;
+            comingFromTraining = true;
             finish();
          }
       });
@@ -537,7 +546,6 @@ public class Training extends Activity {
    private void plot(ArrayList<TrainingInstant> train) {
       //plot the graph with the axis determined by the spinners
       List<PointValue> values = new ArrayList<>();
-      List<PointValue> values2 = new ArrayList<>();
       Axis axisX = new Axis();
       Axis axisY = new Axis().setHasLines(true);
 
@@ -548,7 +556,7 @@ public class Training extends Activity {
             @Override
             public int formatValueForAutoGeneratedAxis(char[] formattedValue, float value, int autoDecimalDigits) {
 
-               SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+               SimpleDateFormat simpleDateFormat = new SimpleDateFormat("");
                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
                String label = simpleDateFormat.format(value);
@@ -591,7 +599,7 @@ public class Training extends Activity {
                axisY.setName(getString(R.string.axisY_speed));
                break;
             case PACE:
-               y = (float) stepsMinValue;
+               y = (float) train.get(i).pace;
                axisY.setName(getString(R.string.axisY_pace));
                break;
             case ALTITUDE:
@@ -600,25 +608,25 @@ public class Training extends Activity {
                break;
          }
 
-         values.add(new PointValue(x, y));
-         values2.add(new PointValue(x, prefsAvgStepPerMin));
+         if (values.size() < 30){
+            values.add(new PointValue(x, y));
+         } else {
+            values.remove(0);
+            values.add(new PointValue(x, y));
+         }
       }
 
       Line line = new Line(values);
-      Line desired = new Line(values2);
       line.setColor(ContextCompat.getColor(Training.this, R.color.colorPrimary));
-      desired.setColor(ContextCompat.getColor(Training.this, R.color.black));
       line.setHasPoints(false);
-      desired.setHasPoints(false);
       line.setFilled(true);
-      desired.setFilled(false);
       List<Line> lines = new ArrayList<>();
       lines.add(line);
-      lines.add(desired);
 
       axisX.setTextColor(Color.BLACK);
       axisY.setTextColor(Color.BLACK);
 
+      //plot the data
       LineChartData data = new LineChartData();
       data.setLines(lines);
       data.setAxisXBottom(axisX);
@@ -627,7 +635,6 @@ public class Training extends Activity {
       graph.setContainerScrollEnabled(false, null);
       graph.setLineChartData(data);
       graph.setInteractive(true);
-      // graph.setViewportCalculationEnabled(true);
 
       Viewport v = new Viewport(graph.getMaximumViewport());
       v.top = prefsAvgStepPerMin * 2;

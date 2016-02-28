@@ -8,7 +8,6 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 
 import java.sql.SQLException;
 

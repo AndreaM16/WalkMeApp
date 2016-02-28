@@ -10,7 +10,6 @@ import android.content.ContextWrapper;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
-import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 
 import java.sql.SQLException;
 import java.text.ParseException;

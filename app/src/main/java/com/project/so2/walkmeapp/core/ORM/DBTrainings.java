@@ -6,7 +6,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.project.so2.walkmeapp.core.POJO.TrainingInstant;
 
 import java.util.ArrayList;
 import java.util.Collection;

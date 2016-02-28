@@ -107,6 +107,8 @@ public class MainActivity extends Activity {
         View mView = findViewById(R.id.walking_man);
         mView.setBackgroundResource(R.drawable.walking_stickman);
 
+
+
       /* AnimationDrawable Handles Stickman's animation */
         AnimationDrawable animMan = (AnimationDrawable) mView.getBackground();
         animMan.start();
@@ -147,6 +149,7 @@ public class MainActivity extends Activity {
 
         }
 
+
          /* Checking service's permissions, if not allowed, asks for them */
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -166,6 +169,7 @@ public class MainActivity extends Activity {
 
     }
 
+
     /**
      * Binding GPS Service to the Application
      *
@@ -179,13 +183,16 @@ public class MainActivity extends Activity {
         return super.bindService(service, conn, flags);
     }
 
+
+
     /* Establishing Connection */
     private ServiceConnection mConnection = new ServiceConnection() {
 
         /**
          * Handling GPS
+         *
          * @param className ClassName passed for the connection
-         * @param service Service passed in order to communicate
+         * @param service   Service passed in order to communicate
          */
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -196,17 +203,23 @@ public class MainActivity extends Activity {
             if (!mService.mLocationManager.isProviderEnabled("gps") && Training.comingFromTraining == false) {
                 dialogGps();
 
+            }
+
+
+
+
+
+        GPS.OnNewGPSPointsListener clientListener = new GPS.OnNewGPSPointsListener() {
+            @Override
+            public void onNewGPSPoint() {
 
             }
 
-            GPS.OnNewGPSPointsListener clientListener = new GPS.OnNewGPSPointsListener() {
-                @Override
-                public void onNewGPSPoint() {
 
-                }
-            };
+        };
 
             mService.addOnNewGPSPointsListener(clientListener);
+
         }
 
         /**
@@ -247,6 +260,7 @@ public class MainActivity extends Activity {
                         }
                     }
 
+
                 }
                 return;
             }
@@ -255,7 +269,10 @@ public class MainActivity extends Activity {
         }
     }
 
+
     public void dialogGps() {
+
+
 
 
         //alertDialogBuilder.setTitle("");
@@ -294,6 +311,7 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
+
     private void connectLocalService() {
         Intent service = new Intent(this, GPS.class);
         bindService(service, mConnection, Context.BIND_AUTO_CREATE);
@@ -316,6 +334,7 @@ public class MainActivity extends Activity {
         }
     }
 
+
     /**
      * Handling Activity Switching
      **/
@@ -328,11 +347,13 @@ public class MainActivity extends Activity {
                 intent = new Intent(this, History.class);
                 break;
 
+
             case "Start":
                 if (hardPermission) {
                     intent = new Intent(this, Training.class);
                 }
                 break;
+
 
             case "Settings":
                 intent = new Intent(this, Settings.class);
