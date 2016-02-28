@@ -18,13 +18,18 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * Created by alex_ on 27/02/2016.
+ * Class that manages custom .walk files sending and attaching
  */
 public class AttachmentHandling {
 
    DBManager db;
 
-
+   /**
+    * Sharing the train
+    *
+    * @param context
+    * @param training
+    */
    public void share(Context context, DBTrainings training) {
       db = DBManager.getIstance();
 
@@ -33,7 +38,7 @@ public class AttachmentHandling {
 
 
       File path = new File(context.getFilesDir() + "/training");
-      Log.d("percorso", path.toString());
+      Log.d("Path", path.toString());
       path.mkdirs();
       File training_file = new File(path, res.name + ".walk");
 
@@ -48,7 +53,6 @@ public class AttachmentHandling {
       emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
       Uri contentUri = FileProvider.getUriForFile(context, "com.project.so2.walkmeapp", training_file);
-
 
       emailIntent.setType("vnd.android.cursor.dir/email");
       emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri);

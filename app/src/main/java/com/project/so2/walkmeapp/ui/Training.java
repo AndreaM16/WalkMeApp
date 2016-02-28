@@ -56,7 +56,7 @@ import lecho.lib.hellocharts.view.LineChartView;
 
 
 /**
- * Created by Andrea on 24/01/2016.
+ * Class that manages all the training features
  */
 public class Training extends Activity {
 
@@ -88,7 +88,7 @@ public class Training extends Activity {
    private boolean isStopped = true;
    private long startTime = -1000;
    private DBManager db;
-   private String name = "Allenamento";
+   private String name = "Training";
    private String formattedDate;
    private double distance = 0.0;
 
@@ -113,38 +113,59 @@ public class Training extends Activity {
    private static AlertDialog alertDialog;
    private long deltaTime;
 
-
+   /**
+    * Binding GPS Service
+    *
+    * @param service Service
+    * @param conn    Connection
+    * @param flags   Flags used for the binding
+    * @return Bound Service
+    */
    @Override
    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
       return super.bindService(service, conn, flags);
    }
 
-
+   /**
+    * Connecting to Service
+    */
    @Override
    protected void onStart() {
       super.onStart();
       connectLocalService();
-
    }
 
+   /**
+    * Destroying the Service
+    */
    @Override
    protected void onDestroy() {
       super.onDestroy();
-
    }
 
+   /**
+    * Going Back
+    */
    @Override
    public void onBackPressed() {
       comingFromTraining = true;
       finish();
    }
 
+   /**
+    * Stop
+    */
    @Override
    protected void onStop() {
       super.onStop();
       disconnectLocalService();
    }
 
+   /**
+    * onCreate
+    *
+    * @param savedInstanceState instances
+    */
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -152,7 +173,7 @@ public class Training extends Activity {
       setContentView(R.layout.training_main);
 
 
-      alertDialogBuilder= new AlertDialog.Builder(
+      alertDialogBuilder = new AlertDialog.Builder(
               context);
 
       serviceIntent = new Intent(this, GPS.class);
@@ -172,6 +193,7 @@ public class Training extends Activity {
 
       setupActionbar();
 
+      /* Used by the Graph */
       mXAxis = xAxisType.TIME;
       mYAxis = yAxisType.PACE;
 
@@ -185,13 +207,17 @@ public class Training extends Activity {
       colorGrey = Color.parseColor(getResources().getString(R.string.training_grey));
 
       final AnimatedVectorDrawable startDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_play_to_pause);
-      AnimatedVectorDrawable endDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_pause_to_play);      //STRANGE FIX TO ANDROID 6 BUG
+      AnimatedVectorDrawable endDrawable = AnimatedVectorDrawable.getDrawable(playButton.getContext(), R.drawable.ic_pause_to_play);
 
       playButton.setStartDrawable(startDrawable);
       playButton.setEndDrawable(endDrawable);
 
 
-      playButton.setOnClickListener(new View.OnClickListener() {           //TODO: find out why the play/pause animation occours even on long touch //bug is gone? wtf
+      playButton.setOnClickListener(new View.OnClickListener() {
+         /**
+          * Handling Play/Pause/Stop
+          * @param v View
+          */
          @Override
          public void onClick(View v) {
 
@@ -219,7 +245,7 @@ public class Training extends Activity {
                fadeTo(stopContainer, colorGrey, colorGreen);
                if (utenteAvvisato == false) {
 
-                  Toast.makeText(Training.this, "Tieni premuto per concludere l'allenamento", Toast.LENGTH_LONG).show();
+                  Toast.makeText(Training.this, "Hold to stop the training", Toast.LENGTH_LONG).show();
                   utenteAvvisato = true;
                }
 
@@ -231,6 +257,9 @@ public class Training extends Activity {
          }
       });
 
+      /**
+       * Handling long press to Stop the training
+       */
       playButton.setOnLongClickListener(new View.OnLongClickListener() {
          @Override
          public boolean onLongClick(View v) {
@@ -243,24 +272,22 @@ public class Training extends Activity {
                isPaused = true;
             }
 
-
             endTrainingPrompt();
-
-
             return true;
          }
       });
    }
 
+   /**
+    * Handling training end
+    */
    private void endTrainingPrompt() {
 
       AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
               context);
 
-      //alertDialogBuilder.setTitle("");
-
       alertDialogBuilder
-              .setMessage("Vuoi terminare l'allenamento?")
+              .setMessage("Do you want to end the training?")
               .setCancelable(false)
               .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                  public void onClick(DialogInterface dialog, int id) {
@@ -271,13 +298,19 @@ public class Training extends Activity {
                     chronometer.stop();
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(Training.this);
-                    builder.setTitle("Scegli il nome:");
+                    builder.setTitle("Pick a name:");
 
                     final EditText input = new EditText(Training.this);
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
                     builder.setView(input);
 
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                       /**
+                        * Setting the name
+                        * @param dialog
+                        * @param which
+                        */
                        @Override
                        public void onClick(DialogInterface dialog, int which) {
 
@@ -287,7 +320,7 @@ public class Training extends Activity {
                           } else {
                              name = "Training";
                           }
-                          Log.d("TYEST", name);
+                          Log.d("TEST", name);
 
                           db.createTraining(name, formattedDate, prefsAvgStepPerMin, prefsLastMetersInM, prefsStepLengthInCm, trainingInsts);
                           try {
@@ -318,28 +351,35 @@ public class Training extends Activity {
                  }
               });
 
-      // create alert dialog
+      /* Create alert dialog */
       AlertDialog alertDialog = alertDialogBuilder.create();
 
-      // show it
+      /* Show it */
       alertDialog.show();
    }
 
    private ServiceConnection mConnection = new ServiceConnection() {
+      /**
+       * Handling GPS
+       * @param className
+       * @param service
+       */
       @Override
       public void onServiceConnected(ComponentName className, IBinder service) {
          GPS.LocalBinder binder = (GPS.LocalBinder) service;
          mService = binder.getService();
          mIsBound = true;
 
-         if (!mService.mLocationManager.isProviderEnabled("gps")&& Training.comingFromTraining==false && alertDialog==null) {
+         if (!mService.mLocationManager.isProviderEnabled("gps") && Training.comingFromTraining == false && alertDialog == null) {
 
             dialogGps();
-
 
          }
          GPS.OnNewGPSPointsListener clientListener = new
                  GPS.OnNewGPSPointsListener() {
+                    /**
+                     * Handling new GPS Points
+                     */
                     @Override
                     public void onNewGPSPoint() {
                        getGPSData();
@@ -354,14 +394,17 @@ public class Training extends Activity {
       }
 
 
-      public void dialogGps(){
-
-         //alertDialogBuilder.setTitle("");
+      public void dialogGps() {
 
          alertDialogBuilder
-                 .setMessage("GPS disabilitato. Vuoi attivarlo dalle impostazioni?")
+                 .setMessage("GPS Disabled. Do you want to activate it from Settings?")
                  .setCancelable(false)
                  .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    /**
+                     * Dialog
+                     * @param dialog
+                     * @param id
+                     */
                     public void onClick(DialogInterface dialog, int id) {
 
                        activateGPS();
@@ -369,30 +412,37 @@ public class Training extends Activity {
                     }
                  })
                  .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    /**
+                     * Dialog
+                     * @param dialog
+                     * @param id
+                     */
                     public void onClick(DialogInterface dialog, int id) {
-                       Toast.makeText(Training.this, "Permesso uso GPS negato, " + "l'applicazione non funzionerà correttamente", Toast.LENGTH_LONG).show();
+                       Toast.makeText(Training.this, "GPS permissions denied, " + "some functionalities will not be supported", Toast.LENGTH_LONG).show();
 
                        dialog.cancel();
                     }
                  });
 
-         // create alert dialog
-        alertDialog = alertDialogBuilder.create();
+         /* Create alert dialog */
+         alertDialog = alertDialogBuilder.create();
 
-         // show it
+         /* Show it */
          alertDialog.show();
 
 
       }
 
-
+      /**
+       * Handling Disconnection
+       * @param name Service Name
+       */
       @Override
       public void onServiceDisconnected(ComponentName name) {
          Log.i("ConnectionService", "Disconnected");
          mService = null;
          mIsBound = false;
       }
-
    };
 
    private void connectLocalService() {
@@ -416,8 +466,6 @@ public class Training extends Activity {
       Location loc = new Location(mService.mLastLocation);
       double latitude = mService.getLatitude();
       double longitude = mService.getLongitude();
-      /*double latitude = loc.getLatitude();
-      double longitude = loc.getLongitude();*/
       double altitude = loc.getAltitude();
       long time = loc.getTime();
       float speed = loc.getSpeed();
@@ -450,10 +498,16 @@ public class Training extends Activity {
 
       trainingInsts.add(ti);
 
-      Log.d("ti", "latitudine: " + ti.latitude + " longitudine: " + ti.longitude + " velocità: " + ti.speed + " altitudine: " + ti.altitude + " tempo: " + ti.time + " distanza: " + ti.distance);
+      Log.d("ti", "latitudine: " + ti.latitude + " longitude: " + ti.longitude + " speed: " + ti.speed + " altitude: " + ti.altitude + " time: " + ti.time + " distance: " + ti.distance);
 
    }
 
+   /**
+    * Updating the View for changes
+    *
+    * @param paceValue pace
+    * @param speed     speed
+    */
    private void updateView(int paceValue, float speed) {
 
       if (paceValue == 0 && speed == 0) {
@@ -478,7 +532,9 @@ public class Training extends Activity {
 
    }
 
-
+   /**
+    * Handling on Pause
+    */
    @Override
    protected void onPause() {
       super.onPause();
@@ -487,12 +543,18 @@ public class Training extends Activity {
 
    }
 
+   /**
+    * Handling on Resume
+    */
    @Override
    protected void onResume() {
       super.onResume();
       connectLocalService();
    }
 
+   /**
+    * Setting values from Shared Preferences
+    */
    private void setValuesFromShared() {
 
       settings = getSharedPreferences(PREFS_NAME, 0);
@@ -511,7 +573,13 @@ public class Training extends Activity {
       Log.d(TAG, "Values from prefs ->  " + "stepLength: " + prefsStepLengthInCm + "cm ||  LastXMeters: " + prefsLastMetersInM + "m ||  AvgStep: " + prefsAvgStepPerMin + "m");
    }
 
-
+   /**
+    * Switching Play and Pause Animation Colors
+    *
+    * @param layout
+    * @param actualColor
+    * @param color
+    */
    private void fadeTo(RelativeLayout layout, int actualColor, int color) {
       ColorDrawable[] colour = {new ColorDrawable(actualColor), new ColorDrawable(color)};
 
@@ -542,14 +610,14 @@ public class Training extends Activity {
    }
 
    private void plot(ArrayList<TrainingInstant> train) {
-      //plot the graph with the axis determined by the spinners
+      /* Plot the graph with the axis determined by the spinners */
       List<PointValue> values = new ArrayList<>();
       Axis axisX = new Axis();
       Axis axisY = new Axis().setHasLines(true);
 
       if (mXAxis == xAxisType.TIME) {
 
-         //if the axis x type is time, format the unix timestamp a date
+         /* If the axis x type is time, format the unix timestamp a date */
          axisX.setFormatter(new AxisValueFormatter() {
             @Override
             public int formatValueForAutoGeneratedAxis(char[] formattedValue, float value, int autoDecimalDigits) {
@@ -559,24 +627,28 @@ public class Training extends Activity {
 
                String label = simpleDateFormat.format(value);
 
-               //The library need the label string at the end of the formattedValue array
+               /* The library need the label string at the end of the formattedValue array */
                label.getChars(0, label.length(), formattedValue, formattedValue.length - label.length());
-               //Log.d("Formatter", new String(formattedValue));
 
                return label.length();
             }
 
+            /**
+             * Format Values for the Plot
+             * @param formattedValue
+             * @param axisValue
+             * @return Formatted values
+             */
             @Override
             public int formatValueForManualAxis(char[] formattedValue, AxisValue axisValue) {
-               //not used-
+
                return 0;
             }
          });
 
-         //show max 3 date label for space issues
+         /* Show max 3 date label for space issues */
          axisX.setMaxLabelChars(4);
       }
-
 
       float oldTime = 0;
       for (int i = 0; i < train.size(); i++) {
@@ -606,7 +678,7 @@ public class Training extends Activity {
                break;
          }
 
-         if (values.size() < 30){
+         if (values.size() < 30) {
             values.add(new PointValue(x, y));
          } else {
             values.remove(0);
@@ -624,7 +696,7 @@ public class Training extends Activity {
       axisX.setTextColor(Color.BLACK);
       axisY.setTextColor(Color.BLACK);
 
-      //plot the data
+      /* Plot the data */
       LineChartData data = new LineChartData();
       data.setLines(lines);
       data.setAxisXBottom(axisX);
