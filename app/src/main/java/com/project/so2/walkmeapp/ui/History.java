@@ -86,44 +86,19 @@ public class History extends Activity {
          noTrainingsText.setVisibility(View.GONE);
          historyListView.setVisibility(View.VISIBLE);
 
-         prepareListData();
-         expListAdapter = new HistoryExpListAdapter(this, listDataHeader, listDataChild);
+         //prepareListData();
+         expListAdapter = new HistoryExpListAdapter(this);
+         expListAdapter.prepareListData(trainings, dbTrainingDao);
          historyListView.setAdapter(expListAdapter);
       }
 
+
+
    }
+
 
    /* Used to order trainings and to correctly format them by data */
-   private void prepareListData() {
-      listDataHeader = new ArrayList<String>();
-      listDataChild = new HashMap<String, List<DBTrainings>>();
 
-      for (DBTrainings train : trainings) {
-
-         if (!listDataHeader.contains(Integer.toString(train.date_year) + " - " + Integer.toString(train.date_month))) {
-            listDataHeader.add(Integer.toString(train.date_year) + " - " + Integer.toString(train.date_month));
-
-            QueryBuilder<DBTrainings, String> queryBuilder = dbTrainingDao.queryBuilder();
-
-            List<DBTrainings> trainingList = null;
-            try {
-               queryBuilder.where().eq("date_year", train.date_year).and().eq("date_month", train.date_month);
-
-               PreparedQuery<DBTrainings> preparedQuery = queryBuilder.prepare();
-               trainingList = dbTrainingDao.query(preparedQuery);
-               Log.d("TEST", trainingList.toString());
-            } catch (SQLException e) {
-               e.printStackTrace();
-            }
-
-            listDataChild.put(Integer.toString(train.date_year) + " - " + Integer.toString(train.date_month), trainingList);
-         }
-
-      }
-
-      Log.d("HRES", listDataChild.toString());
-
-   }
 
 
 }

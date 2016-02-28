@@ -17,13 +17,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.project.so2.walkmeapp.R;
 import com.project.so2.walkmeapp.core.ORM.DBManager;
 import com.project.so2.walkmeapp.core.ORM.DBTrainings;
 import com.project.so2.walkmeapp.core.SERVICE.AttachmentHandling;
+import com.project.so2.walkmeapp.ui.History;
 import com.project.so2.walkmeapp.ui.ViewTraining;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,19 +42,18 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
    private List<String> listDataHeader;
    /* Child data in format of header title, child title */
    private HashMap<String, List<DBTrainings>> listDataChild;
+   public boolean datasetChanged = false;
+   private List<DBTrainings> trainings;
+   private Dao<DBTrainings, String> dbTrainingDao;
 
    /**
     * Defining History's information to be shown
     *
     * @param context        Context used by the DB
-    * @param listDataHeader Header Titles
-    * @param listChildData  Child data
     */
-   public HistoryExpListAdapter(Context context, List<String> listDataHeader,
-                                HashMap<String, List<DBTrainings>> listChildData) {
+   public HistoryExpListAdapter(Context context) {
       this.context = context;
-      this.listDataHeader = listDataHeader;
-      this.listDataChild = listChildData;
+
    }
 
    /**
@@ -141,6 +145,9 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
                        public void onClick(DialogInterface dialog, int id) {
 
                           DBManager.getIstance().destroyTraining(childText);
+                          prepareListData(trainings, dbTrainingDao);
+                          notifyDataSetChanged();
+
                           //notifyDataSetInvalidated();
 
                           //TODO NOTIFICARE LA VISTA
@@ -255,4 +262,39 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
    public boolean isChildSelectable(int groupPosition, int childPosition) {
       return true;
    }
+
+   public void prepareListData(List<DBTrainings> trainings, Dao<DBTrainings, String> dbTrainingDao ) {
+      listDataHeader = new ArrayList<String>();
+      listDataChild = new HashMap<String, List<DBTrainings>>();
+
+      this.trainings = trainings;
+      this.dbTrainingDao = dbTrainingDao;
+
+      for (DBTrainings train : trainings) {
+
+         if (!listDataHeader.contains(Integer.toString(train.date_year) + " - " + Integer.toString(train.date_month))) {
+            listDataHeader.add(Integer.toString(train.date_year) + " - " + Integer.toString(train.date_month));
+
+            QueryBuilder<DBTrainings, String> queryBuilder = dbTrainingDao.queryBuilder();
+
+            List<DBTrainings> trainingList = null;
+            try {
+               queryBuilder.where().eq("date_year", train.date_year).and().eq("date_month", train.date_month);
+
+               PreparedQuery<DBTrainings> preparedQuery = queryBuilder.prepare();
+               trainingList = dbTrainingDao.query(preparedQuery);
+               Log.d("TEST", trainingList.toString());
+            } catch (SQLException e) {
+               e.printStackTrace();
+            }
+
+            listDataChild.put(Integer.toString(train.date_year) + " - " + Integer.toString(train.date_month), trainingList);
+         }
+
+      }
+
+      Log.d("HRES", listDataChild.toString());
+
+   }
+
 }

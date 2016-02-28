@@ -39,7 +39,7 @@ public class FileHandling extends Activity {
 
       db = DBManager.getIstance();
       ObjectMapper mapper = JacksonUtils.mapper;
-      
+
       if (getIntent().getData() != null) {
 
 

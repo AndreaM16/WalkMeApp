@@ -41,13 +41,13 @@ public class GPS extends Service {
 
 
         public LocationListener(String provider) {
-            Log.e(TAG, "LocationListener " + provider);
+            Log.d(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
             if(mLastLocation.getAccuracy()<20) {
                 lat = mLastLocation.getLatitude();
                 longit = mLastLocation.getLongitude();
             }
-            Log.e(TAG, "COORDINATE: " + " latitudine :" + mLastLocation.getLatitude() + "longitudine :" + mLastLocation.getLongitude());
+            Log.d(TAG, "COORDINATE: " + " latitudine :" + mLastLocation.getLatitude() + "longitudine :" + mLastLocation.getLongitude());
 
 
         }
@@ -55,7 +55,7 @@ public class GPS extends Service {
 
         @Override
         public void onLocationChanged(Location location) {
-            Log.e(TAG, "onLocationChanged: " + location);
+            Log.d(TAG, "onLocationChanged: " + location);
             if (location.getAccuracy()<20) {
                 mLastLocation.set(location);
                 lat = mLastLocation.getLatitude();
@@ -71,7 +71,7 @@ public class GPS extends Service {
         @Override
         public void onProviderDisabled(String provider) {
 
-            Log.e(TAG, "onProviderDisabled: " + provider);
+            Log.d(TAG, "onProviderDisabled: " + provider);
 
         }
 
@@ -79,12 +79,12 @@ public class GPS extends Service {
         @Override
         public void onProviderEnabled(String provider) {
 
-            Log.e(TAG, "onProviderEnabled: " + provider);
+            Log.d(TAG, "onProviderEnabled: " + provider);
         }
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            Log.e(TAG, "onStatusChanged: " + provider);
+            Log.d(TAG, "onStatusChanged: " + provider);
         }
     }
 
@@ -97,7 +97,7 @@ public class GPS extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(TAG, "onStartCommand");
+        Log.d(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
 
         return START_STICKY;
@@ -106,7 +106,7 @@ public class GPS extends Service {
 
     @Override
     public void onCreate() {
-        Log.e(TAG, "onCreate");
+        Log.d(TAG, "onCreate");
         initializeLocationManager();
         try {
             mLocationManager.requestLocationUpdates(
@@ -124,7 +124,7 @@ public class GPS extends Service {
 
     @Override
     public void onDestroy() {
-        Log.e(TAG, "onDestroy");
+        Log.d(TAG, "onDestroy");
         super.onDestroy();
         if (mLocationManager != null) {
 
@@ -150,7 +150,7 @@ public class GPS extends Service {
     }
 
     private void initializeLocationManager() {
-        Log.e(TAG, "initializeLocationManager");
+        Log.d(TAG, "initializeLocationManager");
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
             //Verifica se il GPS e' abilitato altrimenti avvisa l'utente
