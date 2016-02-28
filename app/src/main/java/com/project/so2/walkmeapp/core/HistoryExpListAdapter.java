@@ -49,7 +49,7 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
    /**
     * Defining History's information to be shown
     *
-    * @param context        Context used by the DB
+    * @param context Context used by the DB
     */
    public HistoryExpListAdapter(Context context) {
       this.context = context;
@@ -111,7 +111,7 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
       ImageView deletionIcon = (ImageView) convertView.findViewById(R.id.delete);
 
       txtListChild.setText(childText.name);
-      subTxtListChild.setText( childText.date_day + " | " + childText.date_hour + ":" +childText.date_minutes);
+      subTxtListChild.setText(childText.date_day + " | " + childText.date_hour + ":" + childText.date_minutes);
 
       convertView.setOnClickListener(new View.OnClickListener() {
          @Override
@@ -263,7 +263,7 @@ public class HistoryExpListAdapter extends BaseExpandableListAdapter {
       return true;
    }
 
-   public void prepareListData(List<DBTrainings> trainings, Dao<DBTrainings, String> dbTrainingDao ) {
+   public void prepareListData(List<DBTrainings> trainings, Dao<DBTrainings, String> dbTrainingDao) {
       listDataHeader = new ArrayList<String>();
       listDataChild = new HashMap<String, List<DBTrainings>>();
 

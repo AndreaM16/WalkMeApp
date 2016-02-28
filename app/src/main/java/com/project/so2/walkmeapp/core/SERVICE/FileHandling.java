@@ -22,13 +22,18 @@ import java.io.IOException;
 
 
 /**
- * Created by alex_ on 26/02/2016.
+ * Class that manages custom .walk file sharing
  */
 public class FileHandling extends Activity {
 
    private DBManager db;
    public static DBTrainings training;
 
+   /**
+    * On Create
+    *
+    * @param savedInstanceState
+    */
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -47,7 +52,7 @@ public class FileHandling extends Activity {
          try {
             StringBuilder text = new StringBuilder();
 
-            //read the file passed in the intent
+            /* Read the file passed in the intent */
             BufferedReader br = new BufferedReader(new FileReader(new File(filePath)));
             String line;
 
@@ -58,13 +63,8 @@ public class FileHandling extends Activity {
 
             Log.d("BAU:training", text.toString());
 
-
-            //convert the json file in a WorkoutItem object
+            /* Convert the json file in a WorkoutItem object */
             training = mapper.readValue(text.toString(), DBTrainings.class);
-
-            //Intent intent_view_training=new Intent(this,ViewTraining.class);
-            // startActivity(intent_view_training);
-
             db.saveImportedTraining(training, getApplicationContext());
 
 

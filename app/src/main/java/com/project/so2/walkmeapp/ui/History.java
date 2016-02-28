@@ -34,7 +34,6 @@ public class History extends Activity {
 
    private ExpandableListView historyListView;
    private List<DBTrainings> trainings;
-   ;
    private TextView noTrainingsText;
    private ArrayList<String> listDataHeader;
    private HashMap<String, List<DBTrainings>> listDataChild;
@@ -86,20 +85,13 @@ public class History extends Activity {
          noTrainingsText.setVisibility(View.GONE);
          historyListView.setVisibility(View.VISIBLE);
 
-         //prepareListData();
          expListAdapter = new HistoryExpListAdapter(this);
          expListAdapter.prepareListData(trainings, dbTrainingDao);
          historyListView.setAdapter(expListAdapter);
       }
 
 
-
    }
-
-
-   /* Used to order trainings and to correctly format them by data */
-
-
 
 }
 
